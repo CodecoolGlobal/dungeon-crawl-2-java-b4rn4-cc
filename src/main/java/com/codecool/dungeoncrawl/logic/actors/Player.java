@@ -16,6 +16,12 @@ public class Player extends Actor {
         inventory.add(item);
     }
 
+    public void pickUp(){
+        if (getCell().getItem() != null){
+            setInventory(getCell().getItem());
+        }
+    }
+
     public String getTileName() {
         return "player";
     }
