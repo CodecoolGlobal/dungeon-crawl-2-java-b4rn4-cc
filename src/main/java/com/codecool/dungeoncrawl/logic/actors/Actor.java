@@ -8,6 +8,7 @@ import java.util.Random;
 public abstract class Actor implements Drawable {
     protected Cell cell;
     protected static final Random r = new Random();
+//    protected Direction direction;
     private int health = 10;
     protected final int MAX_DAMAGE;
     protected final int MIN_DAMAGE;
@@ -20,7 +21,10 @@ public abstract class Actor implements Drawable {
         this.MIN_DAMAGE = minDmg;
     }
 
+    public abstract void setDirection();
+
     public void act(int dx, int dy) {
+//        Cell nextCell = getNextCell();
         Cell nextCell = cell.getNeighbor(dx, dy);
         if (collisionWithEnemy(nextCell)){
             combat(nextCell);
@@ -28,6 +32,24 @@ public abstract class Actor implements Drawable {
             move(dx, dy);
         }
     }
+
+//    private Cell  getNextCell(){
+//        int dx, dy;
+//        if (direction == Direction.EAST){
+//            dx = 0;
+//            dy = -1;
+//        } else if (direction == Direction.WEST){
+//            dx = 0;
+//            dy = 1;
+//        } else if (direction == Direction.NORTH){
+//            dx = -1;
+//            dy = 0;
+//        } else {
+//            dx = 1;
+//            dy = 0;
+//        }
+//        return cell.getNeighbor(dx, dy);
+//    }
 
 
     private void combat(Cell nextCell){
@@ -37,7 +59,7 @@ public abstract class Actor implements Drawable {
 
 
     public int getDamage(){
-        return r.nextInt(MAX_DAMAGE - MIN_DAMAGE) + MAX_DAMAGE;
+        return r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
     }
 
 

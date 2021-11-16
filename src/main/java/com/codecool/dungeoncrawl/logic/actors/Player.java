@@ -13,6 +13,11 @@ public class Player extends Actor {
         super(cell, 3, 7);
     }
 
+
+    public void setDirection(){
+
+    }
+
     public void setInventory(Item item){
         inventory.put(item, 1);
     }
@@ -40,11 +45,17 @@ public class Player extends Actor {
     @Override
     public int getDamage(){
         setBonusDamage();
-        return r.nextInt(MAX_DAMAGE + bonusDamage - MIN_DAMAGE + bonusDamage) + MAX_DAMAGE + bonusDamage;
+        int dmg = r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE) + MIN_DAMAGE + bonusDamage;
+        System.out.println(dmg);
+        for (int i = 0; i < 10; i++){
+
+            System.out.println(r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE);
+        }
+        return dmg;
     }
 
     public void setBonusDamage() {
-        this.bonusDamage = 0;
+        bonusDamage = 10;
     }
 
 }
