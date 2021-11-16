@@ -7,10 +7,13 @@ public class ImmortalSkeleton extends Actor{
         super(cell, 5, 7, 8);
     }
 
-    public void setDirection(){}
-
     @Override
     public String getTileName() {
         return "immortalSkeleton";
+    }
+
+    @Override
+    public void setDirection(Player player) {
+
     }
 }
