@@ -13,6 +13,14 @@ import java.util.Scanner;
 
 public class MapLoader {
     private static int currentLevel = 1;
+
+    public static void increaseLevel() {
+        MapLoader.currentLevel += 1;
+    }
+
+    public static void decreaseLevel() {
+        MapLoader.currentLevel -= 1;
+    }
     public static GameMap loadMap(String currentRoute) {
         InputStream is = MapLoader.class.getResourceAsStream(currentRoute);
         Scanner scanner = new Scanner(is);

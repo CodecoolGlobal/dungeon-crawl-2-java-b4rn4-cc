@@ -107,6 +107,13 @@ public class Main extends Application {
                     break;
                 }
         }
+        if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
+            MapLoader.increaseLevel();
+        } else if (map.getPrevDoor() != null) {
+            if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
+                MapLoader.decreaseLevel();
+            }
+        }
         if (map.getPlayer().getRoute() != null) {
             route = map.getPlayer().getRoute();
             map = MapLoader.loadMap(route);
