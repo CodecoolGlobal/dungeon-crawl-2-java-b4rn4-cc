@@ -2,12 +2,13 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 
-public class Player extends Actor {
-    public Player(Cell cell) {
-        super(cell, 100, 5, 10);
+public class Boss extends Actor{
+    public Boss(Cell cell) {
+        super(cell, 200, 10, 20);
     }
 
+    @Override
     public String getTileName() {
-        return "player";
+        return "boss";
     }
 }

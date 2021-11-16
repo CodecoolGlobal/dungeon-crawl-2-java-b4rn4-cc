@@ -5,11 +5,16 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
-    private int health = 10;
+    protected int health;
+    protected final int maxDamage;
+    protected final int minDamage;
 
-    public Actor(Cell cell) {
+    public Actor(Cell cell, int health, int minDamage, int maxDamage) {
         this.cell = cell;
         this.cell.setActor(this);
+        this.health = health;
+        this.minDamage = minDamage;
+        this.maxDamage = maxDamage;
     }
 
     public void move(int dx, int dy) {
@@ -33,5 +38,18 @@ public abstract class Actor implements Drawable {
 
     public int getY() {
         return cell.getY();
+    }
+
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getMaxDamage() {
+        return maxDamage;
+    }
+
+    public int getMinDamage() {
+        return minDamage;
     }
 }

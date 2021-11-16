@@ -2,13 +2,13 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 
-public class Skeleton extends Actor {
-    public Skeleton(Cell cell) {
-        super(cell, 10 , 5, 10);
+public class FastSkeleton extends Actor{
+    public FastSkeleton(Cell cell) {
+        super(cell, 5, 5, 7);
     }
 
     @Override
     public String getTileName() {
-        return "skeleton";
+        return "fastSkeleton";
     }
 }
