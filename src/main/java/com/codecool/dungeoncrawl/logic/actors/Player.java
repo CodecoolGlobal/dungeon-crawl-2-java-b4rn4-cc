@@ -16,11 +16,9 @@ public class Player extends Actor {
         inventory.put(item, 1);
     }
 
-    public void pickUp(){
-        if (getCell().getItem() != null){
-            setInventory(getCell().getItem());
-            getCell().setItem(null);
-        }
+    public void pickUp() {
+        setInventory(getCell().getItem());
+        getCell().setItem(null);
     }
 
     public String getTileName() {
