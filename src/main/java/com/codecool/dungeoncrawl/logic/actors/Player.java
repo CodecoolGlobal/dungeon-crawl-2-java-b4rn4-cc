@@ -69,7 +69,9 @@ public class Player extends Actor {
     }
 
     public void setBonusDamage() {
-        bonusDamage = 10;
+        if (inventory.getWeapons() != null){
+            bonusDamage = inventory.getWeapons().getDamage();
+        }
     }
 
 }
