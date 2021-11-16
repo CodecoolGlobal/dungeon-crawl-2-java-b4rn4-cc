@@ -17,11 +17,11 @@ public class Player extends Actor {
     public void setInventory(Item item){
         if (Objects.equals(item.getTileName(), "key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName() == "weapon"){
+        }else if (item.getTileName().equals("weapon")){
             inventory.setWeapons((Weapon) item);
-        }else if(item.getTileName() == "shield"){
+        }else if(item.getTileName().equals("shield")){
             inventory.setShields((Shield) item);
-        }else if(item.getTileName() == "potion"){
+        }else if(item.getTileName().equals("potion")){
             inventory.setPotions((Potion) item);
         }
     }
@@ -61,6 +61,6 @@ public class Player extends Actor {
     }
 
     public boolean hasKey() {
-        return inventory.containsKey("key");
+        return inventory.getKeys() != null;
     }
 }
