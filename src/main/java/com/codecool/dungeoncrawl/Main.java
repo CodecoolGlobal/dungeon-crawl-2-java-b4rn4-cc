@@ -4,14 +4,18 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -23,6 +27,8 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Button pickUpButton = new Button("Pick Up");
+    Label inventory = new Label();
 
     public static void main(String[] args) {
         launch(args);
@@ -36,6 +42,13 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+
+        ui.add(new Label("Inventory: "), 0, 3);
+        ui.add(inventory, 1, 3);
+
+        ui.add(pickUpButton, 1, 10);
+        pickUpButton.setVisible(false);
+        pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
 
         BorderPane borderPane = new BorderPane();
 
@@ -55,25 +68,55 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
+                if (map.getPlayer().getCell().getItem() != null) {
+                    pickUpButton.setVisible(true);
+                    canvas.requestFocus();
+                }
                 refresh();
                 break;
             case DOWN:
                 map.getPlayer().move(0, 1);
+                if (map.getPlayer().getCell().getItem() != null) {
+                    pickUpButton.setVisible(true);
+                    canvas.requestFocus();
+                }
                 refresh();
                 break;
             case LEFT:
                 map.getPlayer().move(-1, 0);
+                if (map.getPlayer().getCell().getItem() != null) {
+                    pickUpButton.setVisible(true);
+                    canvas.requestFocus();
+                }
                 refresh();
                 break;
             case RIGHT:
                 map.getPlayer().move(1, 0);
+                if (map.getPlayer().getCell().getItem() != null) {
+                    pickUpButton.setVisible(true);
+                    canvas.requestFocus();
+                }
                 refresh();
                 break;
+            case SPACE:
+                if (map.getPlayer().getCell().getItem() != null){
+                    map.getPlayer().pickUp();
+                    canvas.requestFocus();
+                    pickUpButton.setVisible(false);
+                    refresh();
+                    break;
+                }
         }
         if (map.getPlayer().getRoute() != null) {
             route = map.getPlayer().getRoute();
             map = MapLoader.loadMap(route);
         }
+    }
+
+    private void pickUp() {
+        map.getPlayer().pickUp();
+        canvas.requestFocus();
+        pickUpButton.setVisible(false);
     }
 
     private void refresh() {
@@ -91,8 +134,7 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().
-
-                getHealth());
+        healthLabel.setText("" + map.getPlayer().getHealth());
+        inventory.setText("" + map.getPlayer().toString());
     }
 }

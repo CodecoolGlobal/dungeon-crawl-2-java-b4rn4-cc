@@ -3,24 +3,33 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Player extends Actor {
+    private HashMap<Item, Integer> inventory = new HashMap<>();
     private String route;
-    private ArrayList<Item> inventory = new ArrayList<>();
 
     public Player(Cell cell) {
         super(cell);
     }
 
     public void setInventory(Item item){
-        inventory.add(item);
+        inventory.put(item, 1);
     }
 
-    public void pickUp(){
-        if (getCell().getItem() != null){
-            setInventory(getCell().getItem());
+    public void pickUp() {
+        setInventory(getCell().getItem());
+        getCell().setItem(null);
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+        for (Item key: inventory.keySet()){
+            result += key.getTileName();
+            result += ": 1,\n";
         }
+        return result;
     }
 
     public void setRoute(String route) {
