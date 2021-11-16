@@ -1,9 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
-import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.CellType;
-import com.codecool.dungeoncrawl.logic.Direction;
-import com.codecool.dungeoncrawl.logic.Drawable;
+import com.codecool.dungeoncrawl.logic.*;
+
 import java.util.Random;
 
 public abstract class Actor implements Drawable {
@@ -23,18 +21,20 @@ public abstract class Actor implements Drawable {
         this.MIN_DAMAGE = minDmg;
     }
 
-    public abstract void setDirection();
+    public abstract void setDirection(Player player);
 
-    public void act() {
+    public void act(GameMap map, int index) {
         Cell nextCell = getNextCell();
         if (collisionWithEnemy(nextCell)){
             combat(nextCell);
         } else {
-            move(0, 1);
+            if (move()){
+                map.updateMonsterCells(index, nextCell);
+            }
         }
     }
 
-    private Cell  getNextCell(){
+    protected Cell  getNextCell(){
         int dx = 0;
         int dy = 0;
         switch (direction){
@@ -55,18 +55,18 @@ public abstract class Actor implements Drawable {
     }
 
 
-    private void combat(Cell nextCell){
+    protected void combat(Cell nextCell){
         int damage = getDamage();
         nextCell.getActor().getHit(damage);
     }
 
 
-    public int getDamage(){
+    protected int getDamage(){
         return r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
     }
 
 
-    private boolean collisionWithEnemy(Cell nextCell){
+    protected boolean collisionWithEnemy(Cell nextCell){
         if (nextCell.getActor() != null){
             return (this instanceof Skeleton && nextCell.getActor() instanceof Player) || this instanceof Player;
         }
@@ -74,13 +74,15 @@ public abstract class Actor implements Drawable {
     }
 
 
-    public void move(int dx, int dy){
+    protected boolean move(){
         Cell nextCell = getNextCell();
         if (nextCell.getType() != CellType.WALL && nextCell.getActor() == null) {
             cell.setActor(null);
             nextCell.setActor(this);
             cell = nextCell;
+            return true;
         }
+        return false;
     }
 
 

@@ -21,7 +21,7 @@ public class Player extends Actor {
         this.direction = direction;
     }
 
-    public void setDirection(){}
+    public void setDirection(Player player){}
 
     public void setInventory(Item item){
         if (Objects.equals(item.getTileName(), "key")){
@@ -61,6 +61,15 @@ public class Player extends Actor {
         return "player";
     }
 
+
+    public void act() {
+        Cell nextCell = getNextCell();
+        if (collisionWithEnemy(nextCell)){
+            combat(nextCell);
+        } else {
+            move();
+        }
+    }
 
     @Override
     public int getDamage(){
