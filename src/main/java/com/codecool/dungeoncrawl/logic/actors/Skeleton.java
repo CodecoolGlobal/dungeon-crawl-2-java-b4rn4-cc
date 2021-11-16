@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Direction;
 
 public class Skeleton extends Actor {
@@ -17,7 +18,7 @@ public class Skeleton extends Actor {
         int yDiff = Math.abs(getY() - player.getY());
 
         if (xDiff == yDiff){
-            int n = r.nextInt(2);;
+            int n = r.nextInt(2);
             if (n == 0){
                 direction = vertical;
             } else {
@@ -25,8 +26,14 @@ public class Skeleton extends Actor {
             }
         } else if (xDiff > yDiff){
             direction = horizontal;
+            if (getNextCell().getType() == CellType.WALL){
+                direction = vertical;
+            }
         } else {
             direction = vertical;
+            if (getNextCell().getType() == CellType.WALL){
+                direction = horizontal;
+            }
         }
 
     }
