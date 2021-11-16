@@ -107,17 +107,7 @@ public class Main extends Application {
                     break;
                 }
         }
-        if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
-            MapLoader.increaseLevel();
-        } else if (map.getPrevDoor() != null) {
-            if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
-                MapLoader.decreaseLevel();
-            }
-        }
-        if (map.getPlayer().getRoute() != null) {
-            route = map.getPlayer().getRoute();
-            map = MapLoader.loadMap(route);
-        }
+        handleMapChanging();
     }
 
     private void pickUp() {
@@ -147,5 +137,19 @@ public class Main extends Application {
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
+    }
+
+    private void handleMapChanging() {
+        if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
+            MapLoader.increaseLevel();
+        } else if (map.getPrevDoor() != null) {
+            if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
+                MapLoader.decreaseLevel();
+            }
+        }
+        if (map.getPlayer().getRoute() != null) {
+            route = map.getPlayer().getRoute();
+            map = MapLoader.loadMap(route);
+        }
     }
 }
