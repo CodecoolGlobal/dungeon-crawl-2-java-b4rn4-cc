@@ -68,43 +68,23 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
             case W:
-              map.getPlayer().setDirection(Direction.NORTH);
-                map.getPlayer().act();
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+                map.getPlayer().setDirection(Direction.NORTH);
+                playRound();
                 break;
             case DOWN:
             case S:
                 map.getPlayer().setDirection(Direction.SOUTH);
-                map.getPlayer().act();
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+                playRound();
                 break;
             case LEFT:
             case A:
                 map.getPlayer().setDirection(Direction.EAST);
-                map.getPlayer().act();
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+                playRound();
                 break;
             case RIGHT:
             case D:
                 map.getPlayer().setDirection(Direction.WEST);
-                map.getPlayer().act();
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+                playRound();
                 break;
             case E:
                 if (map.getPlayer().getCell().getItem() != null){
@@ -124,7 +104,6 @@ public class Main extends Application {
     }
 
     private void refresh() {
-        proceedTurn();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
@@ -143,9 +122,19 @@ public class Main extends Application {
         inventory.setText("" + map.getPlayer().toString());
     }
 
-    private void proceedTurn(){
-        for (int row = 0; row < 25; row++){
-            for (int col = 0; col < 20; col++){
+    private void playRound(){
+        map.getPlayer().act();
+        if (map.getPlayer().getCell().getItem() != null) {
+            pickUpButton.setVisible(true);
+            canvas.requestFocus();
+        }
+        aisMove();
+        refresh();
+    }
+
+    private void aisMove(){
+        for (int row = 0; row < map.getWidth(); row++){
+            for (int col = 0; col < map.getHeight(); col++){
                 Cell cell = map.getCell(row, col);
                 if (cell.getActor() != null){
                     if (cell.getActor().getHealth() <= 0){
