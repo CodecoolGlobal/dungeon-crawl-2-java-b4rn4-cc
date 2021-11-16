@@ -127,7 +127,14 @@ public class Main extends Application {
             canvas.requestFocus();
         }
         MonstersMove();
+        handleGameOver();
         refresh();
+    }
+
+    private void handleGameOver(){
+        if (map.getPlayer().getHealth() <= 0){
+            System.exit(1);
+        }
     }
 
     private void MonstersMove(){
