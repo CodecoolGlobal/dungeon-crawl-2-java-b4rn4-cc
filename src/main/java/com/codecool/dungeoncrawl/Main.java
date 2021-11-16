@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
@@ -67,8 +68,8 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
             case W:
-//              map.getPlayer().setDirection(Direction.NORTH);
-                map.getPlayer().act(0, -1);
+              map.getPlayer().setDirection(Direction.NORTH);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -77,8 +78,8 @@ public class Main extends Application {
                 break;
             case DOWN:
             case S:
-//              map.getPlayer().setDirection(Direction.SOUTH);
-                map.getPlayer().act(0, 1);
+                map.getPlayer().setDirection(Direction.SOUTH);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -87,8 +88,8 @@ public class Main extends Application {
                 break;
             case LEFT:
             case A:
-//              map.getPlayer().setDirection(Direction.EAST);
-                map.getPlayer().act(-1, 0);
+                map.getPlayer().setDirection(Direction.EAST);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -97,8 +98,8 @@ public class Main extends Application {
                 break;
             case RIGHT:
             case D:
-//              map.getPlayer().setDirection(Direction.WEST);
-                map.getPlayer().act(1, 0);
+                map.getPlayer().setDirection(Direction.WEST);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -150,9 +151,8 @@ public class Main extends Application {
                     if (cell.getActor().getHealth() <= 0){
                         cell.setActor(null);
                     } else if (!(cell.getActor() instanceof Player)){
-//                        cell.getActor().setDirection();
-//                        cell.getActor().act();
-                        cell.getActor().act(0, 0);
+                        cell.getActor().setDirection();
+                        cell.getActor().act();
                     }
                 }
             }

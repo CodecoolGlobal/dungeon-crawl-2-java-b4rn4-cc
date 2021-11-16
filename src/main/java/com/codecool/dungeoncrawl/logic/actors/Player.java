@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
 import java.util.HashMap;
@@ -14,9 +15,11 @@ public class Player extends Actor {
     }
 
 
-    public void setDirection(){
-
+    public void setDirection(Direction direction){
+        this.direction = direction;
     }
+
+    public void setDirection(){}
 
     public void setInventory(Item item){
         inventory.put(item, 1);
@@ -45,13 +48,7 @@ public class Player extends Actor {
     @Override
     public int getDamage(){
         setBonusDamage();
-        int dmg = r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE) + MIN_DAMAGE + bonusDamage;
-        System.out.println(dmg);
-        for (int i = 0; i < 10; i++){
-
-            System.out.println(r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE);
-        }
-        return dmg;
+        return r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE + bonusDamage;
     }
 
     public void setBonusDamage() {

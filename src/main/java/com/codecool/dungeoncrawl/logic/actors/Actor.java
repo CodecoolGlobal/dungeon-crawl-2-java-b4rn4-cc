@@ -2,13 +2,14 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
+import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.Drawable;
 import java.util.Random;
 
 public abstract class Actor implements Drawable {
     protected Cell cell;
     protected static final Random r = new Random();
-//    protected Direction direction;
+    protected Direction direction;
     private int health = 10;
     protected final int MAX_DAMAGE;
     protected final int MIN_DAMAGE;
@@ -24,33 +25,34 @@ public abstract class Actor implements Drawable {
 
     public abstract void setDirection();
 
-    public void act(int dx, int dy) {
-//        Cell nextCell = getNextCell();
-        Cell nextCell = cell.getNeighbor(dx, dy);
+    public void act() {
+        Cell nextCell = getNextCell();
         if (collisionWithEnemy(nextCell)){
             combat(nextCell);
         } else {
-            move(dx, dy);
+            move(0, 1);
         }
     }
 
-//    private Cell  getNextCell(){
-//        int dx, dy;
-//        if (direction == Direction.EAST){
-//            dx = 0;
-//            dy = -1;
-//        } else if (direction == Direction.WEST){
-//            dx = 0;
-//            dy = 1;
-//        } else if (direction == Direction.NORTH){
-//            dx = -1;
-//            dy = 0;
-//        } else {
-//            dx = 1;
-//            dy = 0;
-//        }
-//        return cell.getNeighbor(dx, dy);
-//    }
+    private Cell  getNextCell(){
+        int dx = 0;
+        int dy = 0;
+        switch (direction){
+        case EAST:
+            dx = -1;
+            break;
+        case WEST:
+            dx = 1;
+            break;
+        case NORTH:
+            dy = -1;
+            break;
+        case SOUTH:
+            dy = 1;
+            break;
+        }
+        return cell.getNeighbor(dx, dy);
+    }
 
 
     private void combat(Cell nextCell){
@@ -73,7 +75,7 @@ public abstract class Actor implements Drawable {
 
 
     public void move(int dx, int dy){
-        Cell nextCell = cell.getNeighbor(dx, dy);
+        Cell nextCell = getNextCell();
         if (nextCell.getType() != CellType.WALL && nextCell.getActor() == null) {
             cell.setActor(null);
             nextCell.setActor(this);
