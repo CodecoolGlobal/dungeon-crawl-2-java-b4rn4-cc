@@ -27,6 +27,7 @@ public class Main extends Application {
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
     Button pickUpButton = new Button("Pick Up");
+    Label inventory = new Label();
 
     public static void main(String[] args) {
         launch(args);
@@ -41,7 +42,10 @@ public class Main extends Application {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
 
-        ui.add(pickUpButton, 1, 3);
+        ui.add(new Label("Inventory: "), 0, 3);
+        ui.add(inventory, 1, 3);
+
+        ui.add(pickUpButton, 1, 10);
         pickUpButton.setVisible(false);
         pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
 
@@ -65,6 +69,7 @@ public class Main extends Application {
                 map.getPlayer().move(0, -1);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
+                    canvas.requestFocus();
                 }
                 refresh();
                 break;
@@ -72,6 +77,7 @@ public class Main extends Application {
                 map.getPlayer().move(0, 1);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
+                    canvas.requestFocus();
                 }
                 refresh();
                 break;
@@ -79,6 +85,7 @@ public class Main extends Application {
                 map.getPlayer().move(-1, 0);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
+                    canvas.requestFocus();
                 }
                 refresh();
                 break;
@@ -86,13 +93,22 @@ public class Main extends Application {
                 map.getPlayer().move(1, 0);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
+                    canvas.requestFocus();
                 }
                 refresh();
                 break;
+            case SPACE:
+                if (map.getPlayer().getCell().getItem() != null){
+                    map.getPlayer().pickUp();
+                    canvas.requestFocus();
+                    pickUpButton.setVisible(false);
+                    refresh();
+                    break;
+                }
         }
     }
 
-    private void pickUp(){
+    private void pickUp() {
         map.getPlayer().pickUp();
         canvas.requestFocus();
         pickUpButton.setVisible(false);
@@ -113,8 +129,7 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().
-
-                getHealth());
+        healthLabel.setText("" + map.getPlayer().getHealth());
+        inventory.setText("" + map.getPlayer().toString());
     }
 }

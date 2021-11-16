@@ -21,6 +21,16 @@ public class Player extends Actor {
         getCell().setItem(null);
     }
 
+    @Override
+    public String toString() {
+        String result = "";
+        for (Item key: inventory.keySet()){
+            result += key.getTileName();
+            result += ": 1,\n";
+        }
+        return result;
+    }
+
     public String getTileName() {
         return "player";
     }
