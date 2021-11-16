@@ -4,8 +4,6 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -128,23 +126,24 @@ public class Main extends Application {
             pickUpButton.setVisible(true);
             canvas.requestFocus();
         }
-        aisMove();
+        MonstersMove();
         refresh();
     }
 
-    private void aisMove(){
-        for (int row = 0; row < map.getWidth(); row++){
-            for (int col = 0; col < map.getHeight(); col++){
-                Cell cell = map.getCell(row, col);
-                if (cell.getActor() != null){
-                    if (cell.getActor().getHealth() <= 0){
-                        cell.setActor(null);
-                    } else if (!(cell.getActor() instanceof Player)){
-                        cell.getActor().setDirection();
-                        cell.getActor().act();
-                    }
-                }
+    private void MonstersMove(){
+        for (int index = 0; index < map.getMonsterCells().size(); index++){
+            Cell cell = map.getMonsterCells().get(index);
+            if (isMonsterDead(cell)){
+                cell.setActor(null);
+                map.removeMonsterCells(cell);
+                continue;
             }
+            cell.getActor().setDirection(map.getPlayer());
+            cell.getActor().act(map, index);
         }
+    }
+
+    private boolean isMonsterDead(Cell cell){
+        return cell.getActor().getHealth() <= 0;
     }
 }
