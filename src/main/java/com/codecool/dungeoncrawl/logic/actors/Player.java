@@ -7,9 +7,7 @@ import com.codecool.dungeoncrawl.logic.items.*;
 import java.util.Objects;
 
 public class Player extends Actor {
-    private int damage = 10;
-
-    private Inventory inventory = new Inventory();
+    private final Inventory inventory = new Inventory();
 
     public Player(Cell cell) {
         super(cell);
@@ -32,10 +30,20 @@ public class Player extends Actor {
         getCell().setItem(null);
     }
 
-
     @Override
     public String toString() {
         String result = "";
+        if (inventory.getKeys() != null){
+            result += "key: 1\n";
+        }
+        if (inventory.getWeapons() != null){
+            result += "weapon: 1\n";
+        }
+        if (inventory.getShields() != null){
+            result += "shield: 1\n";
+        }
+        result += "potions: ";
+        result += inventory.getPotions().size();
         return result;
     }
 
