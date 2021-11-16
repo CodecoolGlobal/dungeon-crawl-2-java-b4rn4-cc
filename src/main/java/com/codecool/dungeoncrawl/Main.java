@@ -66,6 +66,7 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
+            case W:
                 map.getPlayer().move(0, -1);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
@@ -74,6 +75,7 @@ public class Main extends Application {
                 refresh();
                 break;
             case DOWN:
+            case S:
                 map.getPlayer().move(0, 1);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
@@ -82,6 +84,7 @@ public class Main extends Application {
                 refresh();
                 break;
             case LEFT:
+            case A:
                 map.getPlayer().move(-1, 0);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
@@ -90,6 +93,7 @@ public class Main extends Application {
                 refresh();
                 break;
             case RIGHT:
+            case D:
                 map.getPlayer().move(1, 0);
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
