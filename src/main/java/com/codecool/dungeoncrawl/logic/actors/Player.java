@@ -1,19 +1,28 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.logic.inventory.Inventory;
+import com.codecool.dungeoncrawl.logic.items.*;
 
-import java.util.HashMap;
+import java.util.Objects;
 
 public class Player extends Actor {
-    private HashMap<Item, Integer> inventory = new HashMap<>();
+    private final Inventory inventory = new Inventory();
 
     public Player(Cell cell) {
         super(cell);
     }
 
     public void setInventory(Item item){
-        inventory.put(item, 1);
+        if (Objects.equals(item.getTileName(), "key")){
+            inventory.setKeys((Key) item);
+        }else if (item.getTileName() == "weapon"){
+            inventory.setWeapons((Weapon) item);
+        }else if(item.getTileName() == "shield"){
+            inventory.setShields((Shield) item);
+        }else if(item.getTileName() == "potion"){
+            inventory.setPotions((Potion) item);
+        }
     }
 
     public void pickUp() {
@@ -24,10 +33,17 @@ public class Player extends Actor {
     @Override
     public String toString() {
         String result = "";
-        for (Item key: inventory.keySet()){
-            result += key.getTileName();
-            result += ": 1,\n";
+        if (inventory.getKeys() != null){
+            result += "key: 1\n";
         }
+        if (inventory.getWeapons() != null){
+            result += "weapon: 1\n";
+        }
+        if (inventory.getShields() != null){
+            result += "shield: 1\n";
+        }
+        result += "potions: ";
+        result += inventory.getPotions().size();
         return result;
     }
 
