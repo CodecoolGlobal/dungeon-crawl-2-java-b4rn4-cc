@@ -100,7 +100,7 @@ public class Main extends Application {
                 break;
             case SPACE:
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()){
-                    map.getPlayer().pickUp();
+                    pickUp();
                     canvas.requestFocus();
                     pickUpButton.setVisible(false);
                     refresh();
