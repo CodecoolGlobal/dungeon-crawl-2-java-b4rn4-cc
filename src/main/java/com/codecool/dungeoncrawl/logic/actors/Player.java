@@ -3,17 +3,17 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Player extends Actor {
-    private ArrayList<Item> inventory = new ArrayList<>();
+    private HashMap<Item, Integer> inventory = new HashMap<>();
 
     public Player(Cell cell) {
         super(cell);
     }
 
     public void setInventory(Item item){
-        inventory.add(item);
+        inventory.put(item, 1);
     }
 
     public void pickUp(){
