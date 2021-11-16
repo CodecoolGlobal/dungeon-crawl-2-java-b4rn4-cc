@@ -8,12 +8,13 @@ public class Boss extends Actor{
     }
 
 
-    public void setDirection(){
-
-    }
-
     @Override
     public String getTileName() {
         return "boss";
+    }
+
+    @Override
+    public void setDirection(Player player) {
+
     }
 }

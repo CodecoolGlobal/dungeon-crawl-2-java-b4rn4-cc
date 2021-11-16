@@ -7,10 +7,13 @@ public class FastSkeleton extends Actor{
         super(cell, 5, 5, 7);
     }
 
-    public void setDirection(){}
-
     @Override
     public String getTileName() {
         return "fastSkeleton";
+    }
+
+    @Override
+    public void setDirection(Player player) {
+
     }
 }
