@@ -6,13 +6,15 @@ import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Potion;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
+import com.codecool.dungeoncrawl.logic.items.Door;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
 public class MapLoader {
-    public static GameMap loadMap() {
-        InputStream is = MapLoader.class.getResourceAsStream("/map.txt");
+    private static int currentLevel = 1;
+    public static GameMap loadMap(String currentRoute) {
+        InputStream is = MapLoader.class.getResourceAsStream(currentRoute);
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
         int height = scanner.nextInt();
@@ -59,6 +61,14 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             new Potion(cell);
                             break;
+                        case 'c':
+                            cell.setType(CellType.WALL);
+                            new Door(cell, getNextMap());
+                            break;
+                        case 'o':
+                            cell.setType(CellType.FLOOR);
+                            new Door(cell, getPrevMap());
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
@@ -67,5 +77,35 @@ public class MapLoader {
         }
         return map;
     }
+    private static String getPrevMap() {
+        String prevRoute;
+        switch (currentLevel) {
+            default:
+                prevRoute = null;
+                break;
+            case 2:
+                prevRoute = "/map.txt";
+                break;
+            case 3:
+                prevRoute = "/map2.txt";
+                break;
+        }
+        return prevRoute;
+    }
 
+    public static String getNextMap() {
+        String nextRoute;
+        switch (currentLevel) {
+            default:
+                nextRoute = "/map2.txt";
+                break;
+            case 2:
+                nextRoute = "map3.txt";
+                break;
+            case 3:
+                nextRoute = null;
+                break;
+        }
+        return nextRoute;
+    }
 }

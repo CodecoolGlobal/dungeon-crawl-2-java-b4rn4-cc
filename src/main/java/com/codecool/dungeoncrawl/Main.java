@@ -16,7 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    String route = "/map.txt";
+    GameMap map = MapLoader.loadMap(route);
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -68,6 +69,10 @@ public class Main extends Application {
                 map.getPlayer().move(1, 0);
                 refresh();
                 break;
+        }
+        if (map.getPlayer().getRoute() != null) {
+            route = map.getPlayer().getRoute();
+            map = MapLoader.loadMap(route);
         }
     }
 
