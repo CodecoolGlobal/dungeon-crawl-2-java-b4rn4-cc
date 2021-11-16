@@ -7,15 +7,22 @@ import com.codecool.dungeoncrawl.logic.Direction;
 public class Skeleton extends Actor {
     private Direction vertical;
     private Direction horizontal;
+    private int aggroRange = 5;
     public Skeleton(Cell cell) {
         super(cell, 10, 1, 2);
     }
 
 
     public void setDirection(Player player){
-        setVectors(player);
         int xDiff = Math.abs(getX() - player.getX());
         int yDiff = Math.abs(getY() - player.getY());
+
+        if (xDiff > aggroRange || yDiff > aggroRange){
+            direction = Direction.NONE;
+            return;
+        }
+
+        setVectors(player);
 
         if (xDiff == yDiff){
             int n = r.nextInt(2);

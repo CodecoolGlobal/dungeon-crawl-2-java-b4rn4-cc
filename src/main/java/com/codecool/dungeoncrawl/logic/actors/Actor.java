@@ -25,6 +25,7 @@ public abstract class Actor implements Drawable {
 
     public void act(GameMap map, int index) {
         Cell nextCell = getNextCell();
+        if (nextCell == null){ return; }
         if (collisionWithEnemy(nextCell)){
             combat(nextCell);
         } else {
@@ -33,27 +34,6 @@ public abstract class Actor implements Drawable {
             }
         }
     }
-
-    protected Cell  getNextCell(){
-        int dx = 0;
-        int dy = 0;
-        switch (direction){
-        case EAST:
-            dx = -1;
-            break;
-        case WEST:
-            dx = 1;
-            break;
-        case NORTH:
-            dy = -1;
-            break;
-        case SOUTH:
-            dy = 1;
-            break;
-        }
-        return cell.getNeighbor(dx, dy);
-    }
-
 
     protected void combat(Cell nextCell){
         int damage = getDamage();
@@ -83,6 +63,29 @@ public abstract class Actor implements Drawable {
             return true;
         }
         return false;
+    }
+
+
+    protected Cell  getNextCell(){
+        int dx = 0;
+        int dy = 0;
+        switch (direction){
+            case EAST:
+                dx = -1;
+                break;
+            case WEST:
+                dx = 1;
+                break;
+            case NORTH:
+                dy = -1;
+                break;
+            case SOUTH:
+                dy = 1;
+                break;
+            case NONE:
+                return null;
+        }
+        return cell.getNeighbor(dx, dy);
     }
 
 
