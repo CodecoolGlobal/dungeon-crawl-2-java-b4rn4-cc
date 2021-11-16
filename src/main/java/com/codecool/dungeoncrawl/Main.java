@@ -1,8 +1,10 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.items.Door;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -20,7 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    String route = "/map.txt";
+    String route = "/map2.txt";
     GameMap map = MapLoader.loadMap(route);
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
@@ -68,7 +70,7 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
-                if (map.getPlayer().getCell().getItem() != null) {
+                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
@@ -76,7 +78,7 @@ public class Main extends Application {
                 break;
             case DOWN:
                 map.getPlayer().move(0, 1);
-                if (map.getPlayer().getCell().getItem() != null) {
+                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
@@ -84,7 +86,7 @@ public class Main extends Application {
                 break;
             case LEFT:
                 map.getPlayer().move(-1, 0);
-                if (map.getPlayer().getCell().getItem() != null) {
+                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
@@ -92,14 +94,14 @@ public class Main extends Application {
                 break;
             case RIGHT:
                 map.getPlayer().move(1, 0);
-                if (map.getPlayer().getCell().getItem() != null) {
+                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
                 refresh();
                 break;
             case SPACE:
-                if (map.getPlayer().getCell().getItem() != null){
+                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()){
                     map.getPlayer().pickUp();
                     canvas.requestFocus();
                     pickUpButton.setVisible(false);
@@ -117,6 +119,10 @@ public class Main extends Application {
         map.getPlayer().pickUp();
         canvas.requestFocus();
         pickUpButton.setVisible(false);
+        if (map.getPlayer().hasKey()) {
+            map.getNextDoor().getCell().setType(CellType.FLOOR);
+            map.getNextDoor().getCell().setItem(new Door(map.getNextDoor().getCell(), MapLoader.getNextMap()));
+        }
     }
 
     private void refresh() {

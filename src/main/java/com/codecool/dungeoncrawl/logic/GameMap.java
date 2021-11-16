@@ -1,11 +1,14 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Door;
 
 public class GameMap {
     private int width;
     private int height;
     private Cell[][] cells;
+    private Door nextDoor;
+    private Door prevDoor;
 
     private Player player;
 
@@ -38,5 +41,21 @@ public class GameMap {
 
     public int getHeight() {
         return height;
+    }
+
+    public void setNextDoor(Door nextDoor) {
+        this.nextDoor = nextDoor;
+    }
+
+    public void setPrevDoor(Door prevDoor) {
+        this.prevDoor = prevDoor;
+    }
+
+    public Door getNextDoor() {
+        return nextDoor;
+    }
+
+    public Door getPrevDoor() {
+        return prevDoor;
     }
 }

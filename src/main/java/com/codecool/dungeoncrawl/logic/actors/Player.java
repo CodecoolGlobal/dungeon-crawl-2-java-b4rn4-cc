@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.logic.items.Key;
 
 import java.util.HashMap;
 
@@ -42,5 +43,9 @@ public class Player extends Actor {
 
     public String getTileName() {
         return "player";
+    }
+
+    public boolean hasKey() {
+        return inventory.containsKey("key");
     }
 }

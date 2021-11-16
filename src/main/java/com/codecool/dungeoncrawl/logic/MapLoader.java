@@ -63,11 +63,11 @@ public class MapLoader {
                             break;
                         case 'c':
                             cell.setType(CellType.WALL);
-                            new Door(cell, getNextMap());
+                            map.setNextDoor(new Door(cell, getNextMap()));
                             break;
                         case 'o':
                             cell.setType(CellType.FLOOR);
-                            new Door(cell, getPrevMap());
+                            map.setPrevDoor(new Door(cell, getPrevMap()));
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
@@ -77,7 +77,7 @@ public class MapLoader {
         }
         return map;
     }
-    private static String getPrevMap() {
+    public static String getPrevMap() {
         String prevRoute;
         switch (currentLevel) {
             default:
