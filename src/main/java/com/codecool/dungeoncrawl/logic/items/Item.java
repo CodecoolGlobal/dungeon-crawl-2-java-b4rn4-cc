@@ -5,10 +5,12 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 
 public abstract class Item implements Drawable {
     private Cell cell;
+    protected boolean packable;
 
-    public Item(Cell cell){
+    public Item(Cell cell, boolean packable){
         this.cell = cell;
         this.cell.setItem(this);
+        this.packable = packable;
     }
 
     public Cell getCell() {
@@ -21,5 +23,9 @@ public abstract class Item implements Drawable {
 
     public int getY() {
         return cell.getY();
+    }
+
+    public boolean isPackable() {
+        return packable;
     }
 }

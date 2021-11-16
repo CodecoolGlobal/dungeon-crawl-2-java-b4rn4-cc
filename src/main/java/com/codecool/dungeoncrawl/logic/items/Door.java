@@ -8,7 +8,7 @@ public class Door extends Item{
     private final String mapTo;
 
     public Door(Cell cell, String mapTo) {
-        super(cell);
+        super(cell, false);
         this.opened = cell.getType() == CellType.FLOOR;
         this.mapTo = mapTo;
     }
