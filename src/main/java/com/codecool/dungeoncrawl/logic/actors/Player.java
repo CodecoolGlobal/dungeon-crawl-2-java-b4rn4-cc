@@ -10,7 +10,7 @@ public class Player extends Actor {
     private HashMap<Item, Integer> inventory = new HashMap<>();
 
     public Player(Cell cell) {
-        super(cell, 3, 7);
+        super(cell, 10, 3, 7);
     }
 
 

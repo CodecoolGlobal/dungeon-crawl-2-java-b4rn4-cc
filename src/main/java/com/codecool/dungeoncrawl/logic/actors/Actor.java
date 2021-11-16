@@ -14,9 +14,10 @@ public abstract class Actor implements Drawable {
     protected final int MIN_DAMAGE;
 
 
-    public Actor(Cell cell, int minDmg, int maxDmg) {
+    public Actor(Cell cell, int health, int minDmg, int maxDmg) {
         this.cell = cell;
         this.cell.setActor(this);
+        this.health = health;
         this.MAX_DAMAGE = maxDmg;
         this.MIN_DAMAGE = minDmg;
     }
