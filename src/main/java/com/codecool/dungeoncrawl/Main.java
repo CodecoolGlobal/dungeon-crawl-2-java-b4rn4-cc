@@ -1,10 +1,12 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,7 +17,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -66,7 +67,9 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
-                map.getPlayer().move(0, -1);
+            case W:
+              map.getPlayer().setDirection(Direction.NORTH);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -74,7 +77,9 @@ public class Main extends Application {
                 refresh();
                 break;
             case DOWN:
-                map.getPlayer().move(0, 1);
+            case S:
+                map.getPlayer().setDirection(Direction.SOUTH);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -82,7 +87,9 @@ public class Main extends Application {
                 refresh();
                 break;
             case LEFT:
-                map.getPlayer().move(-1, 0);
+            case A:
+                map.getPlayer().setDirection(Direction.EAST);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -90,14 +97,16 @@ public class Main extends Application {
                 refresh();
                 break;
             case RIGHT:
-                map.getPlayer().move(1, 0);
+            case D:
+                map.getPlayer().setDirection(Direction.WEST);
+                map.getPlayer().act();
                 if (map.getPlayer().getCell().getItem() != null) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
                 refresh();
                 break;
-            case SPACE:
+            case E:
                 if (map.getPlayer().getCell().getItem() != null){
                     map.getPlayer().pickUp();
                     canvas.requestFocus();
@@ -115,6 +124,7 @@ public class Main extends Application {
     }
 
     private void refresh() {
+        proceedTurn();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
@@ -131,5 +141,21 @@ public class Main extends Application {
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
+    }
+
+    private void proceedTurn(){
+        for (int row = 0; row < 25; row++){
+            for (int col = 0; col < 20; col++){
+                Cell cell = map.getCell(row, col);
+                if (cell.getActor() != null){
+                    if (cell.getActor().getHealth() <= 0){
+                        cell.setActor(null);
+                    } else if (!(cell.getActor() instanceof Player)){
+                        cell.getActor().setDirection();
+                        cell.getActor().act();
+                    }
+                }
+            }
+        }
     }
 }
