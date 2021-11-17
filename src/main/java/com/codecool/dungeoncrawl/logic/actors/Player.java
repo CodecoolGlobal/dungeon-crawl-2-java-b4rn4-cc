@@ -12,6 +12,7 @@ import java.util.Objects;
 public class Player extends Actor {
     private final Inventory inventory = new Inventory();
     private int bonusDamage;
+    private boolean invalidMove = false;
 
     public Player(Cell cell) {
         super(cell, 10, 3, 7);
@@ -65,12 +66,22 @@ public class Player extends Actor {
 
     public void act(GameMap map, int index) { }
 
+    public boolean isInvalidMove() {
+        if (invalidMove){
+            invalidMove = false;
+            return true;
+        }
+        return false;
+    }
+
     public void act() {
         Cell nextCell = getNextCell();
         if (collisionWithEnemy(nextCell)){
             combat(nextCell);
+        } else if (canMove(nextCell)){
+            move(nextCell);
         } else {
-            move();
+            invalidMove = true;
         }
     }
 

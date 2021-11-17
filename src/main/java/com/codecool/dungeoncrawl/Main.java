@@ -85,13 +85,13 @@ public class Main extends Application {
                 playRound();
                 break;
             case E:
-                if (map.getPlayer().getCell().getItem() != null){
-                    map.getPlayer().pickUp();
-                    canvas.requestFocus();
-                    pickUpButton.setVisible(false);
-                    refresh();
-                    break;
+                if (itemUnderPlayer()){
+                    pickUp();
                 }
+                break;
+            case R:
+                MonstersMove();
+                break;
         }
     }
 
@@ -122,13 +122,22 @@ public class Main extends Application {
 
     private void playRound(){
         map.getPlayer().act();
-        if (map.getPlayer().getCell().getItem() != null) {
+        if (map.getPlayer().isInvalidMove()){
+            return;
+        }
+
+        if (itemUnderPlayer()) {
             pickUpButton.setVisible(true);
             canvas.requestFocus();
+        } else {
+            pickUpButton.setVisible(false);
         }
+
         MonstersMove();
-        handleGameOver();
-        refresh();
+    }
+
+    private boolean itemUnderPlayer(){
+        return map.getPlayer().getCell().getItem() != null;
     }
 
     private void handleGameOver(){
@@ -145,9 +154,10 @@ public class Main extends Application {
                 map.removeMonsterCells(cell);
                 continue;
             }
-            cell.getActor().setDirection(map.getPlayer());
             cell.getActor().act(map, index);
         }
+        handleGameOver();
+        refresh();
     }
 
     private boolean isMonsterDead(Cell cell){

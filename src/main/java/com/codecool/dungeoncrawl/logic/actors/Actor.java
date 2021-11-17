@@ -44,15 +44,14 @@ public abstract class Actor implements Drawable {
     }
 
 
-    protected boolean move(){
-        Cell nextCell = getNextCell();
-        if (nextCell.getType() != CellType.WALL && nextCell.getActor() == null) {
-            cell.setActor(null);
-            nextCell.setActor(this);
-            cell = nextCell;
-            return true;
-        }
-        return false;
+    protected void move(Cell nextCell){
+        cell.setActor(null);
+        nextCell.setActor(this);
+        cell = nextCell;
+    }
+
+    protected boolean canMove(Cell nextCell){
+        return nextCell.getType() != CellType.WALL && nextCell.getActor() == null;
     }
 
 
