@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.inventory.Inventory;
 import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.Direction;
@@ -10,10 +11,24 @@ import java.util.Objects;
 
 public class Player extends Actor {
     private final Inventory inventory = new Inventory();
-    private int bonusDamage;
+    private boolean invalidMove = false;
+    private int freeze = 0;
+    private String combatLog = "\n";
+
+    public String getCombatLog() {
+        return combatLog;
+    }
+
+    public int getFreeze() {
+        return freeze;
+    }
+
+    public void setFreeze(int count) {
+        this.freeze += count;
+    }
 
     public Player(Cell cell) {
-        super(cell, 10, 3, 7);
+        super(cell, 10, 3, 7, 10);
     }
 
 
@@ -24,19 +39,35 @@ public class Player extends Actor {
     public void setDirection(Player player){}
 
     public void setInventory(Item item){
-        if (Objects.equals(item.getTileName(), "key")){
+        if (item.getTileName().equals("key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName() == "weapon"){
+        }else if (item.getTileName().equals("weapon")){
             inventory.setWeapons((Weapon) item);
-        }else if(item.getTileName() == "shield"){
+        }else if(item.getTileName().equals("shield")){
             inventory.setShields((Shield) item);
-        }else if(item.getTileName() == "potion"){
+        }else if(item.getTileName().equals("potion")){
             inventory.setPotions((Potion) item);
         }
     }
 
+    public boolean consumeItem(String item){
+        if (item.equals("freeze")){
+            if (inventory.getConsumable("freeze") > 0){
+                inventory.setConsumable("freeze");
+                return true;
+            }
+        } else if (item.equals("potion")){
+            if (inventory.getConsumable("potion") > 0){
+                inventory.setConsumable("potion");
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void pickUp() {
         setInventory(getCell().getItem());
+        addToCombatLog(String.format("Player picked up a %s", getCell().getItem().getTileName()));
         getCell().setItem(null);
     }
 
@@ -52,9 +83,22 @@ public class Player extends Actor {
         if (inventory.getShields() != null){
             result += "shield: 1\n";
         }
-        result += "potions: ";
-        result += inventory.getPotions().size();
+        result += String.format("potions: %s\n", inventory.getConsumable("potion"));
+        result += String.format("freeze: %s\n", inventory.getConsumable("freeze"));
+//        result += inventory.getPotions().size();
         return result;
+    }
+
+    public void addToCombatLog(Actor p1, Actor p2, int damage, boolean isCrit){
+        if (isCrit){
+            combatLog += String.format("%s strikes %s Crit %s dmg\n",p1.getTileName().charAt(0), p2.getTileName().charAt(0), damage);
+        } else {
+            combatLog += String.format("%s strikes %s for %s dmg\n",p1.getTileName().charAt(0), p2.getTileName().charAt(0), damage);
+        }
+    }
+
+    public void addToCombatLog(String msg){
+        combatLog += msg + "\n";
     }
 
     public String getTileName() {
@@ -62,25 +106,55 @@ public class Player extends Actor {
     }
 
 
+    public void act(GameMap map, int index) { }
+
+    public boolean isInvalidMove() {
+        if (invalidMove){
+            invalidMove = false;
+            return true;
+        }
+        return false;
+    }
+
     public void act() {
         Cell nextCell = getNextCell();
         if (collisionWithEnemy(nextCell)){
-            combat(nextCell);
+            combat(nextCell, this);
+        } else if (canMove(nextCell)){
+            move(nextCell);
         } else {
-            move();
+            invalidMove = true;
         }
     }
 
     @Override
     public int getDamage(){
-        setBonusDamage();
+        int bonusDamage = getBonusDamage();
         return r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE + bonusDamage;
     }
 
-    public void setBonusDamage() {
+    private int getBonusDamage() {
         if (inventory.getWeapons() != null){
-            bonusDamage = inventory.getWeapons().getDamage();
+            return inventory.getWeapons().getDamage();
         }
+        return 0;
     }
+
+    @Override
+    protected int getBonusCrit(){
+        if (inventory.getWeapons() != null){
+            return inventory.getWeapons().getCrit();
+        }
+        return 0;
+    }
+
+    public int getShieldDefense(){
+        if (inventory.getShields() != null){
+            return inventory.getShields().getFlatDefense();
+        }
+        return 0;
+    }
+
+
 
 }

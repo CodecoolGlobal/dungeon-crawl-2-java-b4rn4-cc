@@ -11,33 +11,63 @@ public abstract class Actor implements Drawable {
     private int health = 10;
     protected final int MAX_DAMAGE;
     protected final int MIN_DAMAGE;
+    protected final int critChance;
 
 
-    public Actor(Cell cell, int health, int minDmg, int maxDmg) {
+    public Actor(Cell cell, int health, int minDmg, int maxDmg, int critChance) {
         this.cell = cell;
         this.cell.setActor(this);
         this.health = health;
         this.MAX_DAMAGE = maxDmg;
         this.MIN_DAMAGE = minDmg;
+        this.critChance = critChance;
     }
+
+    public abstract void act(GameMap map, int index);
 
     public abstract void setDirection(Player player);
 
-    public void act(GameMap map, int index) {
-        Cell nextCell = getNextCell();
-        if (nextCell == null){ return; }
-        if (collisionWithEnemy(nextCell)){
-            combat(nextCell);
-        } else {
-            if (move()){
-                map.updateMonsterCells(index, nextCell);
-            }
+    protected void combat(Cell nextCell, Player player){
+        int damage = getDamage();
+        int critChance = this.critChance + getBonusCrit();
+        boolean isCrit = false;
+        if (isCriticalStrike(critChance)){
+            damage *= 2;
+            isCrit = true;
         }
+        if (isEnemyImmortal(nextCell)){
+            addToCombatLog(player, this, nextCell.getActor(), 0, false);
+            return;
+        }
+        nextCell.getActor().getHit(player,this, nextCell.getActor(), damage, isCrit);
+
     }
 
-    protected void combat(Cell nextCell){
-        int damage = getDamage();
-        nextCell.getActor().getHit(damage);
+
+    public void getHit(Player player, Actor hitting, Actor gettingHit, int damage, boolean isCrit){
+        if (this instanceof Player){
+            int def = ((Player) this).getShieldDefense();
+            if (damage - def > 0){
+                damage -= def;
+                health -= damage;
+            } else {
+                damage = 0;
+            }
+        } else {
+            health -= damage;
+        }
+        addToCombatLog(player, hitting, gettingHit, damage, isCrit);
+    }
+
+    private void addToCombatLog(Player player, Actor hitting, Actor gettingHit, int damage, boolean isCrit){
+        player.addToCombatLog(hitting, gettingHit, damage, isCrit);
+    }
+
+    private boolean isEnemyImmortal(Cell nextCell){
+        if (nextCell.getActor() instanceof ImmortalSkeleton){
+            return ((ImmortalSkeleton) nextCell.getActor()).isImmortal();
+        }
+        return false;
     }
 
 
@@ -45,24 +75,31 @@ public abstract class Actor implements Drawable {
         return r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
     }
 
+    protected int getBonusCrit(){
+        return 0;
+    }
+
+    protected  boolean isCriticalStrike(int critChance){
+        return r.nextInt(100) + 1 <= critChance;
+    }
+
 
     protected boolean collisionWithEnemy(Cell nextCell){
         if (nextCell.getActor() != null){
-            return (this instanceof Skeleton && nextCell.getActor() instanceof Player) || this instanceof Player;
+            return (this instanceof Monster && nextCell.getActor() instanceof Player) || this instanceof Player;
         }
         return false;
     }
 
 
-    protected boolean move(){
-        Cell nextCell = getNextCell();
-        if (nextCell.getType() != CellType.WALL && nextCell.getActor() == null) {
-            cell.setActor(null);
-            nextCell.setActor(this);
-            cell = nextCell;
-            return true;
-        }
-        return false;
+    protected void move(Cell nextCell){
+        cell.setActor(null);
+        nextCell.setActor(this);
+        cell = nextCell;
+    }
+
+    protected boolean canMove(Cell nextCell){
+        return nextCell.getType() != CellType.WALL && nextCell.getActor() == null;
     }
 
 
@@ -93,8 +130,8 @@ public abstract class Actor implements Drawable {
         return health;
     }
 
-    public void getHit(int damage){
-        health -= damage;
+    public void addHealth(int health){
+        this.health += health;
     }
 
     public Cell getCell() {

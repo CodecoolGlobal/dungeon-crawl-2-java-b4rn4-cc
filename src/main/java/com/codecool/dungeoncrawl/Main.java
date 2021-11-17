@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.FastSkeleton;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -25,8 +26,9 @@ public class Main extends Application {
             Math.min(map.getHeight(), 30) * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
-    Button pickUpButton = new Button("Pick Up");
     Label inventory = new Label();
+    Label combatLog = new Label();
+    Button pickUpButton = new Button("Pick Up");
 
     public static void main(String[] args) {
         launch(args);
@@ -41,12 +43,15 @@ public class Main extends Application {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
 
-        ui.add(new Label("Inventory: "), 0, 3);
-        ui.add(inventory, 1, 3);
+        ui.add(new Label("Inventory: "), 0, 4);
+        ui.add(inventory, 1, 6);
 
-        ui.add(pickUpButton, 1, 10);
+        ui.add(pickUpButton, 1, 12);
         pickUpButton.setVisible(false);
         pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
+
+        ui.add(new Label("CombatLog: "), 0, 14);
+        ui.add(combatLog, 1, 17);
 
         BorderPane borderPane = new BorderPane();
 
@@ -85,13 +90,27 @@ public class Main extends Application {
                 playRound();
                 break;
             case E:
-                if (map.getPlayer().getCell().getItem() != null){
-                    map.getPlayer().pickUp();
-                    canvas.requestFocus();
-                    pickUpButton.setVisible(false);
-                    refresh();
-                    break;
+                if (itemUnderPlayer()){
+                    pickUp();
                 }
+                break;
+            case R:
+                MonstersMove();
+                break;
+            case F:
+                if (map.getPlayer().consumeItem("freeze")){
+                    map.getPlayer().setFreeze(2);
+                    map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
+                    printStats();
+                }
+                break;
+            case Q:
+                if (map.getPlayer().consumeItem("potion")){
+                    map.getPlayer().addHealth(5);
+                    map.getPlayer().addToCombatLog("Player healed for 5 health points");
+                    printStats();
+                }
+                break;
         }
     }
 
@@ -99,6 +118,7 @@ public class Main extends Application {
         map.getPlayer().pickUp();
         canvas.requestFocus();
         pickUpButton.setVisible(false);
+        printStats();
     }
 
     private void refresh() {
@@ -125,19 +145,33 @@ public class Main extends Application {
                 }
             }
         }
+        printStats();
+    }
+
+    private void printStats(){
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
+        combatLog.setText("" + map.getPlayer().getCombatLog());
     }
 
     private void playRound(){
         map.getPlayer().act();
-        if (map.getPlayer().getCell().getItem() != null) {
+        if (map.getPlayer().isInvalidMove()){
+            return;
+        }
+
+        if (itemUnderPlayer()) {
             pickUpButton.setVisible(true);
             canvas.requestFocus();
+        } else {
+            pickUpButton.setVisible(false);
         }
+
         MonstersMove();
-        handleGameOver();
-        refresh();
+    }
+
+    private boolean itemUnderPlayer(){
+        return map.getPlayer().getCell().getItem() != null;
     }
 
     private void handleGameOver(){
@@ -147,6 +181,12 @@ public class Main extends Application {
     }
 
     private void MonstersMove(){
+        if (map.getPlayer().getFreeze() > 0){
+            map.getPlayer().setFreeze(-1);
+            handleGameOver();
+            refresh();
+            return;
+        }
         for (int index = 0; index < map.getMonsterCells().size(); index++){
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)){
@@ -154,9 +194,10 @@ public class Main extends Application {
                 map.removeMonsterCells(cell);
                 continue;
             }
-            cell.getActor().setDirection(map.getPlayer());
             cell.getActor().act(map, index);
         }
+        handleGameOver();
+        refresh();
     }
 
     private boolean isMonsterDead(Cell cell){

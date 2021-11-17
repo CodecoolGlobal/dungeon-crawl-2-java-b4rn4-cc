@@ -1,10 +1,11 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.GameMap;
 
-public class Boss extends Actor{
+public class Boss extends Monster{
     public Boss(Cell cell) {
-        super(cell, 200, 10, 20);
+        super(cell, 200, 10, 20, 10);
     }
 
 
@@ -17,4 +18,6 @@ public class Boss extends Actor{
     public void setDirection(Player player) {
 
     }
+
+    public void act(GameMap map, int index){}
 }

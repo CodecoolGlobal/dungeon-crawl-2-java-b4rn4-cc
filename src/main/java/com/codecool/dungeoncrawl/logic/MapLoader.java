@@ -43,14 +43,17 @@ public class MapLoader {
                         case 'f':
                             cell.setType(CellType.FLOOR);
                             new FastSkeleton(cell);
+                            map.addMonsterCell(cell);
                             break;
                         case 'i':
                             cell.setType(CellType.FLOOR);
                             new ImmortalSkeleton(cell);
+                            map.addMonsterCell(cell);
                             break;
                         case 'b':
                             cell.setType(CellType.FLOOR);
                             new Boss(cell);
+                            map.addMonsterCell(cell);
                             break;
                         case 'w':
                             cell.setType(CellType.FLOOR);

@@ -1,10 +1,11 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.GameMap;
 
-public class FastSkeleton extends Actor{
+public class FastSkeleton extends Monster{
     public FastSkeleton(Cell cell) {
-        super(cell, 5, 5, 7);
+        super(cell, 15, 2, 3, 8);
     }
 
     @Override
@@ -12,8 +13,9 @@ public class FastSkeleton extends Actor{
         return "fastSkeleton";
     }
 
-    @Override
-    public void setDirection(Player player) {
 
+    public void act(GameMap map, int index){
+        act2(map, index);
+        act2(map, index);
     }
 }
