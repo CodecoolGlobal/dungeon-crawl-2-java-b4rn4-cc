@@ -11,7 +11,7 @@ public abstract class Monster extends Actor{
     private Direction horizontal;
 
     public Monster(Cell cell, int health, int minDmg, int maxDmg, int aggroRange) {
-        super(cell, health, minDmg, maxDmg);
+        super(cell, health, minDmg, maxDmg, 5);
         this.aggroRange = aggroRange;
     }
 

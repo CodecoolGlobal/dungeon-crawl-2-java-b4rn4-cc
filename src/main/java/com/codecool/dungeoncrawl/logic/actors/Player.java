@@ -11,7 +11,6 @@ import java.util.Objects;
 
 public class Player extends Actor {
     private final Inventory inventory = new Inventory();
-    private int bonusDamage;
     private boolean invalidMove = false;
     private int freeze = 0;
 
@@ -24,7 +23,7 @@ public class Player extends Actor {
     }
 
     public Player(Cell cell) {
-        super(cell, 10, 3, 7);
+        super(cell, 10, 3, 7, 10);
     }
 
 
@@ -78,8 +77,9 @@ public class Player extends Actor {
         if (inventory.getShields() != null){
             result += "shield: 1\n";
         }
-        result += "potions: ";
-        result += inventory.getPotions().size();
+        result += String.format("potions: %s\n", inventory.getConsumable("potion"));
+        result += String.format("freeze: %s\n", inventory.getConsumable("freeze"));
+//        result += inventory.getPotions().size();
         return result;
     }
 
@@ -111,14 +111,24 @@ public class Player extends Actor {
 
     @Override
     public int getDamage(){
-        setBonusDamage();
-        return r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE + bonusDamage;
+        int bonusDamage = getBonusDamage();
+        int bonusCrit = getBonusCrit();
+        int damage = r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE + bonusDamage;
+        return getActualDamage(damage, critChance + bonusCrit);
     }
 
-    public void setBonusDamage() {
+    private int getBonusDamage() {
         if (inventory.getWeapons() != null){
-            bonusDamage = inventory.getWeapons().getDamage();
+            return inventory.getWeapons().getDamage();
         }
+        return 0;
+    }
+
+    private int getBonusCrit(){
+        if (inventory.getWeapons() != null){
+            return inventory.getWeapons().getCrit();
+        }
+        return 0;
     }
 
 }

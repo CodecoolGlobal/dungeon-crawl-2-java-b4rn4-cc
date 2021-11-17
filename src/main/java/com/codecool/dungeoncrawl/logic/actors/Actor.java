@@ -11,14 +11,16 @@ public abstract class Actor implements Drawable {
     private int health = 10;
     protected final int MAX_DAMAGE;
     protected final int MIN_DAMAGE;
+    protected final int critChance;
 
 
-    public Actor(Cell cell, int health, int minDmg, int maxDmg) {
+    public Actor(Cell cell, int health, int minDmg, int maxDmg, int critChance) {
         this.cell = cell;
         this.cell.setActor(this);
         this.health = health;
         this.MAX_DAMAGE = maxDmg;
         this.MIN_DAMAGE = minDmg;
+        this.critChance = critChance;
     }
 
     public abstract void act(GameMap map, int index);
@@ -42,7 +44,16 @@ public abstract class Actor implements Drawable {
 
 
     protected int getDamage(){
-         return r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
+        int damage = r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
+        return getActualDamage(damage, critChance);
+    }
+
+    protected  int getActualDamage(int damage, int critChance){
+        boolean crit = r.nextInt(100) + 1 <= critChance;
+        if (crit){
+            return damage * 2;
+        }
+        return damage;
     }
 
 
@@ -90,6 +101,10 @@ public abstract class Actor implements Drawable {
 
     public int getHealth() {
         return health;
+    }
+
+    public void addHealth(int health){
+        this.health += health;
     }
 
     public void getHit(int damage){
