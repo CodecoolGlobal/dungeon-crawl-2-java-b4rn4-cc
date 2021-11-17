@@ -26,7 +26,11 @@ public class ImmortalSkeleton extends Monster{
 
 
     public void act(GameMap map, int index){
+        proceedCounter();
+        MonsterAct(map, index);
+    }
+
+    public void proceedCounter(){
         counter++;
-        act2(map, index);
     }
 }

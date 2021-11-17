@@ -17,36 +17,48 @@ public abstract class Monster extends Actor{
 
     public abstract void act(GameMap map, int index);
 
-    public void act2(GameMap map, int index) {
-        setDirection(map.getPlayer());
-        Cell nextCell = getNextCell();
-        if (!monsterWillMove(nextCell)){
-            return;
-        }
-        if (collisionWithEnemy(nextCell)){
-            combat(nextCell, map.getPlayer());
-        } else if (canMove(nextCell)){
-            move(nextCell);
-            map.updateMonsterCells(index, nextCell);
+    public void MonsterAct(GameMap map, int index) {
+        int tryMove = 2;
+        while (tryMove > 0){
+            setDirection(map.getPlayer());
+            Cell nextCell = getNextCell();
+            if (!willMonsterMove(nextCell)){
+                return;
+            }
+            if (collisionWithEnemy(nextCell)){
+                combat(nextCell, map.getPlayer());
+                return;
+            } else if (canMove(nextCell)){
+                move(nextCell);
+                map.updateMonsterCells(index, nextCell);
+                return;
+            }
+            tryMove--;
         }
     }
 
-    private boolean monsterWillMove(Cell nextCell){
+    private boolean willMonsterMove(Cell nextCell){
         return nextCell != null;
     }
 
 
     public void setDirection(Player player){
-        int xDiff = Math.abs(getX() - player.getX());
-        int yDiff = Math.abs(getY() - player.getY());
-
-        if (xDiff > aggroRange + 1 || yDiff > aggroRange + 1){
-            direction = Direction.NONE;
-            return;
+        if (!isPlayerInRange(player, getX(), getY())){
+            SetAlternativeDir();
+        } else {
+            setDirToWardPlayer(player, getX(), getY());
         }
 
-        setVectors(player);
+    }
 
+    protected void SetAlternativeDir(){
+        direction = Direction.NONE;
+    }
+
+    private void setDirToWardPlayer(Player player, int x, int y){
+        int xDiff = Math.abs(x - player.getX());
+        int yDiff = Math.abs(y - player.getY());
+        setVectorTowardPlayer(player);
         if (xDiff == yDiff){
             int n = r.nextInt(2);
             if (n == 0){
@@ -65,10 +77,15 @@ public abstract class Monster extends Actor{
                 direction = horizontal;
             }
         }
-
     }
 
-    private void setVectors(Player player){
+    protected boolean isPlayerInRange(Player player, int x, int y){
+        int xDiff = Math.abs(x - player.getX());
+        int yDiff = Math.abs(y - player.getY());
+        return xDiff <= aggroRange + 1 && yDiff <= aggroRange + 1;
+    }
+
+    private void setVectorTowardPlayer(Player player){
         if (player.getX() > getX()){
             horizontal = Direction.WEST;
         } else {

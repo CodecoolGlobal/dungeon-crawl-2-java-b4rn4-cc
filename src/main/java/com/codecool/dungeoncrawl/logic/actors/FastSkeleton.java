@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 
 public class FastSkeleton extends Monster{
@@ -15,7 +16,15 @@ public class FastSkeleton extends Monster{
 
 
     public void act(GameMap map, int index){
-        act2(map, index);
-        act2(map, index);
+        if (isPlayerInRange(map.getPlayer(), getX(), getY())){
+            MonsterAct(map, index);
+        }
+        MonsterAct(map, index);
+    }
+
+    @Override
+    protected void SetAlternativeDir() {
+        int index = r.nextInt(4);
+        direction = Direction.values()[index];
     }
 }

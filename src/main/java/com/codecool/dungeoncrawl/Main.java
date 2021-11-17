@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.FastSkeleton;
+import com.codecool.dungeoncrawl.logic.actors.ImmortalSkeleton;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -183,6 +184,7 @@ public class Main extends Application {
     private void MonstersMove(){
         if (map.getPlayer().getFreeze() > 0){
             map.getPlayer().setFreeze(-1);
+            proceedMonsterCounters();
             handleGameOver();
             refresh();
             return;
@@ -198,6 +200,15 @@ public class Main extends Application {
         }
         handleGameOver();
         refresh();
+    }
+
+
+    private void proceedMonsterCounters(){
+        for (Cell cell : map.getMonsterCells()){
+            if (cell.getActor() instanceof ImmortalSkeleton){
+                ((ImmortalSkeleton) cell.getActor()).proceedCounter();
+            }
+        }
     }
 
     private boolean isMonsterDead(Cell cell){
