@@ -145,29 +145,54 @@ public class Main extends Application {
             route = map.getPlayer().getRoute();
             Player player = map.getPlayer();
             if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
-                if (MapLoader.getCurrentLevel() == 1) {
+                if (MapLoader.getCurrentLevel() == 1 && player.getSecondLevel() != null) {
                     player.setFirstLevel(map);
-                } else if (MapLoader.getCurrentLevel() == 2) {
+                    map = player.getSecondLevel();
+                } else if (MapLoader.getCurrentLevel() == 2 && player.getThirdLevel() != null) {
                     player.setSecondLevel(map);
-                } else {
+                } else if (MapLoader.getCurrentLevel() == 3){
                     player.setThirdLevel(map);
+                } else {
+                    if (MapLoader.getCurrentLevel() == 1) {
+                        player.setFirstLevel(map);
+                    } else if (MapLoader.getCurrentLevel() == 2) {
+                        player.setSecondLevel(map);
+                    }
+                    MapLoader.increaseLevel();
+                    map = MapLoader.loadMap(route);
+//                setupPlayer(player);
+                    Player newPlayer = map.getPlayer();
+                /*player.setCell(newPlayer.getCell());
+                player.setX(newPlayer.getX());
+                player.setY(newPlayer.getY());
+                map.setPlayer(player);*/
+                    newPlayer.setInventory(player.getInventory());
+                    newPlayer.setFirstLevel(player.getFirstLevel());
+                    newPlayer.setSecondLevel(player.getSecondLevel());
+                    newPlayer.setThirdLevel(player.getThirdLevel());
+                    player.setRoute(null);
                 }
-                MapLoader.increaseLevel();
-                map = MapLoader.loadMap(route);
-                Player newPlayer = map.getPlayer();
-                newPlayer.setInventory(player.getInventory());
-                newPlayer.setFirstLevel(player.getFirstLevel());
-                newPlayer.setSecondLevel(player.getSecondLevel());
-                newPlayer.setThirdLevel(player.getThirdLevel());
-                player.setRoute(null);
             } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
                 if (MapLoader.getCurrentLevel() == 2) {
+                    player.setSecondLevel(map);
                     map = player.getFirstLevel();
+                    map.getPlayer().setSecondLevel(player.getSecondLevel());
                 } else if (MapLoader.getCurrentLevel() == 3) {
+                    player.setThirdLevel(map);
                     map = player.getSecondLevel();
+                    map.getPlayer().setThirdLevel(player.getThirdLevel());
                 }
+//                setupPlayer(player);
                 MapLoader.decreaseLevel();
             }
         }
+    }
+
+    private void setupPlayer(Player oldPlayer) {
+        Player newPlayer = map.getPlayer();
+        oldPlayer.setCell(newPlayer.getCell());
+        oldPlayer.setX(newPlayer.getX());
+        oldPlayer.setY(newPlayer.getY());
+        map.setPlayer(oldPlayer);
     }
 }
