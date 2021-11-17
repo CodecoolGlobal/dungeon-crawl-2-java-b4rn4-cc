@@ -116,4 +116,8 @@ public class MapLoader {
         }
         return nextRoute;
     }
+
+    public static int getCurrentLevel() {
+        return currentLevel;
+    }
 }
