@@ -7,8 +7,14 @@ public class Boss extends Actor{
         super(cell, 200, 10, 20);
     }
 
+
     @Override
     public String getTileName() {
         return "boss";
+    }
+
+    @Override
+    public void setDirection(Player player) {
+
     }
 }

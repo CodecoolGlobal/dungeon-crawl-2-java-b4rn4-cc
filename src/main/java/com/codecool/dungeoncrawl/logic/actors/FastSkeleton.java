@@ -11,4 +11,9 @@ public class FastSkeleton extends Actor{
     public String getTileName() {
         return "fastSkeleton";
     }
+
+    @Override
+    public void setDirection(Player player) {
+
+    }
 }

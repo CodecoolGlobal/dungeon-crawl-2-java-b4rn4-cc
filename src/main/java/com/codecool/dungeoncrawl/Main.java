@@ -1,10 +1,10 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import javafx.application.Application;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,7 +15,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -66,38 +65,26 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
-                map.getPlayer().move(0, -1);
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+            case W:
+                map.getPlayer().setDirection(Direction.NORTH);
+                playRound();
                 break;
             case DOWN:
-                map.getPlayer().move(0, 1);
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+            case S:
+                map.getPlayer().setDirection(Direction.SOUTH);
+                playRound();
                 break;
             case LEFT:
-                map.getPlayer().move(-1, 0);
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+            case A:
+                map.getPlayer().setDirection(Direction.EAST);
+                playRound();
                 break;
             case RIGHT:
-                map.getPlayer().move(1, 0);
-                if (map.getPlayer().getCell().getItem() != null) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                refresh();
+            case D:
+                map.getPlayer().setDirection(Direction.WEST);
+                playRound();
                 break;
-            case SPACE:
+            case E:
                 if (map.getPlayer().getCell().getItem() != null){
                     map.getPlayer().pickUp();
                     canvas.requestFocus();
@@ -131,5 +118,39 @@ public class Main extends Application {
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
+    }
+
+    private void playRound(){
+        map.getPlayer().act();
+        if (map.getPlayer().getCell().getItem() != null) {
+            pickUpButton.setVisible(true);
+            canvas.requestFocus();
+        }
+        MonstersMove();
+        handleGameOver();
+        refresh();
+    }
+
+    private void handleGameOver(){
+        if (map.getPlayer().getHealth() <= 0){
+            System.exit(1);
+        }
+    }
+
+    private void MonstersMove(){
+        for (int index = 0; index < map.getMonsterCells().size(); index++){
+            Cell cell = map.getMonsterCells().get(index);
+            if (isMonsterDead(cell)){
+                cell.setActor(null);
+                map.removeMonsterCells(cell);
+                continue;
+            }
+            cell.getActor().setDirection(map.getPlayer());
+            cell.getActor().act(map, index);
+        }
+    }
+
+    private boolean isMonsterDead(Cell cell){
+        return cell.getActor().getHealth() <= 0;
     }
 }

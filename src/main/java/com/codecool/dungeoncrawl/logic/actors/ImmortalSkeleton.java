@@ -11,4 +11,9 @@ public class ImmortalSkeleton extends Actor{
     public String getTileName() {
         return "immortalSkeleton";
     }
+
+    @Override
+    public void setDirection(Player player) {
+
+    }
 }
