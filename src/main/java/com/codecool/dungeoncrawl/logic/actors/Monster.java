@@ -9,15 +9,21 @@ public abstract class Monster extends Actor{
     }
 
     public void act(GameMap map, int index) {
+        setDirection(map.getPlayer());
         Cell nextCell = getNextCell();
-        if (nextCell == null){ return; }
+        if (!monsterWillMove(nextCell)){
+            return;
+        }
         if (collisionWithEnemy(nextCell)){
             combat(nextCell);
-        } else {
-            if (move()){
-                map.updateMonsterCells(index, nextCell);
-            }
+        } else if (canMove(nextCell)){
+            move(nextCell);
+            map.updateMonsterCells(index, nextCell);
         }
+    }
+
+    private boolean monsterWillMove(Cell nextCell){
+        return nextCell != null;
     }
 
 
