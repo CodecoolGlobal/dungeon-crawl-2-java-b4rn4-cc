@@ -1,13 +1,13 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.Direction;
+import com.codecool.dungeoncrawl.logic.GameMap;
 
 public class ImmortalSkeleton extends Monster{
     private int counter = 0;
 
     public ImmortalSkeleton(Cell cell) {
-        super(cell, 5, 7, 8);
+        super(cell, 5, 7, 8, 2);
     }
 
     @Override
@@ -24,9 +24,9 @@ public class ImmortalSkeleton extends Monster{
         return counter % 3 == 0;
     }
 
-    @Override
-    public void setDirection(Player player) {
-        direction = Direction.NONE;
+
+    public void act(GameMap map, int index){
         counter++;
+        act2(map, index);
     }
 }
