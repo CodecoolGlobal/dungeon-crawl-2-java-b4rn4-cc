@@ -26,8 +26,9 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
-    Button pickUpButton = new Button("Pick Up");
     Label inventory = new Label();
+    Label combatLog = new Label();
+    Button pickUpButton = new Button("Pick Up");
 
     public static void main(String[] args) {
         launch(args);
@@ -48,6 +49,9 @@ public class Main extends Application {
         ui.add(pickUpButton, 1, 10);
         pickUpButton.setVisible(false);
         pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
+
+        ui.add(new Label("CombatLog: "), 0, 12);
+        ui.add(combatLog, 1, 15);
 
         BorderPane borderPane = new BorderPane();
 
@@ -96,11 +100,14 @@ public class Main extends Application {
             case F:
                 if (map.getPlayer().consumeItem("freeze")){
                     map.getPlayer().setFreeze(2);
+                    map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
+                    printStats();
                 }
                 break;
             case Q:
                 if (map.getPlayer().consumeItem("potion")){
                     map.getPlayer().addHealth(5);
+                    map.getPlayer().addToCombatLog("Player healed for 5 health points");
                     printStats();
                 }
                 break;
@@ -111,6 +118,7 @@ public class Main extends Application {
         map.getPlayer().pickUp();
         canvas.requestFocus();
         pickUpButton.setVisible(false);
+        printStats();
     }
 
     private void refresh() {
@@ -134,6 +142,7 @@ public class Main extends Application {
     private void printStats(){
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
+        combatLog.setText("" + map.getPlayer().getCombatLog());
     }
 
     private void playRound(){

@@ -24,7 +24,7 @@ public abstract class Monster extends Actor{
             return;
         }
         if (collisionWithEnemy(nextCell)){
-            combat(nextCell);
+            combat(nextCell, map.getPlayer());
         } else if (canMove(nextCell)){
             move(nextCell);
             map.updateMonsterCells(index, nextCell);

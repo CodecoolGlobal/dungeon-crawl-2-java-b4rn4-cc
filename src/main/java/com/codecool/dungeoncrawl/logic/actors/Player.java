@@ -13,6 +13,11 @@ public class Player extends Actor {
     private final Inventory inventory = new Inventory();
     private boolean invalidMove = false;
     private int freeze = 0;
+    private String combatLog = "\n";
+
+    public String getCombatLog() {
+        return combatLog;
+    }
 
     public int getFreeze() {
         return freeze;
@@ -34,13 +39,13 @@ public class Player extends Actor {
     public void setDirection(Player player){}
 
     public void setInventory(Item item){
-        if (Objects.equals(item.getTileName(), "key")){
+        if (item.getTileName().equals("key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName() == "weapon"){
+        }else if (item.getTileName().equals("weapon")){
             inventory.setWeapons((Weapon) item);
-        }else if(item.getTileName() == "shield"){
+        }else if(item.getTileName().equals("shield")){
             inventory.setShields((Shield) item);
-        }else if(item.getTileName() == "potion"){
+        }else if(item.getTileName().equals("potion")){
             inventory.setPotions((Potion) item);
         }
     }
@@ -62,6 +67,7 @@ public class Player extends Actor {
 
     public void pickUp() {
         setInventory(getCell().getItem());
+        addToCombatLog(String.format("Player picked up a %s", getCell().getItem().getTileName()));
         getCell().setItem(null);
     }
 
@@ -83,6 +89,18 @@ public class Player extends Actor {
         return result;
     }
 
+    public void addToCombatLog(Actor p1, Actor p2, int damage, boolean isCrit){
+        if (isCrit){
+            combatLog += String.format("%s strikes %s for a CRITICAL %s damage\n",p1.getTileName(), p2.getTileName(), damage);
+        } else {
+            combatLog += String.format("%s strikes %s for %s damage\n",p1.getTileName(), p2.getTileName(), damage);
+        }
+    }
+
+    public void addToCombatLog(String msg){
+        combatLog += msg + "\n";
+    }
+
     public String getTileName() {
         return "player";
     }
@@ -101,7 +119,7 @@ public class Player extends Actor {
     public void act() {
         Cell nextCell = getNextCell();
         if (collisionWithEnemy(nextCell)){
-            combat(nextCell);
+            combat(nextCell, this);
         } else if (canMove(nextCell)){
             move(nextCell);
         } else {
@@ -112,9 +130,7 @@ public class Player extends Actor {
     @Override
     public int getDamage(){
         int bonusDamage = getBonusDamage();
-        int bonusCrit = getBonusCrit();
-        int damage = r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE + bonusDamage;
-        return getActualDamage(damage, critChance + bonusCrit);
+        return r.nextInt(MAX_DAMAGE + 1 + bonusDamage - MIN_DAMAGE - bonusDamage) + MIN_DAMAGE + bonusDamage;
     }
 
     private int getBonusDamage() {
@@ -124,7 +140,8 @@ public class Player extends Actor {
         return 0;
     }
 
-    private int getBonusCrit(){
+    @Override
+    protected int getBonusCrit(){
         if (inventory.getWeapons() != null){
             return inventory.getWeapons().getCrit();
         }
