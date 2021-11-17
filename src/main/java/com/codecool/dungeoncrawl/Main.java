@@ -43,15 +43,15 @@ public class Main extends Application {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
 
-        ui.add(new Label("Inventory: "), 0, 3);
-        ui.add(inventory, 1, 3);
+        ui.add(new Label("Inventory: "), 0, 4);
+        ui.add(inventory, 1, 6);
 
-        ui.add(pickUpButton, 1, 10);
+        ui.add(pickUpButton, 1, 12);
         pickUpButton.setVisible(false);
         pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
 
-        ui.add(new Label("CombatLog: "), 0, 12);
-        ui.add(combatLog, 1, 15);
+        ui.add(new Label("CombatLog: "), 0, 14);
+        ui.add(combatLog, 1, 17);
 
         BorderPane borderPane = new BorderPane();
 

@@ -91,9 +91,9 @@ public class Player extends Actor {
 
     public void addToCombatLog(Actor p1, Actor p2, int damage, boolean isCrit){
         if (isCrit){
-            combatLog += String.format("%s strikes %s for a CRITICAL %s damage\n",p1.getTileName(), p2.getTileName(), damage);
+            combatLog += String.format("%s strikes %s Crit %s dmg\n",p1.getTileName().charAt(0), p2.getTileName().charAt(0), damage);
         } else {
-            combatLog += String.format("%s strikes %s for %s damage\n",p1.getTileName(), p2.getTileName(), damage);
+            combatLog += String.format("%s strikes %s for %s dmg\n",p1.getTileName().charAt(0), p2.getTileName().charAt(0), damage);
         }
     }
 
@@ -147,5 +147,14 @@ public class Player extends Actor {
         }
         return 0;
     }
+
+    public int getShieldDefense(){
+        if (inventory.getShields() != null){
+            return inventory.getShields().getFlatDefense();
+        }
+        return 0;
+    }
+
+
 
 }

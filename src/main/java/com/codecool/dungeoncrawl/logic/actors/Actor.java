@@ -38,13 +38,28 @@ public abstract class Actor implements Drawable {
         if (isEnemyImmortal(nextCell)){
             return;
         }
-        nextCell.getActor().getHit(damage);
+        nextCell.getActor().getHit(player,this, nextCell.getActor(), damage, isCrit);
 
+    }
+
+
+    public void getHit(Player player, Actor hitting, Actor gettingHit, int damage, boolean isCrit){
         if (this instanceof Player){
-            player.addToCombatLog(player, nextCell.getActor(), damage, isCrit);
+            int def = ((Player) this).getShieldDefense();
+            if (damage - def > 0){
+                damage -= def;
+                health -= damage;
+            } else {
+                damage = 0;
+            }
         } else {
-            player.addToCombatLog(this, player, damage, isCrit);
+            health -= damage;
         }
+        addToCombatLog(player, hitting, gettingHit, damage, isCrit);
+    }
+
+    private void addToCombatLog(Player player, Actor hitting, Actor gettingHit, int damage, boolean isCrit){
+        player.addToCombatLog(hitting, gettingHit, damage, isCrit);
     }
 
     private boolean isEnemyImmortal(Cell nextCell){
@@ -116,10 +131,6 @@ public abstract class Actor implements Drawable {
 
     public void addHealth(int health){
         this.health += health;
-    }
-
-    public void getHit(int damage){
-        health -= damage;
     }
 
     public Cell getCell() {
