@@ -36,6 +36,7 @@ public abstract class Actor implements Drawable {
             isCrit = true;
         }
         if (isEnemyImmortal(nextCell)){
+            addToCombatLog(player, this, nextCell.getActor(), 0, false);
             return;
         }
         nextCell.getActor().getHit(player,this, nextCell.getActor(), damage, isCrit);
