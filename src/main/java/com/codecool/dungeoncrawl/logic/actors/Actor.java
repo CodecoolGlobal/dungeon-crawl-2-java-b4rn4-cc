@@ -27,12 +27,24 @@ public abstract class Actor implements Drawable {
 
     public abstract void setDirection(Player player);
 
-    protected void combat(Cell nextCell){
+    protected void combat(Cell nextCell, Player player){
         int damage = getDamage();
+        int critChance = this.critChance + getBonusCrit();
+        boolean isCrit = false;
+        if (isCriticalStrike(critChance)){
+            damage *= 2;
+            isCrit = true;
+        }
         if (isEnemyImmortal(nextCell)){
             return;
         }
         nextCell.getActor().getHit(damage);
+
+        if (this instanceof Player){
+            player.addToCombatLog(player, nextCell.getActor(), damage, isCrit);
+        } else {
+            player.addToCombatLog(this, player, damage, isCrit);
+        }
     }
 
     private boolean isEnemyImmortal(Cell nextCell){
@@ -44,16 +56,15 @@ public abstract class Actor implements Drawable {
 
 
     protected int getDamage(){
-        int damage = r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
-        return getActualDamage(damage, critChance);
+        return r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
     }
 
-    protected  int getActualDamage(int damage, int critChance){
-        boolean crit = r.nextInt(100) + 1 <= critChance;
-        if (crit){
-            return damage * 2;
-        }
-        return damage;
+    protected int getBonusCrit(){
+        return 0;
+    }
+
+    protected  boolean isCriticalStrike(int critChance){
+        return r.nextInt(100) + 1 <= critChance;
     }
 
 
