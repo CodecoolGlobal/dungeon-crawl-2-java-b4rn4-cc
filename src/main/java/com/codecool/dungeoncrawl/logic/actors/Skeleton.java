@@ -4,7 +4,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Direction;
 
-public class Skeleton extends Actor {
+public class Skeleton extends Monster {
     private Direction vertical;
     private Direction horizontal;
     private int aggroRange = 5;

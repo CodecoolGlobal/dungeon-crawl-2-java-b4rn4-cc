@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.inventory.Inventory;
 import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.Direction;
@@ -61,6 +62,8 @@ public class Player extends Actor {
         return "player";
     }
 
+
+    public void act(GameMap map, int index) { }
 
     public void act() {
         Cell nextCell = getNextCell();

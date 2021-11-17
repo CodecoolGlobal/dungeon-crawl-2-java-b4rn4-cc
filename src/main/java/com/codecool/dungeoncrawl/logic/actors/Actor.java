@@ -21,19 +21,9 @@ public abstract class Actor implements Drawable {
         this.MIN_DAMAGE = minDmg;
     }
 
-    public abstract void setDirection(Player player);
+    public abstract void act(GameMap map, int index);
 
-    public void act(GameMap map, int index) {
-        Cell nextCell = getNextCell();
-        if (nextCell == null){ return; }
-        if (collisionWithEnemy(nextCell)){
-            combat(nextCell);
-        } else {
-            if (move()){
-                map.updateMonsterCells(index, nextCell);
-            }
-        }
-    }
+    public abstract void setDirection(Player player);
 
     protected void combat(Cell nextCell){
         int damage = getDamage();

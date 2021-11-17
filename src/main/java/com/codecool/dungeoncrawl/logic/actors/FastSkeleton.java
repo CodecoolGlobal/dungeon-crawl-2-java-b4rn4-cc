@@ -2,7 +2,7 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 
-public class FastSkeleton extends Actor{
+public class FastSkeleton extends Monster{
     public FastSkeleton(Cell cell) {
         super(cell, 5, 5, 7);
     }
