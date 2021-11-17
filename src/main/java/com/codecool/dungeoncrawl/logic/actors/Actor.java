@@ -42,13 +42,13 @@ public abstract class Actor implements Drawable {
 
 
     protected int getDamage(){
-        return r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
+         return r.nextInt(MAX_DAMAGE + 1 - MIN_DAMAGE) + MIN_DAMAGE;
     }
 
 
     protected boolean collisionWithEnemy(Cell nextCell){
         if (nextCell.getActor() != null){
-            return (this instanceof Skeleton && nextCell.getActor() instanceof Player) || this instanceof Player;
+            return (this instanceof Monster && nextCell.getActor() instanceof Player) || this instanceof Player;
         }
         return false;
     }
