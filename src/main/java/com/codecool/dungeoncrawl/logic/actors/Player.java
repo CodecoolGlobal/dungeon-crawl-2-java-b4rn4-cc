@@ -7,14 +7,22 @@ import com.codecool.dungeoncrawl.logic.items.*;
 import java.util.Objects;
 
 public class Player extends Actor {
-    private final Inventory inventory = new Inventory();
+    private Inventory inventory = new Inventory();
     private String route;
 
     public Player(Cell cell) {
         super(cell);
     }
 
-    public void setInventory(Item item){
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public void putItemInInventory(Item item){
         if (Objects.equals(item.getTileName(), "key")){
             inventory.setKeys((Key) item);
         }else if (item.getTileName().equals("weapon")){
@@ -27,7 +35,7 @@ public class Player extends Actor {
     }
 
     public void pickUp() {
-        setInventory(getCell().getItem());
+        putItemInInventory(getCell().getItem());
         getCell().setItem(null);
     }
 

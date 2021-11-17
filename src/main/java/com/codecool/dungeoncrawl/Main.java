@@ -153,12 +153,7 @@ public class Main extends Application {
             Player player = map.getPlayer();
             map = MapLoader.loadMap(route);
             Player newPlayer = map.getPlayer();
-            int newPlayerX = newPlayer.getX();
-            int newPlayerY = newPlayer.getY();
-            player.setX(newPlayerX);
-            player.setY(newPlayerY);
-            newPlayer = player;
-            map.setPlayer(player);
+            newPlayer.setInventory(player.getInventory());
         }
     }
 }
