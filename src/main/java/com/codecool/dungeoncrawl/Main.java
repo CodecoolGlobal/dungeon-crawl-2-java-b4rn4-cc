@@ -128,6 +128,10 @@ public class Main extends Application {
                 }
             }
         }
+        printStats();
+    }
+
+    private void printStats(){
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
     }
