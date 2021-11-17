@@ -108,7 +108,7 @@ public class MapLoader {
                 nextRoute = "/map2.txt";
                 break;
             case 2:
-                nextRoute = "map3.txt";
+                nextRoute = "/map3.txt";
                 break;
             case 3:
                 nextRoute = null;

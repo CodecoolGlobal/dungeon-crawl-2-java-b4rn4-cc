@@ -80,6 +80,7 @@ public class Main extends Application {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
+                handleMapChanging();
                 refresh();
                 break;
             case LEFT:
@@ -107,7 +108,6 @@ public class Main extends Application {
                     break;
                 }
         }
-        handleMapChanging();
     }
 
     private void pickUp() {
@@ -150,6 +150,7 @@ public class Main extends Application {
         if (map.getPlayer().getRoute() != null) {
             route = map.getPlayer().getRoute();
             map = MapLoader.loadMap(route);
+            map.getPlayer().setRoute(null);
         }
     }
 }
