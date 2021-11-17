@@ -97,6 +97,13 @@ public class Main extends Application {
                 if (map.getPlayer().consumeItem("freeze")){
                     map.getPlayer().setFreeze(2);
                 }
+                break;
+            case Q:
+                if (map.getPlayer().consumeItem("potion")){
+                    map.getPlayer().addHealth(5);
+                    printStats();
+                }
+                break;
         }
     }
 

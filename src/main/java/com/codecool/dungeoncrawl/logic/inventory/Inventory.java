@@ -12,7 +12,7 @@ public class Inventory {
     private Weapon weapons = null;
     private Shield shields = null;
     private int freeze = 1;
-    private int potion = 1;
+    private int potion = 2;
     private ArrayList<Potion> potions = new ArrayList();
 
     public int getConsumable(String item){
