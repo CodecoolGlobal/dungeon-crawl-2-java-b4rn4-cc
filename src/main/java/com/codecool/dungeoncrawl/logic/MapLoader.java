@@ -47,6 +47,7 @@ public class MapLoader {
                         case 'i':
                             cell.setType(CellType.FLOOR);
                             new ImmortalSkeleton(cell);
+                            map.addMonsterCell(cell);
                             break;
                         case 'b':
                             cell.setType(CellType.FLOOR);
