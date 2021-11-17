@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -100,7 +101,7 @@ public class Main extends Application {
                 refresh();
                 break;
             case SPACE:
-                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()){
+                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUp();
                     canvas.requestFocus();
                     pickUpButton.setVisible(false);
@@ -149,8 +150,15 @@ public class Main extends Application {
         }
         if (map.getPlayer().getRoute() != null) {
             route = map.getPlayer().getRoute();
+            Player player = map.getPlayer();
             map = MapLoader.loadMap(route);
-            map.getPlayer().setRoute(null);
+            Player newPlayer = map.getPlayer();
+            int newPlayerX = newPlayer.getX();
+            int newPlayerY = newPlayer.getY();
+            player.setX(newPlayerX);
+            player.setY(newPlayerY);
+            newPlayer = player;
+            map.setPlayer(player);
         }
     }
 }
