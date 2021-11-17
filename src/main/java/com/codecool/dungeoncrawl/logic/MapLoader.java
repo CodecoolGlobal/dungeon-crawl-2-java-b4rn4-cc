@@ -43,6 +43,7 @@ public class MapLoader {
                         case 'f':
                             cell.setType(CellType.FLOOR);
                             new FastSkeleton(cell);
+                            map.addMonsterCell(cell);
                             break;
                         case 'i':
                             cell.setType(CellType.FLOOR);
@@ -52,6 +53,7 @@ public class MapLoader {
                         case 'b':
                             cell.setType(CellType.FLOOR);
                             new Boss(cell);
+                            map.addMonsterCell(cell);
                             break;
                         case 'w':
                             cell.setType(CellType.FLOOR);

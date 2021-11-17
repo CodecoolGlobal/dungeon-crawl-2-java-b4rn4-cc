@@ -13,6 +13,15 @@ public class Player extends Actor {
     private final Inventory inventory = new Inventory();
     private int bonusDamage;
     private boolean invalidMove = false;
+    private int freeze = 0;
+
+    public int getFreeze() {
+        return freeze;
+    }
+
+    public void setFreeze(int count) {
+        this.freeze += count;
+    }
 
     public Player(Cell cell) {
         super(cell, 10, 3, 7);
@@ -35,6 +44,21 @@ public class Player extends Actor {
         }else if(item.getTileName() == "potion"){
             inventory.setPotions((Potion) item);
         }
+    }
+
+    public boolean consumeItem(String item){
+        if (item.equals("freeze")){
+            if (inventory.getConsumable("freeze") > 0){
+                inventory.setConsumable("freeze");
+                return true;
+            }
+        } else if (item.equals("potion")){
+            if (inventory.getConsumable("potion") > 0){
+                inventory.setConsumable("potion");
+                return true;
+            }
+        }
+        return false;
     }
 
     public void pickUp() {

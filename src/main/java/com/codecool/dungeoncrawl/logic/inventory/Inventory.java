@@ -11,7 +11,26 @@ public class Inventory {
     private Key keys = null;
     private Weapon weapons = null;
     private Shield shields = null;
+    private int freeze = 1;
+    private int potion = 1;
     private ArrayList<Potion> potions = new ArrayList();
+
+    public int getConsumable(String item){
+        if (item.equals("freeze")){
+            return freeze;
+        } else if (item.equals("potion")){
+            return potion;
+        }
+        return 0;
+    }
+
+    public void setConsumable(String item){
+        if (item.equals("freeze")){
+            freeze--;
+        } else if (item.equals("potion")){
+            potion--;
+        }
+    }
 
     public Key getKeys() {
         return keys;

@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.FastSkeleton;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -92,6 +93,10 @@ public class Main extends Application {
             case R:
                 MonstersMove();
                 break;
+            case F:
+                if (map.getPlayer().consumeItem("freeze")){
+                    map.getPlayer().setFreeze(2);
+                }
         }
     }
 
@@ -147,6 +152,12 @@ public class Main extends Application {
     }
 
     private void MonstersMove(){
+        if (map.getPlayer().getFreeze() > 0){
+            map.getPlayer().setFreeze(-1);
+            handleGameOver();
+            refresh();
+            return;
+        }
         for (int index = 0; index < map.getMonsterCells().size(); index++){
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)){
