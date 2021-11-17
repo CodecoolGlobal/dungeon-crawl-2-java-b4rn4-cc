@@ -27,7 +27,17 @@ public abstract class Actor implements Drawable {
 
     protected void combat(Cell nextCell){
         int damage = getDamage();
+        if (isEnemyImmortal(nextCell)){
+            return;
+        }
         nextCell.getActor().getHit(damage);
+    }
+
+    private boolean isEnemyImmortal(Cell nextCell){
+        if (nextCell.getActor() instanceof ImmortalSkeleton){
+            return ((ImmortalSkeleton) nextCell.getActor()).isImmortal();
+        }
+        return false;
     }
 
 
