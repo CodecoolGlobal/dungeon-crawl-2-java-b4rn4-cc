@@ -61,6 +61,14 @@ public class Inventory {
     public void setShields(Shield shields) {
         this.shields = shields;
     }
+
+    public int getFreezeValue() {
+        return 2;
+    }
+
+    public int getPotionValue() {
+        return 5;
+    }
 }
 
 

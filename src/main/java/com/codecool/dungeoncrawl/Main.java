@@ -125,6 +125,21 @@ public class Main extends Application {
                     printStats();
                 }
                 break;
+            case I:
+                Player player = map.getPlayer();
+                player.addToCombatLog("");
+                player.addToCombatLog(String.format("Potion: Heals for %s", player.getInventory().getPotionValue()));
+                player.addToCombatLog(String.format("Freeze: Stuns monsters for %s steps", player.getInventory().getFreezeValue()));
+                if (player.getInventory().getWeapons() != null){
+                    Weapon weapon = player.getInventory().getWeapons();
+                    player.addToCombatLog(String.format("%s: Damage: %s / Crit: %s%%",weapon.getTileName(), weapon.getDamage(), weapon.getCrit()));
+                }
+                if (player.getInventory().getShields() != null){
+                    Shield shield = player.getInventory().getShields();
+                    player.addToCombatLog(String.format("%s: Provides %s flat damage reduction",shield.getTileName(), shield.getFlatDefense()));
+                }
+                player.addToCombatLog("");
+                refresh();
         }
     }
 
