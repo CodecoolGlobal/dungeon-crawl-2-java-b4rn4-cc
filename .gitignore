@@ -120,6 +120,3 @@ modules.xml
 hs_err_pid*
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,java
-
-
-*.txt
