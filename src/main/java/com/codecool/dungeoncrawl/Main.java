@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.items.Door;
+import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 import javafx.application.Application;
@@ -137,6 +138,10 @@ public class Main extends Application {
                 if (player.getInventory().getShields() != null){
                     Shield shield = player.getInventory().getShields();
                     player.addToCombatLog(String.format("%s: Provides %s flat damage reduction",shield.getTileName(), shield.getFlatDefense()));
+                }
+                if (player.getInventory().getKeys() != null){
+                    Key key = player.getInventory().getKeys();
+                    player.addToCombatLog(String.format("%s: opens a door", key.getTileName()));
                 }
                 player.addToCombatLog("");
                 refresh();
@@ -352,6 +357,7 @@ public class Main extends Application {
     }
 
     private void refreshFixed() {
+        healthLabel.setText("" + map.getPlayer().getHealth());
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
