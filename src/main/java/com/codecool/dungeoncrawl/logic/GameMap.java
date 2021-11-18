@@ -27,6 +27,16 @@ public class GameMap {
         }
     }
 
+    public void removeFire(){
+        for (int row = 0; row < width; row++){
+            for (int col = 0; col < height; col++){
+                if (cells[row][col].getType() == CellType.FIRE){
+                    cells[row][col].setType(CellType.FLOOR);
+                }
+            }
+        }
+    }
+
     public List<Cell> getMonsterCells() {
         return monsterCells;
     }
