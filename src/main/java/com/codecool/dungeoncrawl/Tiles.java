@@ -26,16 +26,18 @@ public class Tiles {
         tileMap.put("empty", new Tile(0, 0));
         tileMap.put("wall", new Tile(10, 17));
         tileMap.put("floor", new Tile(2, 0));
-        tileMap.put("player", new Tile(27, 0));
-        tileMap.put("skeleton", new Tile(29, 6));
-        tileMap.put("fastSkeleton", new Tile(29, 2));
-        tileMap.put("immortalSkeletonOff", new Tile(24, 3));
-        tileMap.put("immortalSkeletonOn", new Tile(24, 7));
-        tileMap.put("boss", new Tile(24, 9));
-        tileMap.put("weapon", new Tile(0, 29));
-        tileMap.put("shield", new Tile(1,23));
-        tileMap.put("key", new Tile(16, 23));
-        tileMap.put("potion", new Tile(23, 23));
+        tileMap.put("fire", new Tile(15, 10));
+        tileMap.put("Player", new Tile(27, 0));
+        tileMap.put("Skeleton", new Tile(29, 6));
+        tileMap.put("Fast Boi", new Tile(29, 2));
+        tileMap.put("ImmortalSkeletonOff", new Tile(24, 3));
+        tileMap.put("ImmortalSkeletonOn", new Tile(24, 7));
+        tileMap.put("The Boss", new Tile(24, 9));
+        tileMap.put("Boss Add", new Tile(27, 8));
+        tileMap.put("Weapon", new Tile(0, 29));
+        tileMap.put("Shield", new Tile(1,23));
+        tileMap.put("Key", new Tile(16, 23));
+        tileMap.put("Potion", new Tile(23, 23));
         tileMap.put("openedDoor", new Tile(8, 10));
         tileMap.put("closedDoor", new Tile(8, 11));
     }

@@ -13,6 +13,12 @@ public abstract class Actor implements Drawable {
     protected final int MIN_DAMAGE;
     protected final int critChance;
 
+    public void setOnFireCount(int onFireCount) {
+        this.onFireCount = onFireCount;
+    }
+
+    private int onFireCount = 0;
+
 
     public Actor(Cell cell, int health, int minDmg, int maxDmg, int critChance) {
         this.cell = cell;
@@ -37,26 +43,36 @@ public abstract class Actor implements Drawable {
         }
         if (isEnemyImmortal(nextCell)){
             addToCombatLog(player, this, nextCell.getActor(), 0, false);
+            handleFire(player);
             return;
         }
+        handleFire(player);
         nextCell.getActor().getHit(player,this, nextCell.getActor(), damage, isCrit);
 
     }
 
+    public void getHit(Actor actor, int damage, String cause, Player player){
+        health -= getActualDamage(damage);
+        String name = player.getNameForCombat(actor);
+        player.addToCombatLog(String.format("%s suffered %s damage from %s", name, damage, cause));
+    }
+
 
     public void getHit(Player player, Actor hitting, Actor gettingHit, int damage, boolean isCrit){
+        health -= getActualDamage(damage);
+        addToCombatLog(player, hitting, gettingHit, damage, isCrit);
+    }
+
+    private int getActualDamage(int damage){
         if (this instanceof Player){
             int def = ((Player) this).getShieldDefense();
             if (damage - def > 0){
                 damage -= def;
-                health -= damage;
             } else {
                 damage = 0;
             }
-        } else {
-            health -= damage;
         }
-        addToCombatLog(player, hitting, gettingHit, damage, isCrit);
+        return damage;
     }
 
     private void addToCombatLog(Player player, Actor hitting, Actor gettingHit, int damage, boolean isCrit){
@@ -64,10 +80,7 @@ public abstract class Actor implements Drawable {
     }
 
     private boolean isEnemyImmortal(Cell nextCell){
-        if (nextCell.getActor() instanceof ImmortalSkeleton){
-            return ((ImmortalSkeleton) nextCell.getActor()).isImmortal();
-        }
-        return false;
+        return nextCell.getActor().getTileName().equals("ImmortalSkeletonOn");
     }
 
 
@@ -92,10 +105,11 @@ public abstract class Actor implements Drawable {
     }
 
 
-    protected void move(Cell nextCell){
+    protected void move(Cell nextCell, Player player){
         cell.setActor(null);
         nextCell.setActor(this);
         cell = nextCell;
+        handleFire(player);
     }
 
     protected boolean canMove(Cell nextCell){
@@ -103,7 +117,7 @@ public abstract class Actor implements Drawable {
         int y = nextCell.getY();
         int width = nextCell.getBoardWidth();
         int height = nextCell.getBoardHeight();
-        return nextCell.getType() != CellType.WALL && nextCell.getActor() == null && x > 0 && y > 0 && x < width && y < height;
+        return nextCell.getType() != CellType.WALL && nextCell.getActor() == null && x >= 0 && y >= 0 && x < width && y < height;
     }
 
 
@@ -160,4 +174,14 @@ public abstract class Actor implements Drawable {
     }
 
     public void setY(int y) {cell.setY(y);}
+
+    private void handleFire(Player player){
+        if (cell.getType() == CellType.FIRE){
+            onFireCount = 3;
+        }
+        if (onFireCount > 0){
+            getHit(this,5, "Fire", player);
+            onFireCount--;
+        }
+    }
 }
