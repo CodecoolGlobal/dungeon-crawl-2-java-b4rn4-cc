@@ -10,7 +10,7 @@ public class Boss extends Monster{
     private boolean isImmortal = true;
 
     public Boss(Cell cell) {
-        super(cell, 200, 10, 20, 10);
+        super(cell, 30, 5, 7, 1);
     }
 
 
@@ -32,12 +32,7 @@ public class Boss extends Monster{
             Cell nextCell = getNextCell();
             combat(nextCell, map.getPlayer());
         }else if (isOnlyBossAlive(map) && isImmortal){
-            if (playerBeatWaves()){
-                map.removeFire();
-                mortalize();
-            } else {
-                startNextWave(map);
-            }
+            startNextWave(map);
         }
     }
 
@@ -56,7 +51,7 @@ public class Boss extends Monster{
         return map.getMonsterCells().size() == 1 && map.getMonsterCells().get(0).getActor() instanceof Boss;
     }
 
-    private boolean playerBeatWaves(){
+    public boolean playerBeatWaves(){
         return waveCount == 3;
     }
 

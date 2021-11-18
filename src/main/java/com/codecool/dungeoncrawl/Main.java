@@ -5,10 +5,7 @@ import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Boss;
-import com.codecool.dungeoncrawl.logic.actors.FastSkeleton;
-import com.codecool.dungeoncrawl.logic.actors.ImmortalSkeleton;
-import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.items.Door;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -36,6 +33,7 @@ public class Main extends Application {
     Label combatLog = new Label();
     Button pickUpButton = new Button("Pick Up");
     private boolean hasWon = false;
+    private boolean isGameOver = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -75,63 +73,27 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
+        if (hasWon || isGameOver){
+            System.exit(1);
+        }
         switch (keyEvent.getCode()) {
             case UP:
             case W:
                 map.getPlayer().setDirection(Direction.NORTH);
                 playRound();
-                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                if (map.getPlayer().getCell().getItem() != null) {
-                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
-                        handleMapChanging();
-                    }
-                }
-                refresh();
                 break;
             case DOWN:
             case S:
                 map.getPlayer().setDirection(Direction.SOUTH);
                 playRound();
-                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                if (map.getPlayer().getCell().getItem() != null) {
-                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
-                        handleMapChanging();
-                    }
-                }
-                refresh();
                 break;
             case LEFT:
             case A:
                 map.getPlayer().setDirection(Direction.EAST);
                 playRound();
-                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                if (map.getPlayer().getCell().getItem() != null) {
-                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
-                        handleMapChanging();
-                    }
-                }
-                refresh();
                 break;
             case RIGHT:
             case D:
-                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
-                    pickUpButton.setVisible(true);
-                    canvas.requestFocus();
-                }
-                if (map.getPlayer().getCell().getItem() != null) {
-                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
-                        handleMapChanging();
-                    }
-                }
                 map.getPlayer().setDirection(Direction.WEST);
                 playRound();
                 break;
@@ -142,22 +104,22 @@ public class Main extends Application {
                 break;
             case R:
                 MonstersMove();
+                if (handleGameOver()){
+                    refreshFixed();
+                    return;
+                } else {
+                    refresh();
+                }
                 break;
             case F:
                 if (map.getPlayer().consumeItem("freeze")) {
-                    map.removeFire();
-                    map.mortalizeBoss();
-                    map.getPlayer().setOnFireCount(0);
-                    map.getPlayer().setFreeze(2);
-                    map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
-                    printStats();
+                    map.getPlayer().castFreeze(map);
                     refresh();
                 }
                 break;
             case Q:
                 if (map.getPlayer().consumeItem("potion")) {
-                    map.getPlayer().addHealth(5);
-                    map.getPlayer().addToCombatLog("Player healed for 5 health points");
+                    map.getPlayer().heal(map);
                     printStats();
                 }
                 break;
@@ -172,7 +134,7 @@ public class Main extends Application {
             map.getNextDoor().getCell().setType(CellType.FLOOR);
             map.getNextDoor().getCell().setItem(new Door(map.getNextDoor().getCell(), MapLoader.getNextMap()));
         }
-        printStats();
+        refresh();
     }
 
     private void refresh() {
@@ -222,6 +184,17 @@ public class Main extends Application {
         }
 
         MonstersMove();
+
+        if (handleGameOver()){
+            refreshFixed();
+            return;
+        } else {
+            refresh();
+        }
+
+        if (hasPlayerEnteredDoor()){
+            handleMapChanging();
+        }
     }
 
     private boolean itemUnderPlayer() {
@@ -234,6 +207,7 @@ public class Main extends Application {
             return true;
         }
         if (map.getPlayer().getHealth() <= 0) {
+            isGameOver = true;
             map = MapLoader.loadMap("/gameOver.txt");
             return true;
         }
@@ -244,11 +218,11 @@ public class Main extends Application {
         if (map.getPlayer().getFreeze() > 0) {
             map.getPlayer().setFreeze(-1);
             proceedMonsterCounters();
-            if (handleGameOver()) {
-                 refreshFixed();
-            } else {
-                refresh();
-            }
+            return;
+        }
+        if (hasPlayerBeatWaves()){
+            map.removeFire();
+            ((Boss) map.getMonsterCells().get(0).getActor()).mortalize();
         }
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
@@ -262,11 +236,16 @@ public class Main extends Application {
             }
             cell.getActor().act(map, index);
         }
-        if (handleGameOver()) {
-             refreshFixed();
-        } else {
-            refresh();
+    }
+
+    private boolean hasPlayerBeatWaves(){
+        if (map.getMonsterCells().size() == 1){
+            Actor monster = map.getMonsterCells().get(0).getActor();
+            if (monster instanceof Boss){
+                return ((Boss) monster).playerBeatWaves();
+            }
         }
+        return false;
     }
 
 
@@ -280,6 +259,13 @@ public class Main extends Application {
 
     private boolean isMonsterDead(Cell cell) {
         return cell.getActor().getHealth() <= 0;
+    }
+
+    private boolean hasPlayerEnteredDoor(){
+        if (map.getPlayer().getCell().getItem() != null) {
+            return  map.getPlayer().getCell().getItem().getTileName().equals("openedDoor");
+        }
+        return false;
     }
 
     private void handleMapChanging() {
@@ -360,6 +346,5 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
     }
 }
