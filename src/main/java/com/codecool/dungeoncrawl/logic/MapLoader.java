@@ -108,7 +108,7 @@ public class MapLoader {
                         case 'n':
                             cell.setType(CellType.LETTERM);
                             break;
-                        case 'u':
+                        case 'O':
                             cell.setType(CellType.LETTERO);
                             break;
                         case 'v':
@@ -116,6 +116,18 @@ public class MapLoader {
                             break;
                         case 'r':
                             cell.setType(CellType.LETTERR);
+                            break;
+                        case 'Y':
+                            cell.setType(CellType.LETTERY);
+                            break;
+                        case 'U':
+                            cell.setType(CellType.LETTERU);
+                            break;
+                        case 'W':
+                            cell.setType(CellType.LETTERW);
+                            break;
+                        case 'N':
+                            cell.setType(CellType.LETTERN);
                             break;
                         case 'd':
                             cell.setType(CellType.DEAD);

@@ -51,6 +51,10 @@ public class Tiles {
         tileMap.put("letterO", new Tile(20, 31));
         tileMap.put("letterV", new Tile(27, 31));
         tileMap.put("letterR", new Tile(23, 31));
+        tileMap.put("letterY", new Tile(30, 31));
+        tileMap.put("letterU", new Tile(26, 31));
+        tileMap.put("letterW", new Tile(28, 31));
+        tileMap.put("letterN", new Tile(19, 31));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
