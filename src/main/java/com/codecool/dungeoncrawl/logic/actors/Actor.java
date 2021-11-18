@@ -3,7 +3,6 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
-import com.codecool.dungeoncrawl.logic.items.Door;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
@@ -16,14 +15,6 @@ public abstract class Actor implements Drawable {
 
     public void move(int dx, int dy) {
         Cell nextCell = cell.getNeighbor(dx, dy);
-        if (nextCell.getItem() != null) {
-            if (nextCell.getItem().getTileName().equals("openedDoor")) {
-                Door door = (Door) nextCell.getItem();
-                String route = door.getMapTo();
-                Player player = (Player) cell.getActor();
-                player.setRoute(route);
-            }
-        }
         if (nextCell.getType() != CellType.WALL) {
             cell.setActor(null);
             nextCell.setActor(this);

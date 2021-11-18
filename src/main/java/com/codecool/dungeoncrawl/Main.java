@@ -81,7 +81,11 @@ public class Main extends Application {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
-                handleMapChanging();
+                if (map.getPlayer().getCell().getItem() != null){
+                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
+                        handleMapChanging();
+                    }
+                }
                 refresh();
                 break;
             case LEFT:
@@ -141,8 +145,7 @@ public class Main extends Application {
     }
 
     private void handleMapChanging() {
-        if (map.getPlayer().getRoute() != null) {
-            route = map.getPlayer().getRoute();
+            route = map.getNextDoor().getMapTo();
             Player player = map.getPlayer();
             if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
                 if (MapLoader.getCurrentLevel() == 1 && player.getSecondLevel() != null) {
@@ -150,6 +153,7 @@ public class Main extends Application {
                     map = player.getSecondLevel();
                 } else if (MapLoader.getCurrentLevel() == 2 && player.getThirdLevel() != null) {
                     player.setSecondLevel(map);
+                    map = player.getThirdLevel();
                 } else if (MapLoader.getCurrentLevel() == 3){
                     player.setThirdLevel(map);
                 } else {
@@ -158,7 +162,7 @@ public class Main extends Application {
                     } else if (MapLoader.getCurrentLevel() == 2) {
                         player.setSecondLevel(map);
                     }
-                    MapLoader.increaseLevel();
+                    player.removeKeyFromInventory();
                     map = MapLoader.loadMap(route);
 //                setupPlayer(player);
                     Player newPlayer = map.getPlayer();
@@ -170,8 +174,8 @@ public class Main extends Application {
                     newPlayer.setFirstLevel(player.getFirstLevel());
                     newPlayer.setSecondLevel(player.getSecondLevel());
                     newPlayer.setThirdLevel(player.getThirdLevel());
-                    player.setRoute(null);
                 }
+                MapLoader.increaseLevel();
             } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
                 if (MapLoader.getCurrentLevel() == 2) {
                     player.setSecondLevel(map);
@@ -185,7 +189,6 @@ public class Main extends Application {
 //                setupPlayer(player);
                 MapLoader.decreaseLevel();
             }
-        }
     }
 
     private void setupPlayer(Player oldPlayer) {

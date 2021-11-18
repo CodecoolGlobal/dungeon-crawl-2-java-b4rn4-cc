@@ -17,13 +17,13 @@ public abstract class Item implements Drawable {
         return cell;
     }
 
-    public int getX() {
-        return cell.getX();
-    }
+//    public int getX() {
+//        return cell.getX();
+//    }
 
-    public int getY() {
-        return cell.getY();
-    }
+//    public int getY() {
+//        return cell.getY();
+//    }
 
     public boolean isPackable() {
         return packable;

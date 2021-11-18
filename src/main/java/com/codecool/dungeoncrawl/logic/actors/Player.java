@@ -9,7 +9,6 @@ import java.util.Objects;
 
 public class Player extends Actor {
     private Inventory inventory = new Inventory();
-    private String route;
     private GameMap firstLevel;
     private GameMap secondLevel;
     private GameMap thirdLevel;
@@ -60,14 +59,6 @@ public class Player extends Actor {
         return result;
     }
 
-    public void setRoute(String route) {
-        this.route = route;
-    }
-
-    public String getRoute() {
-        return route;
-    }
-
     public String getTileName() {
         return "player";
     }
@@ -98,5 +89,9 @@ public class Player extends Actor {
 
     public void setThirdLevel(GameMap thirdLevel) {
         this.thirdLevel = thirdLevel;
+    }
+
+    public void removeKeyFromInventory() {
+        inventory.setKeys(null);
     }
 }
