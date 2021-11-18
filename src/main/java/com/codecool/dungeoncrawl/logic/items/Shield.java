@@ -7,6 +7,10 @@ public class Shield extends Item{
         super(cell, true);
     }
 
+    public int getFlatDefense(){
+        return 3;
+    }
+
     @Override
     public String getTileName() {
         return "shield";

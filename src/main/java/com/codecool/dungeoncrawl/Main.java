@@ -1,9 +1,12 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.FastSkeleton;
+import com.codecool.dungeoncrawl.logic.actors.ImmortalSkeleton;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
 import javafx.application.Application;
@@ -24,12 +27,13 @@ public class Main extends Application {
     String route = "/map.txt";
     GameMap map = MapLoader.loadMap(route);
     Canvas canvas = new Canvas(
-            map.getWidth() * Tiles.TILE_WIDTH,
-            map.getHeight() * Tiles.TILE_WIDTH);
+            Math.min(map.getWidth(), 25) * Tiles.TILE_WIDTH,
+            Math.min(map.getHeight(), 30) * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
-    Button pickUpButton = new Button("Pick Up");
     Label inventory = new Label();
+    Label combatLog = new Label();
+    Button pickUpButton = new Button("Pick Up");
 
     public static void main(String[] args) {
         launch(args);
@@ -44,12 +48,15 @@ public class Main extends Application {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
 
-        ui.add(new Label("Inventory: "), 0, 3);
-        ui.add(inventory, 1, 3);
+        ui.add(new Label("Inventory: "), 0, 4);
+        ui.add(inventory, 1, 6);
 
-        ui.add(pickUpButton, 1, 10);
+        ui.add(pickUpButton, 1, 12);
         pickUpButton.setVisible(false);
         pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
+
+        ui.add(new Label("CombatLog: "), 0, 14);
+        ui.add(combatLog, 1, 17);
 
         BorderPane borderPane = new BorderPane();
 
@@ -68,6 +75,9 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
+            case W:
+                map.getPlayer().setDirection(Direction.NORTH);
+                playRound();
                 map.getPlayer().move(0, -1);
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
@@ -76,6 +86,9 @@ public class Main extends Application {
                 refresh();
                 break;
             case DOWN:
+            case S:
+                map.getPlayer().setDirection(Direction.SOUTH);
+                playRound();
                 map.getPlayer().move(0, 1);
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
@@ -89,6 +102,9 @@ public class Main extends Application {
                 refresh();
                 break;
             case LEFT:
+            case A:
+                map.getPlayer().setDirection(Direction.EAST);
+                playRound();
                 map.getPlayer().move(-1, 0);
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
@@ -101,8 +117,24 @@ public class Main extends Application {
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
+            case D:
+                map.getPlayer().setDirection(Direction.WEST);
+                playRound();
+                break;
+            case E:
+                if (itemUnderPlayer()){
+                    pickUp();
                 }
-                refresh();
+                break;
+            case R:
+                MonstersMove();
+                break;
+            case F:
+                if (map.getPlayer().consumeItem("freeze")){
+                    map.getPlayer().setFreeze(2);
+                    map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
+                    printStats();
+                }
                 break;
             case SPACE:
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
@@ -112,6 +144,13 @@ public class Main extends Application {
                     refresh();
                     break;
                 }
+            case Q:
+                if (map.getPlayer().consumeItem("potion")){
+                    map.getPlayer().addHealth(5);
+                    map.getPlayer().addToCombatLog("Player healed for 5 health points");
+                    printStats();
+                }
+                break;
         }
     }
 
@@ -123,14 +162,24 @@ public class Main extends Application {
             map.getNextDoor().getCell().setType(CellType.FLOOR);
             map.getNextDoor().getCell().setItem(new Door(map.getNextDoor().getCell(), MapLoader.getNextMap()));
         }
+        printStats();
     }
 
     private void refresh() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = 0; y < map.getHeight(); y++) {
-                Cell cell = map.getCell(x, y);
+        int centerX = (int)(canvas.getWidth()/(Tiles.TILE_WIDTH*2));
+        int centerY = (int)(canvas.getHeight()/(Tiles.TILE_WIDTH*2)) - 1;
+        int[] shift = {0, 0};
+        if (map.getPlayer().getX() > centerX){
+            shift[0] = map.getPlayer().getX() - centerX;
+        }
+        if (map.getPlayer().getY() > centerY){
+            shift[1] = map.getPlayer().getY() - centerY;
+        }
+        for (int x = 0; x + shift[0] < map.getWidth(); x++) {
+            for (int y = 0; y + shift [1] < map.getHeight(); y++) {
+                Cell cell = map.getCell(x+shift[0], y+shift[1]);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
                 } else if (cell.getItem() != null) {
@@ -140,8 +189,73 @@ public class Main extends Application {
                 }
             }
         }
+        printStats();
+    }
+
+    private void printStats(){
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
+        combatLog.setText("" + map.getPlayer().getCombatLog());
+    }
+
+    private void playRound(){
+        map.getPlayer().act();
+        if (map.getPlayer().isInvalidMove()){
+            return;
+        }
+
+        if (itemUnderPlayer()) {
+            pickUpButton.setVisible(true);
+            canvas.requestFocus();
+        } else {
+            pickUpButton.setVisible(false);
+        }
+
+        MonstersMove();
+    }
+
+    private boolean itemUnderPlayer(){
+        return map.getPlayer().getCell().getItem() != null;
+    }
+
+    private void handleGameOver(){
+        if (map.getPlayer().getHealth() <= 0){
+            System.exit(1);
+        }
+    }
+
+    private void MonstersMove(){
+        if (map.getPlayer().getFreeze() > 0){
+            map.getPlayer().setFreeze(-1);
+            proceedMonsterCounters();
+            handleGameOver();
+            refresh();
+            return;
+        }
+        for (int index = 0; index < map.getMonsterCells().size(); index++){
+            Cell cell = map.getMonsterCells().get(index);
+            if (isMonsterDead(cell)){
+                cell.setActor(null);
+                map.removeMonsterCells(cell);
+                continue;
+            }
+            cell.getActor().act(map, index);
+        }
+        handleGameOver();
+        refresh();
+    }
+
+
+    private void proceedMonsterCounters(){
+        for (Cell cell : map.getMonsterCells()){
+            if (cell.getActor() instanceof ImmortalSkeleton){
+                ((ImmortalSkeleton) cell.getActor()).proceedCounter();
+            }
+        }
+    }
+
+    private boolean isMonsterDead(Cell cell){
+        return cell.getActor().getHealth() <= 0;
     }
 
     private void handleMapChanging() {

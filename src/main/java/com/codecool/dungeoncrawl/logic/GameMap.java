@@ -3,10 +3,14 @@ package com.codecool.dungeoncrawl.logic;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GameMap {
     private int width;
     private int height;
     private Cell[][] cells;
+    private final List<Cell> monsterCells = new LinkedList<>();
     private Door nextDoor;
     private Door prevDoor;
 
@@ -21,6 +25,22 @@ public class GameMap {
                 cells[x][y] = new Cell(this, x, y, defaultCellType);
             }
         }
+    }
+
+    public List<Cell> getMonsterCells() {
+        return monsterCells;
+    }
+
+    public void removeMonsterCells(Cell cell){
+        monsterCells.remove(cell);
+    }
+
+    public void updateMonsterCells(int index, Cell nextCell){
+        monsterCells.set(index, nextCell);
+    }
+
+    public void addMonsterCell(Cell monsterCell){
+        monsterCells.add(monsterCell);
     }
 
     public Cell getCell(int x, int y) {
