@@ -213,20 +213,27 @@ public class Main extends Application {
         return map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable();
     }
 
-    private void handleGameOver() {
-        if (hasWon){ System.out.println("won"); }
-        if (map.getPlayer().getHealth() <= 0) {
-            System.exit(1);
+    private boolean handleGameOver() {
+        if (hasWon){
+            map = MapLoader.loadMap("/won.txt");
+            return true;
         }
+        if (map.getPlayer().getHealth() <= 0) {
+            map = MapLoader.loadMap("/gameOver.txt");
+            return true;
+        }
+        return false;
     }
 
     private void MonstersMove() {
         if (map.getPlayer().getFreeze() > 0) {
             map.getPlayer().setFreeze(-1);
             proceedMonsterCounters();
-            handleGameOver();
-            refresh();
-            return;
+            if (handleGameOver()) {
+                 refreshFixed();
+            } else {
+                refresh();
+            }
         }
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
@@ -240,8 +247,11 @@ public class Main extends Application {
             }
             cell.getActor().act(map, index);
         }
-        handleGameOver();
-        refresh();
+        if (handleGameOver()) {
+             refreshFixed();
+        } else {
+            refresh();
+        }
     }
 
 
@@ -320,5 +330,21 @@ public class Main extends Application {
         map.getPlayer().setHealth(player.getHealth());
         map.getPlayer().setInventory(player.getInventory());
         MapLoader.decreaseLevel();
+    }
+
+    private void refreshFixed() {
+        context.setFill(Color.BLACK);
+        context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                Cell cell = map.getCell(x, y);
+                if (cell.getActor() != null) {
+                    Tiles.drawTile(context, cell.getActor(), x, y);
+                } else {
+                    Tiles.drawTile(context, cell, x, y);
+                }
+            }
+        }
+        healthLabel.setText("" + map.getPlayer().getHealth());
     }
 }

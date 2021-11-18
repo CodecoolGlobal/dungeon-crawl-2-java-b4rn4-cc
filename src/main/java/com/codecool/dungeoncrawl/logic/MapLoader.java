@@ -96,6 +96,39 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             map.setPrevDoor(new Door(cell, getPrevMap()));
                             break;
+                        case 'a':
+                            cell.setType(CellType.LETTERA);
+                            break;
+                        case 'g':
+                            cell.setType(CellType.LETTERG);
+                            break;
+                        case 'e':
+                            cell.setType(CellType.LETTERE);
+                            break;
+                        case 'n':
+                            cell.setType(CellType.LETTERM);
+                            break;
+                        case 'u':
+                            cell.setType(CellType.LETTERO);
+                            break;
+                        case 'v':
+                            cell.setType(CellType.LETTERV);
+                            break;
+                        case 'r':
+                            cell.setType(CellType.LETTERR);
+                            break;
+                        case 'd':
+                            cell.setType(CellType.DEAD);
+                            break;
+                        case 't':
+                            cell.setType(CellType.PILLARTOP);
+                            break;
+                        case 'j':
+                            cell.setType(CellType.PILLAR);
+                            break;
+                        case 'x':
+                            cell.setType(CellType.PILLARBOTTOM);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
