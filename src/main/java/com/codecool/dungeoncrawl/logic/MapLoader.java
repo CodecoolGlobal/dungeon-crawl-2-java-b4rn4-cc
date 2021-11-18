@@ -67,6 +67,11 @@ public class MapLoader {
                             new Boss(cell);
                             map.addMonsterCell(cell);
                             break;
+                        case 'a':
+                            cell.setType(CellType.FLOOR);
+                            new BossAdd(cell);
+                            map.addMonsterCell(cell);
+                            break;
                         case 'w':
                             cell.setType(CellType.FLOOR);
                             new Weapon(cell);
