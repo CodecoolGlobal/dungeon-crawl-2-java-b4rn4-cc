@@ -13,9 +13,9 @@ public class ImmortalSkeleton extends Monster{
     @Override
     public String getTileName() {
         if (isImmortal()) {
-            return "immortalSkeletonOn";
+            return "ImmortalSkeletonOn";
         } else {
-            return "immortalSkeletonOff";
+            return "ImmortalSkeletonOff";
         }
 
     }
@@ -27,7 +27,7 @@ public class ImmortalSkeleton extends Monster{
 
     public void act(GameMap map, int index){
         proceedCounter();
-        MonsterAct(map, index);
+        monsterAct(map, index);
     }
 
     public void proceedCounter(){
