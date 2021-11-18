@@ -34,7 +34,8 @@ public class Tiles {
         tileMap.put("ImmortalSkeletonOn", new Tile(24, 7));
         tileMap.put("The Boss", new Tile(24, 9));
         tileMap.put("Boss Add", new Tile(27, 8));
-        tileMap.put("Weapon", new Tile(0, 29));
+        tileMap.put("Sword", new Tile(0, 29));
+        tileMap.put("Axe", new Tile(6, 30));
         tileMap.put("Shield", new Tile(1,23));
         tileMap.put("Key", new Tile(16, 23));
         tileMap.put("Potion", new Tile(23, 23));
