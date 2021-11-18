@@ -7,6 +7,9 @@ import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class Player extends Actor {
     private Inventory inventory = new Inventory();
@@ -15,10 +18,14 @@ public class Player extends Actor {
     private GameMap thirdLevel;
     private boolean invalidMove = false;
     private int freeze = 0;
-    private String combatLog = "\n";
+    private List<String> combatLog = new LinkedList<>();
 
     public String getCombatLog() {
-        return combatLog;
+        String str = "";
+        for (String line : combatLog){
+            str += line + "\n";
+        }
+        return str;
     }
 
     public int getFreeze() {
@@ -53,7 +60,6 @@ public class Player extends Actor {
     }
 
     public void putItemInInventory(Item item){
-        System.out.println(item.getTileName());
         if (item.getTileName().equals("Key")){
             inventory.setKeys((Key) item);
         }else if (item.getTileName().equals("Weapon")){
@@ -108,9 +114,19 @@ public class Player extends Actor {
         String p1Name = getNameForCombat(p1);
         String p2Name = getNameForCombat(p2);
         if (isCrit){
-            combatLog += String.format("%s strikes %s Crit %s dmg\n",p1Name, p2Name, damage);
+            combatLog.add(String.format("%s strikes %s Crit %s dmg",p1Name, p2Name, damage));
         } else {
-            combatLog += String.format("%s strikes %s for %s dmg\n",p1Name, p2Name, damage);
+            combatLog.add(String.format("%s strikes %s for %s dmg",p1Name, p2Name, damage));
+        }
+        if (combatLog.size() == 23){
+            combatLog.remove(0);
+        }
+    }
+
+    public void addToCombatLog(String msg){
+        combatLog.add(msg + "");
+        if (combatLog.size() == 23){
+            combatLog.remove(0);
         }
     }
 
@@ -122,9 +138,6 @@ public class Player extends Actor {
         return name;
     }
 
-    public void addToCombatLog(String msg){
-        combatLog += msg + "\n";
-    }
 
     public String getTileName() {
         return "Player";
@@ -213,5 +226,23 @@ public class Player extends Actor {
 
     public void removeKeyFromInventory() {
         inventory.setKeys(null);
+    }
+
+    public void castFreeze(GameMap map){
+        map.removeFire();
+        map.mortalizeBoss();
+        map.getPlayer().setOnFireCount(0);
+        map.getPlayer().setFreeze(2);
+        map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
+        for (Cell cell : map.getMonsterCells()){
+            if (cell.getActor() instanceof Boss){
+//                map.getPlayer().addToCombatLog("Boss : Your pity snow spell has no\nreffect on me MUHAHAHA! ");
+            }
+        }
+    }
+
+    public void heal(GameMap map){
+        map.getPlayer().addHealth(5);
+        map.getPlayer().addToCombatLog("Player healed for 5 health points");
     }
 }
