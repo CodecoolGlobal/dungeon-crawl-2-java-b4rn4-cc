@@ -214,6 +214,7 @@ public class Main extends Application {
     }
 
     private void handleGameOver() {
+        if (hasWon){ System.out.println("won"); }
         if (map.getPlayer().getHealth() <= 0) {
             System.exit(1);
         }
@@ -230,6 +231,9 @@ public class Main extends Application {
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)) {
+                if (cell.getActor() instanceof Boss){
+                    hasWon = true;
+                }
                 cell.setActor(null);
                 map.removeMonsterCells(cell);
                 continue;
