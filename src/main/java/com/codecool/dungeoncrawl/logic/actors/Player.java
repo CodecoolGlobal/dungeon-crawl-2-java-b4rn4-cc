@@ -53,26 +53,27 @@ public class Player extends Actor {
     }
 
     public void putItemInInventory(Item item){
-        if (item.getTileName().equals("key")){
+        System.out.println(item.getTileName());
+        if (item.getTileName().equals("Key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName().equals("weapon")){
+        }else if (item.getTileName().equals("Weapon")){
             inventory.setWeapons((Weapon) item);
-        }else if(item.getTileName().equals("shield")){
+        }else if(item.getTileName().equals("Shield")){
             inventory.setShields((Shield) item);
-        }else if(item.getTileName().equals("potion")){
-            inventory.addConsumable("potion");
+        }else if(item.getTileName().equals("Potion")){
+            inventory.addConsumable("Potion");
         }
     }
 
     public boolean consumeItem(String item){
         if (item.equals("freeze")){
             if (inventory.getConsumable("freeze") > 0){
-                inventory.setConsumable("freeze");
+                inventory.useConsumable("freeze");
                 return true;
             }
         } else if (item.equals("potion")){
             if (inventory.getConsumable("potion") > 0){
-                inventory.setConsumable("potion");
+                inventory.useConsumable("potion");
                 return true;
             }
         }
@@ -104,11 +105,21 @@ public class Player extends Actor {
     }
 
     public void addToCombatLog(Actor p1, Actor p2, int damage, boolean isCrit){
+        String p1Name = getNameForCombat(p1);
+        String p2Name = getNameForCombat(p2);
         if (isCrit){
-            combatLog += String.format("%s strikes %s Crit %s dmg\n",p1.getTileName().charAt(0), p2.getTileName().charAt(0), damage);
+            combatLog += String.format("%s strikes %s Crit %s dmg\n",p1Name, p2Name, damage);
         } else {
-            combatLog += String.format("%s strikes %s for %s dmg\n",p1.getTileName().charAt(0), p2.getTileName().charAt(0), damage);
+            combatLog += String.format("%s strikes %s for %s dmg\n",p1Name, p2Name, damage);
         }
+    }
+
+    public String getNameForCombat(Actor actor){
+        String name = actor.getTileName();
+        if (actor instanceof ImmortalSkeleton){
+            name = "Immortal";
+        }
+        return name;
     }
 
     public void addToCombatLog(String msg){
@@ -116,7 +127,7 @@ public class Player extends Actor {
     }
 
     public String getTileName() {
-        return "player";
+        return "Player";
     }
 
 
@@ -135,7 +146,7 @@ public class Player extends Actor {
         if (collisionWithEnemy(nextCell)){
             combat(nextCell, this);
         } else if (canMove(nextCell)){
-            move(nextCell);
+            move(nextCell, this);
         } else {
             invalidMove = true;
         }
