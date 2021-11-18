@@ -268,17 +268,18 @@ public class Main extends Application {
                 player.removeKeyFromInventory();
                 map = MapLoader.loadMap(route);
 //                setupPlayer(player);
-                Player newPlayer = map.getPlayer();
                 /*player.setCell(newPlayer.getCell());
                 player.setX(newPlayer.getX());
                 player.setY(newPlayer.getY());
                 map.setPlayer(player);*/
-                newPlayer.setHealth(player.getHealth());
-                newPlayer.setInventory(player.getInventory());
+                Player newPlayer = map.getPlayer();
                 newPlayer.setFirstLevel(player.getFirstLevel());
                 newPlayer.setSecondLevel(player.getSecondLevel());
                 newPlayer.setThirdLevel(player.getThirdLevel());
             }
+            Player newPlayer = map.getPlayer();
+            newPlayer.setHealth(player.getHealth());
+            newPlayer.setInventory(player.getInventory());
             MapLoader.increaseLevel();
         } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
             if (MapLoader.getCurrentLevel() == 2) {
@@ -291,6 +292,8 @@ public class Main extends Application {
                 map.getPlayer().setThirdLevel(player.getThirdLevel());
             }
 //                setupPlayer(player);
+            map.getPlayer().setHealth(player.getHealth());
+            map.getPlayer().setInventory(player.getInventory());
             MapLoader.decreaseLevel();
         }
     }
