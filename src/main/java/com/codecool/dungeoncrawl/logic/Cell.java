@@ -43,6 +43,14 @@ public class Cell implements Drawable {
         return gameMap.getCell(x + dx, y + dy);
     }
 
+    public int getBoardWidth(){
+        return gameMap.getWidth();
+    }
+
+    public int getBoardHeight(){
+        return gameMap.getHeight();
+    }
+
     @Override
     public String getTileName() {
         return type.getTileName();

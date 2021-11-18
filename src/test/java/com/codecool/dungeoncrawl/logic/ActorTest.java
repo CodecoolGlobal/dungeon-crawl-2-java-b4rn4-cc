@@ -12,7 +12,7 @@ class ActorTest {
     @Test
     void moveUpdatesCells() {
         Player player = new Player(gameMap.getCell(1, 1));
-        player.setDirection(Direction.SOUTH);
+        player.setDirection(Direction.WEST);
         player.act();
 
         assertEquals(2, player.getX());
@@ -25,7 +25,7 @@ class ActorTest {
     void cannotMoveIntoWall() {
         gameMap.getCell(2, 1).setType(CellType.WALL);
         Player player = new Player(gameMap.getCell(1, 1));
-        player.setDirection(Direction.SOUTH);
+        player.setDirection(Direction.WEST);
         player.act();
 
         assertEquals(1, player.getX());
@@ -35,7 +35,7 @@ class ActorTest {
     @Test
     void cannotMoveOutOfMap() {
         Player player = new Player(gameMap.getCell(2, 1));
-        player.setDirection(Direction.SOUTH);
+        player.setDirection(Direction.NORTH);
         player.act();
 
         assertEquals(2, player.getX());
@@ -44,9 +44,9 @@ class ActorTest {
 
     @Test
     void cannotMoveIntoAnotherActor() {
-        Player player = new Player(gameMap.getCell(1, 1));
         Skeleton skeleton = new Skeleton(gameMap.getCell(2, 1));
-        player.setDirection(Direction.SOUTH);
+        Player player = new Player(gameMap.getCell(1, 1));
+        player.setDirection(Direction.WEST);
         player.act();
 
         assertEquals(1, player.getX());
