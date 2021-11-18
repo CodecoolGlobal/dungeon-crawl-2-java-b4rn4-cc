@@ -81,6 +81,11 @@ public class Main extends Application {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
+                if (map.getPlayer().getCell().getItem() != null) {
+                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
+                        handleMapChanging();
+                    }
+                }
                 refresh();
                 break;
             case DOWN:
@@ -106,6 +111,11 @@ public class Main extends Application {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
+                if (map.getPlayer().getCell().getItem() != null) {
+                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
+                        handleMapChanging();
+                    }
+                }
                 refresh();
                 break;
             case RIGHT:
@@ -113,6 +123,11 @@ public class Main extends Application {
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
+                }
+                if (map.getPlayer().getCell().getItem() != null) {
+                    if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
+                        handleMapChanging();
+                    }
                 }
                 map.getPlayer().setDirection(Direction.WEST);
                 playRound();

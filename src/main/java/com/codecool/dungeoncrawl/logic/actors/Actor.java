@@ -103,7 +103,7 @@ public abstract class Actor implements Drawable {
         int y = nextCell.getY();
         int width = nextCell.getBoardWidth();
         int height = nextCell.getBoardHeight();
-        return nextCell.getType() != CellType.WALL && nextCell.getActor() == null && x > 0 && y > 0 && x < width && y < height;
+        return nextCell.getType() != CellType.WALL && nextCell.getActor() == null && x >= 0 && y >= 0 && x < width && y < height;
     }
 
 
