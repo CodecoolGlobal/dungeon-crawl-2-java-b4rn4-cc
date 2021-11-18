@@ -7,10 +7,12 @@ import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
-import java.util.Objects;
 
 public class Player extends Actor {
-    private final Inventory inventory = new Inventory();
+    private Inventory inventory = new Inventory();
+    private GameMap firstLevel;
+    private GameMap secondLevel;
+    private GameMap thirdLevel;
     private boolean invalidMove = false;
     private int freeze = 0;
     private String combatLog = "\n";
@@ -39,6 +41,18 @@ public class Player extends Actor {
     public void setDirection(Player player){}
 
     public void setInventory(Item item){
+        this.inventory = inventory;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public void putItemInInventory(Item item){
         if (item.getTileName().equals("key")){
             inventory.setKeys((Key) item);
         }else if (item.getTileName().equals("weapon")){
@@ -46,7 +60,7 @@ public class Player extends Actor {
         }else if(item.getTileName().equals("shield")){
             inventory.setShields((Shield) item);
         }else if(item.getTileName().equals("potion")){
-            inventory.setPotions((Potion) item);
+            inventory.addConsumable("potion");
         }
     }
 
@@ -66,7 +80,7 @@ public class Player extends Actor {
     }
 
     public void pickUp() {
-        setInventory(getCell().getItem());
+        putItemInInventory(getCell().getItem());
         addToCombatLog(String.format("Player picked up a %s", getCell().getItem().getTileName()));
         getCell().setItem(null);
     }
@@ -157,4 +171,36 @@ public class Player extends Actor {
 
 
 
+
+    public boolean hasKey() {
+        return inventory.getKeys() != null;
+    }
+
+    public GameMap getFirstLevel() {
+        return firstLevel;
+    }
+
+    public GameMap getSecondLevel() {
+        return secondLevel;
+    }
+
+    public GameMap getThirdLevel() {
+        return thirdLevel;
+    }
+
+    public void setFirstLevel(GameMap firstLevel) {
+        this.firstLevel = firstLevel;
+    }
+
+    public void setSecondLevel(GameMap secondLevel) {
+        this.secondLevel = secondLevel;
+    }
+
+    public void setThirdLevel(GameMap thirdLevel) {
+        this.thirdLevel = thirdLevel;
+    }
+
+    public void removeKeyFromInventory() {
+        inventory.setKeys(null);
+    }
 }

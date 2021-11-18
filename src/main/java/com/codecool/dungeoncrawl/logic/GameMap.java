@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Door;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,8 @@ public class GameMap {
     private int height;
     private Cell[][] cells;
     private final List<Cell> monsterCells = new LinkedList<>();
+    private Door nextDoor;
+    private Door prevDoor;
 
     private Player player;
 
@@ -58,5 +61,21 @@ public class GameMap {
 
     public int getHeight() {
         return height;
+    }
+
+    public void setNextDoor(Door nextDoor) {
+        this.nextDoor = nextDoor;
+    }
+
+    public void setPrevDoor(Door prevDoor) {
+        this.prevDoor = prevDoor;
+    }
+
+    public Door getNextDoor() {
+        return nextDoor;
+    }
+
+    public Door getPrevDoor() {
+        return prevDoor;
     }
 }

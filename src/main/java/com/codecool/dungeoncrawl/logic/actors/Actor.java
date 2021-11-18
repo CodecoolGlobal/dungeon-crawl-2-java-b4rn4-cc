@@ -8,7 +8,7 @@ public abstract class Actor implements Drawable {
     protected Cell cell;
     protected static final Random r = new Random();
     protected Direction direction;
-    private int health = 10;
+    private int health;
     protected final int MAX_DAMAGE;
     protected final int MIN_DAMAGE;
     protected final int critChance;
@@ -125,6 +125,9 @@ public abstract class Actor implements Drawable {
         return cell.getNeighbor(dx, dy);
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
     public int getHealth() {
         return health;
@@ -145,4 +148,12 @@ public abstract class Actor implements Drawable {
     public int getY() {
         return cell.getY();
     }
+
+    public void setX(int x) {cell.setX(x);}
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
+
+    public void setY(int y) {cell.setY(y);}
 }

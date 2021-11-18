@@ -5,7 +5,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 public class Weapon extends Item{
 
     public Weapon(Cell cell){
-        super(cell);
+        super(cell, true);
     }
 
     @Override
