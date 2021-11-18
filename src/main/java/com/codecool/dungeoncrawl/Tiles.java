@@ -38,6 +38,17 @@ public class Tiles {
         tileMap.put("potion", new Tile(23, 23));
         tileMap.put("openedDoor", new Tile(8, 10));
         tileMap.put("closedDoor", new Tile(8, 11));
+        tileMap.put("pillarTop", new Tile(3, 11));
+        tileMap.put("pillar", new Tile(3, 12));
+        tileMap.put("pillarBottom", new Tile(3, 13));
+        tileMap.put("dead", new Tile(0, 14));
+        tileMap.put("letterG", new Tile(25, 30));
+        tileMap.put("letterA", new Tile(19, 30));
+        tileMap.put("letterM", new Tile(31, 30));
+        tileMap.put("letterE", new Tile(23, 30));
+        tileMap.put("letterO", new Tile(20, 31));
+        tileMap.put("letterV", new Tile(27, 31));
+        tileMap.put("letterR", new Tile(23, 31));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
