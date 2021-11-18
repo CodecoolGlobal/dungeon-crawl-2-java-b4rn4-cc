@@ -78,7 +78,6 @@ public class Main extends Application {
             case W:
                 map.getPlayer().setDirection(Direction.NORTH);
                 playRound();
-                map.getPlayer().move(0, -1);
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -89,12 +88,11 @@ public class Main extends Application {
             case S:
                 map.getPlayer().setDirection(Direction.SOUTH);
                 playRound();
-                map.getPlayer().move(0, 1);
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
                 }
-                if (map.getPlayer().getCell().getItem() != null){
+                if (map.getPlayer().getCell().getItem() != null) {
                     if (map.getPlayer().getCell().getItem().getTileName().equals("openedDoor")) {
                         handleMapChanging();
                     }
@@ -105,7 +103,6 @@ public class Main extends Application {
             case A:
                 map.getPlayer().setDirection(Direction.EAST);
                 playRound();
-                map.getPlayer().move(-1, 0);
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
@@ -113,16 +110,16 @@ public class Main extends Application {
                 refresh();
                 break;
             case RIGHT:
-                map.getPlayer().move(1, 0);
+            case D:
                 if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
                     pickUpButton.setVisible(true);
                     canvas.requestFocus();
-            case D:
+                }
                 map.getPlayer().setDirection(Direction.WEST);
                 playRound();
                 break;
             case E:
-                if (itemUnderPlayer()){
+                if (itemUnderPlayer()) {
                     pickUp();
                 }
                 break;
@@ -130,22 +127,14 @@ public class Main extends Application {
                 MonstersMove();
                 break;
             case F:
-                if (map.getPlayer().consumeItem("freeze")){
+                if (map.getPlayer().consumeItem("freeze")) {
                     map.getPlayer().setFreeze(2);
                     map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
                     printStats();
                 }
                 break;
-            case SPACE:
-                if (map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable()) {
-                    pickUp();
-                    canvas.requestFocus();
-                    pickUpButton.setVisible(false);
-                    refresh();
-                    break;
-                }
             case Q:
-                if (map.getPlayer().consumeItem("potion")){
+                if (map.getPlayer().consumeItem("potion")) {
                     map.getPlayer().addHealth(5);
                     map.getPlayer().addToCombatLog("Player healed for 5 health points");
                     printStats();
@@ -168,18 +157,18 @@ public class Main extends Application {
     private void refresh() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        int centerX = (int)(canvas.getWidth()/(Tiles.TILE_WIDTH*2));
-        int centerY = (int)(canvas.getHeight()/(Tiles.TILE_WIDTH*2)) - 1;
+        int centerX = (int) (canvas.getWidth() / (Tiles.TILE_WIDTH * 2));
+        int centerY = (int) (canvas.getHeight() / (Tiles.TILE_WIDTH * 2)) - 1;
         int[] shift = {0, 0};
-        if (map.getPlayer().getX() > centerX){
+        if (map.getPlayer().getX() > centerX) {
             shift[0] = map.getPlayer().getX() - centerX;
         }
-        if (map.getPlayer().getY() > centerY){
+        if (map.getPlayer().getY() > centerY) {
             shift[1] = map.getPlayer().getY() - centerY;
         }
         for (int x = 0; x + shift[0] < map.getWidth(); x++) {
-            for (int y = 0; y + shift [1] < map.getHeight(); y++) {
-                Cell cell = map.getCell(x+shift[0], y+shift[1]);
+            for (int y = 0; y + shift[1] < map.getHeight(); y++) {
+                Cell cell = map.getCell(x + shift[0], y + shift[1]);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
                 } else if (cell.getItem() != null) {
@@ -192,15 +181,15 @@ public class Main extends Application {
         printStats();
     }
 
-    private void printStats(){
+    private void printStats() {
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventory.setText("" + map.getPlayer().toString());
         combatLog.setText("" + map.getPlayer().getCombatLog());
     }
 
-    private void playRound(){
+    private void playRound() {
         map.getPlayer().act();
-        if (map.getPlayer().isInvalidMove()){
+        if (map.getPlayer().isInvalidMove()) {
             return;
         }
 
@@ -214,27 +203,27 @@ public class Main extends Application {
         MonstersMove();
     }
 
-    private boolean itemUnderPlayer(){
-        return map.getPlayer().getCell().getItem() != null;
+    private boolean itemUnderPlayer() {
+        return map.getPlayer().getCell().getItem() != null && map.getPlayer().getCell().getItem().isPackable();
     }
 
-    private void handleGameOver(){
-        if (map.getPlayer().getHealth() <= 0){
+    private void handleGameOver() {
+        if (map.getPlayer().getHealth() <= 0) {
             System.exit(1);
         }
     }
 
-    private void MonstersMove(){
-        if (map.getPlayer().getFreeze() > 0){
+    private void MonstersMove() {
+        if (map.getPlayer().getFreeze() > 0) {
             map.getPlayer().setFreeze(-1);
             proceedMonsterCounters();
             handleGameOver();
             refresh();
             return;
         }
-        for (int index = 0; index < map.getMonsterCells().size(); index++){
+        for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
-            if (isMonsterDead(cell)){
+            if (isMonsterDead(cell)) {
                 cell.setActor(null);
                 map.removeMonsterCells(cell);
                 continue;
@@ -246,63 +235,63 @@ public class Main extends Application {
     }
 
 
-    private void proceedMonsterCounters(){
-        for (Cell cell : map.getMonsterCells()){
-            if (cell.getActor() instanceof ImmortalSkeleton){
+    private void proceedMonsterCounters() {
+        for (Cell cell : map.getMonsterCells()) {
+            if (cell.getActor() instanceof ImmortalSkeleton) {
                 ((ImmortalSkeleton) cell.getActor()).proceedCounter();
             }
         }
     }
 
-    private boolean isMonsterDead(Cell cell){
+    private boolean isMonsterDead(Cell cell) {
         return cell.getActor().getHealth() <= 0;
     }
 
     private void handleMapChanging() {
-            route = map.getNextDoor().getMapTo();
-            Player player = map.getPlayer();
-            if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
-                if (MapLoader.getCurrentLevel() == 1 && player.getSecondLevel() != null) {
+        route = map.getNextDoor().getMapTo();
+        Player player = map.getPlayer();
+        if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
+            if (MapLoader.getCurrentLevel() == 1 && player.getSecondLevel() != null) {
+                player.setFirstLevel(map);
+                map = player.getSecondLevel();
+            } else if (MapLoader.getCurrentLevel() == 2 && player.getThirdLevel() != null) {
+                player.setSecondLevel(map);
+                map = player.getThirdLevel();
+            } else if (MapLoader.getCurrentLevel() == 3) {
+                player.setThirdLevel(map);
+            } else {
+                if (MapLoader.getCurrentLevel() == 1) {
                     player.setFirstLevel(map);
-                    map = player.getSecondLevel();
-                } else if (MapLoader.getCurrentLevel() == 2 && player.getThirdLevel() != null) {
+                } else if (MapLoader.getCurrentLevel() == 2) {
                     player.setSecondLevel(map);
-                    map = player.getThirdLevel();
-                } else if (MapLoader.getCurrentLevel() == 3){
-                    player.setThirdLevel(map);
-                } else {
-                    if (MapLoader.getCurrentLevel() == 1) {
-                        player.setFirstLevel(map);
-                    } else if (MapLoader.getCurrentLevel() == 2) {
-                        player.setSecondLevel(map);
-                    }
-                    player.removeKeyFromInventory();
-                    map = MapLoader.loadMap(route);
+                }
+                player.removeKeyFromInventory();
+                map = MapLoader.loadMap(route);
 //                setupPlayer(player);
-                    Player newPlayer = map.getPlayer();
+                Player newPlayer = map.getPlayer();
                 /*player.setCell(newPlayer.getCell());
                 player.setX(newPlayer.getX());
                 player.setY(newPlayer.getY());
                 map.setPlayer(player);*/
-                    newPlayer.setInventory(player.getInventory());
-                    newPlayer.setFirstLevel(player.getFirstLevel());
-                    newPlayer.setSecondLevel(player.getSecondLevel());
-                    newPlayer.setThirdLevel(player.getThirdLevel());
-                }
-                MapLoader.increaseLevel();
-            } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
-                if (MapLoader.getCurrentLevel() == 2) {
-                    player.setSecondLevel(map);
-                    map = player.getFirstLevel();
-                    map.getPlayer().setSecondLevel(player.getSecondLevel());
-                } else if (MapLoader.getCurrentLevel() == 3) {
-                    player.setThirdLevel(map);
-                    map = player.getSecondLevel();
-                    map.getPlayer().setThirdLevel(player.getThirdLevel());
-                }
-//                setupPlayer(player);
-                MapLoader.decreaseLevel();
+                newPlayer.setInventory(player.getInventory());
+                newPlayer.setFirstLevel(player.getFirstLevel());
+                newPlayer.setSecondLevel(player.getSecondLevel());
+                newPlayer.setThirdLevel(player.getThirdLevel());
             }
+            MapLoader.increaseLevel();
+        } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
+            if (MapLoader.getCurrentLevel() == 2) {
+                player.setSecondLevel(map);
+                map = player.getFirstLevel();
+                map.getPlayer().setSecondLevel(player.getSecondLevel());
+            } else if (MapLoader.getCurrentLevel() == 3) {
+                player.setThirdLevel(map);
+                map = player.getSecondLevel();
+                map.getPlayer().setThirdLevel(player.getThirdLevel());
+            }
+//                setupPlayer(player);
+            MapLoader.decreaseLevel();
+        }
     }
 
     private void setupPlayer(Player oldPlayer) {
