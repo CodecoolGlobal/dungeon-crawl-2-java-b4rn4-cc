@@ -1,5 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.logic.actors.Boss;
+import com.codecool.dungeoncrawl.logic.actors.ImmortalSkeleton;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
 
@@ -87,5 +89,13 @@ public class GameMap {
 
     public Door getPrevDoor() {
         return prevDoor;
+    }
+
+    public void mortalizeBoss(){
+        for (Cell cell : monsterCells){
+            if (cell.getActor() instanceof Boss){
+                ((Boss) cell.getActor()).mortalize();
+            }
+        }
     }
 }
