@@ -273,6 +273,7 @@ public class Main extends Application {
                 player.setX(newPlayer.getX());
                 player.setY(newPlayer.getY());
                 map.setPlayer(player);*/
+                newPlayer.setHealth(player.getHealth());
                 newPlayer.setInventory(player.getInventory());
                 newPlayer.setFirstLevel(player.getFirstLevel());
                 newPlayer.setSecondLevel(player.getSecondLevel());
