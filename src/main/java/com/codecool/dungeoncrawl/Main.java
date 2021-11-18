@@ -185,16 +185,16 @@ public class Main extends Application {
 
         MonstersMove();
 
+        if (hasPlayerEnteredDoor()){
+            handleMapChanging();
+        }
+
         if (handleGameOver()){
             refreshFixed();
-            return;
         } else {
             refresh();
         }
 
-        if (hasPlayerEnteredDoor()){
-            handleMapChanging();
-        }
     }
 
     private boolean itemUnderPlayer() {
