@@ -32,6 +32,14 @@ public class Inventory {
         }
     }
 
+    public void addConsumable(String item) {
+        if (item.equals("freeze")) {
+            freeze++;
+        } else if (item.equals("potion")) {
+            potion++;
+        }
+    }
+
     public Key getKeys() {
         return keys;
     }

@@ -61,7 +61,7 @@ public class Player extends Actor {
         }else if(item.getTileName().equals("shield")){
             inventory.setShields((Shield) item);
         }else if(item.getTileName().equals("potion")){
-            inventory.setPotions((Potion) item);
+            inventory.addConsumable("potion");
         }
     }
 
