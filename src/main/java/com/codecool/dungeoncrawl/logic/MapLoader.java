@@ -67,7 +67,7 @@ public class MapLoader {
                             new Boss(cell);
                             map.addMonsterCell(cell);
                             break;
-                        case 'a':
+                        case 'l':
                             cell.setType(CellType.FLOOR);
                             new BossAdd(cell);
                             map.addMonsterCell(cell);
