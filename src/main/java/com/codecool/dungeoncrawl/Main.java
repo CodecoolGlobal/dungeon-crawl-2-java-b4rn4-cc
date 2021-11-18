@@ -248,53 +248,11 @@ public class Main extends Application {
     }
 
     private void handleMapChanging() {
-        route = map.getNextDoor().getMapTo();
         Player player = map.getPlayer();
-        if (map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
-            if (MapLoader.getCurrentLevel() == 1 && player.getSecondLevel() != null) {
-                player.setFirstLevel(map);
-                map = player.getSecondLevel();
-            } else if (MapLoader.getCurrentLevel() == 2 && player.getThirdLevel() != null) {
-                player.setSecondLevel(map);
-                map = player.getThirdLevel();
-            } else if (MapLoader.getCurrentLevel() == 3) {
-                player.setThirdLevel(map);
-            } else {
-                if (MapLoader.getCurrentLevel() == 1) {
-                    player.setFirstLevel(map);
-                } else if (MapLoader.getCurrentLevel() == 2) {
-                    player.setSecondLevel(map);
-                }
-                player.removeKeyFromInventory();
-                map = MapLoader.loadMap(route);
-//                setupPlayer(player);
-                /*player.setCell(newPlayer.getCell());
-                player.setX(newPlayer.getX());
-                player.setY(newPlayer.getY());
-                map.setPlayer(player);*/
-                Player newPlayer = map.getPlayer();
-                newPlayer.setFirstLevel(player.getFirstLevel());
-                newPlayer.setSecondLevel(player.getSecondLevel());
-                newPlayer.setThirdLevel(player.getThirdLevel());
-            }
-            Player newPlayer = map.getPlayer();
-            newPlayer.setHealth(player.getHealth());
-            newPlayer.setInventory(player.getInventory());
-            MapLoader.increaseLevel();
+        if (map.getNextDoor() != null && map.getPlayer().getCell().equals(map.getNextDoor().getCell())) {
+            moveToNextMap(player);
         } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
-            if (MapLoader.getCurrentLevel() == 2) {
-                player.setSecondLevel(map);
-                map = player.getFirstLevel();
-                map.getPlayer().setSecondLevel(player.getSecondLevel());
-            } else if (MapLoader.getCurrentLevel() == 3) {
-                player.setThirdLevel(map);
-                map = player.getSecondLevel();
-                map.getPlayer().setThirdLevel(player.getThirdLevel());
-            }
-//                setupPlayer(player);
-            map.getPlayer().setHealth(player.getHealth());
-            map.getPlayer().setInventory(player.getInventory());
-            MapLoader.decreaseLevel();
+            moveToPreviousMap(player);
         }
     }
 
@@ -304,5 +262,53 @@ public class Main extends Application {
         oldPlayer.setX(newPlayer.getX());
         oldPlayer.setY(newPlayer.getY());
         map.setPlayer(oldPlayer);
+    }
+
+    private void moveToNextMap(Player player) {
+        route = map.getNextDoor().getMapTo();
+        if (MapLoader.getCurrentLevel() == 1 && player.getSecondLevel() != null) {
+            player.setFirstLevel(map);
+            map = player.getSecondLevel();
+            MapLoader.increaseLevel();
+        } else if (MapLoader.getCurrentLevel() == 2 && player.getThirdLevel() != null) {
+            player.setSecondLevel(map);
+            map = player.getThirdLevel();
+            MapLoader.increaseLevel();
+        } else if (MapLoader.getCurrentLevel() == 3) {
+            player.setThirdLevel(map);
+            MapLoader.increaseLevel();
+        } else {
+            if (MapLoader.getCurrentLevel() == 1) {
+                player.setFirstLevel(map);
+            } else if (MapLoader.getCurrentLevel() == 2) {
+                player.setSecondLevel(map);
+            }
+            player.removeKeyFromInventory();
+            MapLoader.increaseLevel();
+            map = MapLoader.loadMap(route);
+            Player newPlayer = map.getPlayer();
+            newPlayer.setFirstLevel(player.getFirstLevel());
+            newPlayer.setSecondLevel(player.getSecondLevel());
+            newPlayer.setThirdLevel(player.getThirdLevel());
+        }
+        Player newPlayer = map.getPlayer();
+        newPlayer.setHealth(player.getHealth());
+        newPlayer.setInventory(player.getInventory());
+    }
+
+    private void moveToPreviousMap(Player player) {
+        if (MapLoader.getCurrentLevel() == 2) {
+            player.setSecondLevel(map);
+            map = player.getFirstLevel();
+            map.getPlayer().setSecondLevel(player.getSecondLevel());
+        } else if (MapLoader.getCurrentLevel() == 3) {
+            player.setThirdLevel(map);
+            map = player.getSecondLevel();
+            map.getPlayer().setThirdLevel(player.getThirdLevel());
+        }
+//                setupPlayer(player);
+        map.getPlayer().setHealth(player.getHealth());
+        map.getPlayer().setInventory(player.getInventory());
+        MapLoader.decreaseLevel();
     }
 }
