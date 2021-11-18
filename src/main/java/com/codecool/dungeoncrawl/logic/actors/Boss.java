@@ -31,7 +31,7 @@ public class Boss extends Monster{
         if (canAttackPlayer()){
             Cell nextCell = getNextCell();
             combat(nextCell, map.getPlayer());
-        }else if (isOnlyBossAlive(map) && isImmortal){
+        }else if (isOnlyBossAlive(map) && isImmortal && waveCount != 3){
             startNextWave(map);
         }
     }
@@ -51,8 +51,8 @@ public class Boss extends Monster{
         return map.getMonsterCells().size() == 1 && map.getMonsterCells().get(0).getActor() instanceof Boss;
     }
 
-    public boolean playerBeatWaves(){
-        return waveCount == 3;
+    public boolean hasPlayerBeatWaves(GameMap map){
+        return waveCount == 3 && isOnlyBossAlive(map);
     }
 
     private void startNextWave(GameMap map){

@@ -62,7 +62,7 @@ public class Player extends Actor {
     public void putItemInInventory(Item item){
         if (item.getTileName().equals("Key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName().equals("Weapon")){
+        }else if (item.getTileName().equals("Sword") || item.getTileName().equals("Axe")){
             inventory.setWeapons((Weapon) item);
         }else if(item.getTileName().equals("Shield")){
             inventory.setShields((Shield) item);
@@ -87,9 +87,14 @@ public class Player extends Actor {
     }
 
     public void pickUp() {
+        Weapon oldWeapon = null;
+        if (getCell().getItem() instanceof Weapon && inventory.getWeapons() != null){
+            oldWeapon = inventory.getWeapons();
+        }
+        putItemInInventory(getCell().getItem());
         putItemInInventory(getCell().getItem());
         addToCombatLog(String.format("Player picked up a %s", getCell().getItem().getTileName()));
-        getCell().setItem(null);
+        getCell().setItem(oldWeapon);
     }
 
     @Override
@@ -99,10 +104,10 @@ public class Player extends Actor {
             result += "key: 1\n";
         }
         if (inventory.getWeapons() != null){
-            result += "weapon: 1\n";
+            result += String.format("%s\n", inventory.getWeapons().getTileName());
         }
         if (inventory.getShields() != null){
-            result += "shield: 1\n";
+            result += "Shield\n";
         }
         result += String.format("potions: %s\n", inventory.getConsumable("potion"));
         result += String.format("freeze: %s\n", inventory.getConsumable("freeze"));
@@ -118,14 +123,14 @@ public class Player extends Actor {
         } else {
             combatLog.add(String.format("%s strikes %s for %s dmg",p1Name, p2Name, damage));
         }
-        if (combatLog.size() == 23){
+        if (combatLog.size() == 20){
             combatLog.remove(0);
         }
     }
 
     public void addToCombatLog(String msg){
         combatLog.add(msg + "");
-        if (combatLog.size() == 23){
+        if (combatLog.size() == 20){
             combatLog.remove(0);
         }
     }
@@ -233,16 +238,16 @@ public class Player extends Actor {
         map.mortalizeBoss();
         map.getPlayer().setOnFireCount(0);
         map.getPlayer().setFreeze(2);
-        map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
+        map.getPlayer().addToCombatLog(String.format("Player Cast Freeze for %s turns", map.getPlayer().inventory.getFreezeValue()));
         for (Cell cell : map.getMonsterCells()){
             if (cell.getActor() instanceof Boss){
-//                map.getPlayer().addToCombatLog("Boss : Your pity snow spell has no\nreffect on me MUHAHAHA! ");
+                map.getPlayer().addToCombatLog("Boss : Your pity snow spell has no\neffect on me MUHAHAHA! ");
             }
         }
     }
 
     public void heal(GameMap map){
-        map.getPlayer().addHealth(5);
+        map.getPlayer().addHealth(map.getPlayer().getInventory().getPotionValue());
         map.getPlayer().addToCombatLog("Player healed for 5 health points");
     }
 }

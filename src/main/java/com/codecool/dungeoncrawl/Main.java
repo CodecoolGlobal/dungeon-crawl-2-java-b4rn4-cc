@@ -7,6 +7,8 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.items.Door;
+import com.codecool.dungeoncrawl.logic.items.Shield;
+import com.codecool.dungeoncrawl.logic.items.Weapon;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -123,6 +125,21 @@ public class Main extends Application {
                     printStats();
                 }
                 break;
+            case I:
+                Player player = map.getPlayer();
+                player.addToCombatLog("");
+                player.addToCombatLog(String.format("Potion: Heals for %s", player.getInventory().getPotionValue()));
+                player.addToCombatLog(String.format("Freeze: Stuns monsters for %s steps", player.getInventory().getFreezeValue()));
+                if (player.getInventory().getWeapons() != null){
+                    Weapon weapon = player.getInventory().getWeapons();
+                    player.addToCombatLog(String.format("%s: Damage: %s / Crit: %s%%",weapon.getTileName(), weapon.getDamage(), weapon.getCrit()));
+                }
+                if (player.getInventory().getShields() != null){
+                    Shield shield = player.getInventory().getShields();
+                    player.addToCombatLog(String.format("%s: Provides %s flat damage reduction",shield.getTileName(), shield.getFlatDefense()));
+                }
+                player.addToCombatLog("");
+                refresh();
         }
     }
 
@@ -220,10 +237,6 @@ public class Main extends Application {
             proceedMonsterCounters();
             return;
         }
-        if (hasPlayerBeatWaves()){
-            map.removeFire();
-            ((Boss) map.getMonsterCells().get(0).getActor()).mortalize();
-        }
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)) {
@@ -236,13 +249,18 @@ public class Main extends Application {
             }
             cell.getActor().act(map, index);
         }
+
+        if (hasPlayerBeatWaves()){
+            map.removeFire();
+            ((Boss) map.getMonsterCells().get(0).getActor()).mortalize();
+        }
     }
 
     private boolean hasPlayerBeatWaves(){
         if (map.getMonsterCells().size() == 1){
             Actor monster = map.getMonsterCells().get(0).getActor();
             if (monster instanceof Boss){
-                return ((Boss) monster).playerBeatWaves();
+                return ((Boss) monster).hasPlayerBeatWaves(map);
             }
         }
         return false;

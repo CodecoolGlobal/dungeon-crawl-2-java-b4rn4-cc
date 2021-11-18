@@ -3,21 +3,27 @@ package com.codecool.dungeoncrawl.logic.items;
 import com.codecool.dungeoncrawl.logic.Cell;
 
 public class Weapon extends Item{
+    private final int damage;
+    private final int crit;
+    private final String name;
 
-    public Weapon(Cell cell){
+    public Weapon(Cell cell, String name, int damage, int crit){
         super(cell, true);
+        this.damage = damage;
+        this.crit = crit;
+        this.name = name;
     }
 
     @Override
     public String getTileName() {
-        return "Weapon";
+        return name;
     }
 
     public int getDamage() {
-        return 10;
+        return damage;
     }
 
     public int getCrit() {
-        return 10;
+        return crit;
     }
 }
