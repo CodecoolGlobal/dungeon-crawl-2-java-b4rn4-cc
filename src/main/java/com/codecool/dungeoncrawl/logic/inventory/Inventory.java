@@ -1,11 +1,9 @@
 package com.codecool.dungeoncrawl.logic.inventory;
 
 import com.codecool.dungeoncrawl.logic.items.Key;
-import com.codecool.dungeoncrawl.logic.items.Potion;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 
-import java.util.ArrayList;
 
 public class Inventory {
     private Key keys = null;
@@ -13,7 +11,6 @@ public class Inventory {
     private Shield shields = null;
     private int freeze = 1;
     private int potion = 2;
-    private ArrayList<Potion> potions = new ArrayList();
 
     public int getConsumable(String item){
         if (item.equals("freeze")){
@@ -62,14 +59,6 @@ public class Inventory {
 
     public void setShields(Shield shields) {
         this.shields = shields;
-    }
-
-    public ArrayList<Potion> getPotions() {
-        return potions;
-    }
-
-    public void setPotions(Potion potions) {
-        this.potions.add(potions);
     }
 }
 

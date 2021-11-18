@@ -7,7 +7,6 @@ import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
-import java.util.Objects;
 
 public class Player extends Actor {
     private Inventory inventory = new Inventory();
