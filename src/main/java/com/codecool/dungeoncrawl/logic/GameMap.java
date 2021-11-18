@@ -1,5 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.logic.actors.Boss;
+import com.codecool.dungeoncrawl.logic.actors.ImmortalSkeleton;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
 
@@ -23,6 +25,16 @@ public class GameMap {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 cells[x][y] = new Cell(this, x, y, defaultCellType);
+            }
+        }
+    }
+
+    public void removeFire(){
+        for (int row = 0; row < width; row++){
+            for (int col = 0; col < height; col++){
+                if (cells[row][col].getType() == CellType.FIRE){
+                    cells[row][col].setType(CellType.FLOOR);
+                }
             }
         }
     }
@@ -77,5 +89,13 @@ public class GameMap {
 
     public Door getPrevDoor() {
         return prevDoor;
+    }
+
+    public void mortalizeBoss(){
+        for (Cell cell : monsterCells){
+            if (cell.getActor() instanceof Boss){
+                ((Boss) cell.getActor()).mortalize();
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ public abstract class Monster extends Actor{
 
     public abstract void act(GameMap map, int index);
 
-    public void MonsterAct(GameMap map, int index) {
+    public void monsterAct(GameMap map, int index) {
         int tryMove = 2;
         while (tryMove > 0){
             setDirection(map.getPlayer());
@@ -29,7 +29,7 @@ public abstract class Monster extends Actor{
                 combat(nextCell, map.getPlayer());
                 return;
             } else if (canMove(nextCell)){
-                move(nextCell);
+                move(nextCell, map.getPlayer());
                 map.updateMonsterCells(index, nextCell);
                 return;
             }

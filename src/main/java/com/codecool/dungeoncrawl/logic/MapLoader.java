@@ -37,6 +37,9 @@ public class MapLoader {
                         case '#':
                             cell.setType(CellType.WALL);
                             break;
+                        case '-':
+                            cell.setType(CellType.FIRE);
+                            break;
                         case '.':
                             cell.setType(CellType.FLOOR);
                             break;
@@ -62,6 +65,11 @@ public class MapLoader {
                         case 'b':
                             cell.setType(CellType.FLOOR);
                             new Boss(cell);
+                            map.addMonsterCell(cell);
+                            break;
+                        case 'a':
+                            cell.setType(CellType.FLOOR);
+                            new BossAdd(cell);
                             map.addMonsterCell(cell);
                             break;
                         case 'w':

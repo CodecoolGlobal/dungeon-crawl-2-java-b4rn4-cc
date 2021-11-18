@@ -11,15 +11,15 @@ public class FastSkeleton extends Monster{
 
     @Override
     public String getTileName() {
-        return "fastSkeleton";
+        return "Fast Boi";
     }
 
 
     public void act(GameMap map, int index){
         if (isPlayerInRange(map.getPlayer(), getX(), getY())){
-            MonsterAct(map, index);
+            monsterAct(map, index);
         }
-        MonsterAct(map, index);
+        monsterAct(map, index);
     }
 
     @Override

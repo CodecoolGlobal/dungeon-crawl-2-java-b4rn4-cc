@@ -5,6 +5,8 @@ import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Boss;
+import com.codecool.dungeoncrawl.logic.actors.FastSkeleton;
 import com.codecool.dungeoncrawl.logic.actors.ImmortalSkeleton;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
@@ -33,6 +35,7 @@ public class Main extends Application {
     Label inventory = new Label();
     Label combatLog = new Label();
     Button pickUpButton = new Button("Pick Up");
+    private boolean hasWon = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -41,7 +44,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane ui = new GridPane();
-        ui.setPrefWidth(200);
+        ui.setPrefWidth(300);
         ui.setPadding(new Insets(10));
 
         ui.add(new Label("Health: "), 0, 0);
@@ -142,9 +145,13 @@ public class Main extends Application {
                 break;
             case F:
                 if (map.getPlayer().consumeItem("freeze")) {
+                    map.removeFire();
+                    map.mortalizeBoss();
+                    map.getPlayer().setOnFireCount(0);
                     map.getPlayer().setFreeze(2);
                     map.getPlayer().addToCombatLog("Player Cast Freeze for 2 turns");
                     printStats();
+                    refresh();
                 }
                 break;
             case Q:
@@ -222,6 +229,10 @@ public class Main extends Application {
     }
 
     private boolean handleGameOver() {
+        if (hasWon){
+            map = MapLoader.loadMap("/won.txt");
+            return true;
+        }
         if (map.getPlayer().getHealth() <= 0) {
             map = MapLoader.loadMap("/gameOver.txt");
             return true;
@@ -242,6 +253,9 @@ public class Main extends Application {
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)) {
+                if (cell.getActor() instanceof Boss){
+                    hasWon = true;
+                }
                 cell.setActor(null);
                 map.removeMonsterCells(cell);
                 continue;

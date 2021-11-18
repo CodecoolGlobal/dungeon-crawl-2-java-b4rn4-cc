@@ -16,17 +16,18 @@ public class Skeleton extends Monster {
 
     @Override
     public String getTileName() {
-        return "skeleton";
+        return "Skeleton";
     }
 
     public void act(GameMap map, int index){
-        MonsterAct(map, index);
+        monsterAct(map, index);
     }
 
     @Override
     protected void SetAlternativeDir() {
-        setValidIndex(directionIndex + 1);
-        direction = Direction.values()[directionIndex / 2];
+        direction = Direction.NONE;
+//        setValidIndex(directionIndex + 1);
+//        direction = Direction.values()[directionIndex / 2];
     }
 
     private void setValidIndex(int index){

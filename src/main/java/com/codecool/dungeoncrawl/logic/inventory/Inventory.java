@@ -21,19 +21,20 @@ public class Inventory {
         return 0;
     }
 
-    public void setConsumable(String item){
-        if (item.equals("freeze")){
-            freeze--;
-        } else if (item.equals("potion")){
-            potion--;
-        }
-    }
 
     public void addConsumable(String item) {
         if (item.equals("freeze")) {
             freeze++;
         } else if (item.equals("potion")) {
             potion++;
+        }
+    }
+
+    public void useConsumable(String item) {
+        if (item.equals("freeze")) {
+            freeze--;
+        } else if (item.equals("potion")) {
+            potion--;
         }
     }
 
