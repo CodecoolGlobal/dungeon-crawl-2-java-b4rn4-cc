@@ -7,6 +7,8 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.items.Door;
+import com.codecool.dungeoncrawl.logic.items.Shield;
+import com.codecool.dungeoncrawl.logic.items.Weapon;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -220,10 +222,6 @@ public class Main extends Application {
             proceedMonsterCounters();
             return;
         }
-        if (hasPlayerBeatWaves()){
-            map.removeFire();
-            ((Boss) map.getMonsterCells().get(0).getActor()).mortalize();
-        }
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)) {
@@ -236,13 +234,18 @@ public class Main extends Application {
             }
             cell.getActor().act(map, index);
         }
+
+        if (hasPlayerBeatWaves()){
+            map.removeFire();
+            ((Boss) map.getMonsterCells().get(0).getActor()).mortalize();
+        }
     }
 
     private boolean hasPlayerBeatWaves(){
         if (map.getMonsterCells().size() == 1){
             Actor monster = map.getMonsterCells().get(0).getActor();
             if (monster instanceof Boss){
-                return ((Boss) monster).playerBeatWaves();
+                return ((Boss) monster).hasPlayerBeatWaves(map);
             }
         }
         return false;
