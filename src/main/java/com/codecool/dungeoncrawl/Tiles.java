@@ -36,7 +36,7 @@ public class Tiles {
         tileMap.put("Spider", new Tile(27, 8));
         tileMap.put("Frostmourne", new Tile(0, 29));
         tileMap.put("Shadowmourne", new Tile(6, 30));
-        tileMap.put("the blade of Azzinoth", new Tile(0, 28));
+        tileMap.put("Kingslayer", new Tile(0, 28));
         tileMap.put("Wooden shield", new Tile(1,23));
         tileMap.put("Iron shield", new Tile(4,23));
         tileMap.put("Key", new Tile(16, 23));

@@ -79,7 +79,7 @@ public class MapLoader {
                             break;
                         case 'I':
                             cell.setType(CellType.FLOOR);
-                            new LootSkeleton(cell, "the blade of Azzinoth", 3, 5);
+                            new LootSkeleton(cell, "Kingslayer", 3, 5);
                             map.addMonsterCell(cell);
                             break;
                         case 'J':
