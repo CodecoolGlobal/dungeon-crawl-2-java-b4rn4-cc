@@ -36,9 +36,12 @@ public class Tiles {
         tileMap.put("Boss Add", new Tile(27, 8));
         tileMap.put("Sword", new Tile(0, 29));
         tileMap.put("Axe", new Tile(6, 30));
-        tileMap.put("Shield", new Tile(1,23));
+        tileMap.put("Dagger", new Tile(0, 28));
+        tileMap.put("Wooden shield", new Tile(1,23));
+        tileMap.put("Iron shield", new Tile(4,23));
         tileMap.put("Key", new Tile(16, 23));
-        tileMap.put("Potion", new Tile(23, 23));
+        tileMap.put("Freeze spell", new Tile(16, 25));
+        tileMap.put("Potion", new Tile(23, 22));
         tileMap.put("openedDoor", new Tile(8, 10));
         tileMap.put("closedDoor", new Tile(8, 11));
         tileMap.put("pillarTop", new Tile(3, 11));

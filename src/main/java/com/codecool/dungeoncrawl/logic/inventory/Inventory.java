@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.logic.inventory;
 
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
@@ -9,8 +10,8 @@ public class Inventory {
     private Key keys = null;
     private Weapon weapons = null;
     private Shield shields = null;
-    private int freeze = 1;
-    private int potion = 2;
+    private int freeze = 0;
+    private int potion = 1;
 
     public int getConsumable(String item){
         if (item.equals("freeze")){
@@ -22,7 +23,7 @@ public class Inventory {
     }
 
 
-    public void addConsumable(String item) {
+    public void addConsumable(Player player, String item) {
         if (item.equals("freeze")) {
             freeze++;
         } else if (item.equals("potion")) {

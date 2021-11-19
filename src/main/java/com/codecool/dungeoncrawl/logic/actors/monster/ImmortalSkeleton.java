@@ -1,4 +1,4 @@
-package com.codecool.dungeoncrawl.logic.actors;
+package com.codecool.dungeoncrawl.logic.actors.monster;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
@@ -6,8 +6,8 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 public class ImmortalSkeleton extends Monster{
     private int counter = 0;
 
-    public ImmortalSkeleton(Cell cell) {
-        super(cell, 5, 7, 8, 2);
+    public ImmortalSkeleton(Cell cell, int aggroRange) {
+        super(cell, 8, 4, 6, aggroRange);
     }
 
     @Override

@@ -3,16 +3,21 @@ package com.codecool.dungeoncrawl.logic.items;
 import com.codecool.dungeoncrawl.logic.Cell;
 
 public class Shield extends Item{
-    public Shield(Cell cell){
+    private final int defense;
+    private final String name;
+
+    public Shield(Cell cell, String name, int defense){
         super(cell, true);
+        this.defense = defense;
+        this.name = name;
     }
 
     public int getFlatDefense(){
-        return 3;
+        return defense;
     }
 
     @Override
     public String getTileName() {
-        return "Shield";
+        return name;
     }
 }

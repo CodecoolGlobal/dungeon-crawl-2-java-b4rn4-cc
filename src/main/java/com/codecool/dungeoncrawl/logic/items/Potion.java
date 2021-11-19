@@ -1,10 +1,11 @@
 package com.codecool.dungeoncrawl.logic.items;
 
+
 import com.codecool.dungeoncrawl.logic.Cell;
 
 public class Potion extends Item{
-    public Potion(Cell cell){
-        super(cell, true);
+    public Potion(Cell cell, boolean packable) {
+        super(cell, packable);
     }
 
     @Override

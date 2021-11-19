@@ -1,8 +1,10 @@
-package com.codecool.dungeoncrawl.logic.actors;
+package com.codecool.dungeoncrawl.logic.actors.monster;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Direction;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 
 
 public class Boss extends Monster{
@@ -10,7 +12,7 @@ public class Boss extends Monster{
     private boolean isImmortal = true;
 
     public Boss(Cell cell) {
-        super(cell, 30, 5, 7, 1);
+        super(cell, 35, 5, 7, 1);
     }
 
 
@@ -62,7 +64,7 @@ public class Boss extends Monster{
     }
 
     private void givePlayerPotion(GameMap map){
-        map.getPlayer().getInventory().addConsumable("potion");
+        map.getPlayer().getInventory().addConsumable(map.getPlayer(), "potion");
         map.getPlayer().addToCombatLog("Player received a potion");
     }
 
@@ -81,7 +83,7 @@ public class Boss extends Monster{
     }
 
     private int getRandom(int max, int min){
-        return r.nextInt(max + 1 - min) + min;
+        return Actor.r.nextInt(max + 1 - min) + min;
     }
 
     public void mortalize(){
