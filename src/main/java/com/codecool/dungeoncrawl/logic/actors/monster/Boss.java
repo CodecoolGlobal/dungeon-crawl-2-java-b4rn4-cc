@@ -12,7 +12,7 @@ public class Boss extends Monster{
     private boolean isImmortal = true;
 
     public Boss(Cell cell) {
-        super(cell, 35, 5, 7, 1);
+        super(cell, 35, 5, 7, 2);
     }
 
 
@@ -21,7 +21,7 @@ public class Boss extends Monster{
         if (isImmortal){
             return "ImmortalSkeletonOn";
         }
-        return "The Boss";
+        return "Witch";
     }
 
     @Override

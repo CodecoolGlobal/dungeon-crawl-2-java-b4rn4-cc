@@ -53,7 +53,8 @@ public abstract class Actor implements Drawable {
     }
 
     public void getHit(Actor actor, int damage, String cause, Player player){
-        health -= getActualDamage(damage);
+        damage = getActualDamage(damage);
+        health -= damage;
         String name = player.getNameForCombat(actor);
         player.addToCombatLog(String.format("%s suffered %s damage from %s", name, damage, cause));
     }
@@ -182,7 +183,7 @@ public abstract class Actor implements Drawable {
             onFireCount = 3;
         }
         if (onFireCount > 0){
-            getHit(this,5, "Fire", player);
+            getHit(this,6, "Fire", player);
             onFireCount--;
         }
     }

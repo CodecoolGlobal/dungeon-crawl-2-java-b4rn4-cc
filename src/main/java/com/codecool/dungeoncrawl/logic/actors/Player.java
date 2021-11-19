@@ -64,8 +64,10 @@ public class Player extends Actor {
     public void putItemInInventory(Player player, Item item){
         if (item.getTileName().equals("Key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName().equals("Sword") || item.getTileName().equals("Axe") || item.getTileName().equals("Dagger")){
+        }else if (item.getTileName().equals("Frostmourne") || item.getTileName().equals("Shadowmourne") || item.getTileName().equals("the blade of Azzinoth")){
             inventory.setWeapons((Weapon) item);
+            addToCombatLog(String.format("Player picked up %s!", item.getTileName()));
+            return;
         }else if(item.getTileName().equals("Wooden shield") || item.getTileName().equals("Iron shield")){
             inventory.setShields((Shield) item);
         }else if(item.getTileName().equals("Freeze spell")){
@@ -113,7 +115,7 @@ public class Player extends Actor {
             result += String.format("%s\n", inventory.getWeapons().getTileName());
         }
         if (inventory.getShields() != null){
-            result += "Shield\n";
+            result += String.format("%s\n", inventory.getShields().getTileName());
         }
         result += String.format("potions: %s\n", inventory.getConsumable("potion"));
         result += String.format("freeze: %s\n", inventory.getConsumable("freeze"));
@@ -145,6 +147,8 @@ public class Player extends Actor {
         String name = actor.getTileName();
         if (actor instanceof ImmortalSkeleton){
             name = "Immortal";
+        } else if (actor instanceof Boss){
+            name = "Witch";
         }
         return name;
     }
@@ -244,7 +248,7 @@ public class Player extends Actor {
         map.mortalizeBoss();
         map.getPlayer().setOnFireCount(0);
         map.getPlayer().setFreeze(2);
-        map.getPlayer().addToCombatLog(String.format("Player Cast Freeze for %s turns", map.getPlayer().inventory.getFreezeValue()));
+        map.getPlayer().addToCombatLog(String.format("Player froze enemies for %s turns", map.getPlayer().inventory.getFreezeValue()));
         for (Cell cell : map.getMonsterCells()){
             if (cell.getActor() instanceof Boss){
                 map.getPlayer().addToCombatLog("Boss : Your pity snow spell has no\neffect on me MUHAHAHA! ");

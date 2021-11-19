@@ -79,7 +79,7 @@ public class MapLoader {
                             break;
                         case 'I':
                             cell.setType(CellType.FLOOR);
-                            new LootSkeleton(cell, "Dagger", 3, 5);
+                            new LootSkeleton(cell, "the blade of Azzinoth", 3, 5);
                             map.addMonsterCell(cell);
                             break;
                         case 'J':
@@ -103,11 +103,11 @@ public class MapLoader {
                             break;
                         case 'w':
                             cell.setType(CellType.FLOOR);
-                            new Weapon(cell, "Sword", 10, 10);
+                            new Weapon(cell, "Frostmourne", 10, 10);
                             break;
                         case 'X':
                             cell.setType(CellType.FLOOR);
-                            new Weapon(cell, "Axe", 30, 100);
+                            new Weapon(cell, "Shadowmourne", 30, 100);
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);

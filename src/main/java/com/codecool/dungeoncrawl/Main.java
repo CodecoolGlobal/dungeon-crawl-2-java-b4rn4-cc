@@ -130,23 +130,7 @@ public class Main extends Application {
                 }
                 break;
             case I:
-                Player player = map.getPlayer();
-                player.addToCombatLog("");
-                player.addToCombatLog(String.format("Potion: Heals for %s", player.getInventory().getPotionValue()));
-                player.addToCombatLog(String.format("Freeze: Stuns monsters for %s steps", player.getInventory().getFreezeValue()));
-                if (player.getInventory().getWeapons() != null){
-                    Weapon weapon = player.getInventory().getWeapons();
-                    player.addToCombatLog(String.format("%s: Damage: %s / Crit: %s%%",weapon.getTileName(), weapon.getDamage(), weapon.getCrit()));
-                }
-                if (player.getInventory().getShields() != null){
-                    Shield shield = player.getInventory().getShields();
-                    player.addToCombatLog(String.format("%s: Provides %s damage reduction",shield.getTileName(), shield.getFlatDefense()));
-                }
-                if (player.getInventory().getKeys() != null){
-                    Key key = player.getInventory().getKeys();
-                    player.addToCombatLog(String.format("%s: opens a door", key.getTileName()));
-                }
-                player.addToCombatLog("");
+                addInventoryLog();
                 refresh();
         }
     }
@@ -310,6 +294,26 @@ public class Main extends Application {
         } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
             moveToPreviousMap(player);
         }
+    }
+
+    private void addInventoryLog(){
+        Player player = map.getPlayer();
+        player.addToCombatLog("");
+        player.addToCombatLog(String.format("Potion: Heals for %s", player.getInventory().getPotionValue()));
+        player.addToCombatLog(String.format("Freeze: Stuns monsters for %s steps", player.getInventory().getFreezeValue()));
+        if (player.getInventory().getWeapons() != null){
+            Weapon weapon = player.getInventory().getWeapons();
+            player.addToCombatLog(String.format("%s: Damage: %s / Crit: %s%%",weapon.getTileName(), weapon.getDamage(), weapon.getCrit()));
+        }
+        if (player.getInventory().getShields() != null){
+            Shield shield = player.getInventory().getShields();
+            player.addToCombatLog(String.format("%s: %s damage reduction",shield.getTileName(), shield.getFlatDefense()));
+        }
+        if (player.getInventory().getKeys() != null){
+            Key key = player.getInventory().getKeys();
+            player.addToCombatLog(String.format("%s: opens a door", key.getTileName()));
+        }
+        player.addToCombatLog("");
     }
 
     private void setupPlayer(Player oldPlayer) {

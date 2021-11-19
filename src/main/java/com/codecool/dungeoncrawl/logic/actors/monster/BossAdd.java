@@ -16,7 +16,7 @@ public class BossAdd extends Monster{
 
     @Override
     public String getTileName() {
-        return "Boss Add";
+        return "Spider";
     }
 
 
