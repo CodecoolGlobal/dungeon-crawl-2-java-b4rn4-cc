@@ -6,7 +6,11 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.actors.monster.Boss;
+import com.codecool.dungeoncrawl.logic.actors.monster.ImmortalSkeleton;
+import com.codecool.dungeoncrawl.logic.actors.monster.LootSkeleton;
 import com.codecool.dungeoncrawl.logic.items.Door;
+import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 import javafx.application.Application;
@@ -126,19 +130,7 @@ public class Main extends Application {
                 }
                 break;
             case I:
-                Player player = map.getPlayer();
-                player.addToCombatLog("");
-                player.addToCombatLog(String.format("Potion: Heals for %s", player.getInventory().getPotionValue()));
-                player.addToCombatLog(String.format("Freeze: Stuns monsters for %s steps", player.getInventory().getFreezeValue()));
-                if (player.getInventory().getWeapons() != null){
-                    Weapon weapon = player.getInventory().getWeapons();
-                    player.addToCombatLog(String.format("%s: Damage: %s / Crit: %s%%",weapon.getTileName(), weapon.getDamage(), weapon.getCrit()));
-                }
-                if (player.getInventory().getShields() != null){
-                    Shield shield = player.getInventory().getShields();
-                    player.addToCombatLog(String.format("%s: Provides %s flat damage reduction",shield.getTileName(), shield.getFlatDefense()));
-                }
-                player.addToCombatLog("");
+                addInventoryLog();
                 refresh();
         }
     }
@@ -232,28 +224,37 @@ public class Main extends Application {
     }
 
     private void MonstersMove() {
-        if (map.getPlayer().getFreeze() > 0) {
-            map.getPlayer().setFreeze(-1);
-            proceedMonsterCounters();
-            return;
-        }
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)) {
                 if (cell.getActor() instanceof Boss){
                     hasWon = true;
                 }
+                if (cell.getActor() instanceof LootSkeleton){
+                    ((LootSkeleton) cell.getActor()).getLoot(map, cell);
+                }
                 cell.setActor(null);
                 map.removeMonsterCells(cell);
                 continue;
             }
-            cell.getActor().act(map, index);
+            if (!isMapFrozen()){
+                cell.getActor().act(map, index);
+            }
         }
 
         if (hasPlayerBeatWaves()){
             map.removeFire();
             ((Boss) map.getMonsterCells().get(0).getActor()).mortalize();
         }
+
+        if (isMapFrozen()) {
+            map.getPlayer().setFreeze(-1);
+            proceedMonsterCounters();
+        }
+    }
+
+    private boolean isMapFrozen(){
+        return map.getPlayer().getFreeze() > 0;
     }
 
     private boolean hasPlayerBeatWaves(){
@@ -293,6 +294,26 @@ public class Main extends Application {
         } else if (map.getPlayer().getCell().equals(map.getPrevDoor().getCell())) {
             moveToPreviousMap(player);
         }
+    }
+
+    private void addInventoryLog(){
+        Player player = map.getPlayer();
+        player.addToCombatLog("");
+        player.addToCombatLog(String.format("Potion: Heals for %s", player.getInventory().getPotionValue()));
+        player.addToCombatLog(String.format("Freeze: Stuns monsters for %s steps", player.getInventory().getFreezeValue()));
+        if (player.getInventory().getWeapons() != null){
+            Weapon weapon = player.getInventory().getWeapons();
+            player.addToCombatLog(String.format("%s: Damage: %s / Crit: %s%%",weapon.getTileName(), weapon.getDamage(), weapon.getCrit()));
+        }
+        if (player.getInventory().getShields() != null){
+            Shield shield = player.getInventory().getShields();
+            player.addToCombatLog(String.format("%s: %s damage reduction",shield.getTileName(), shield.getFlatDefense()));
+        }
+        if (player.getInventory().getKeys() != null){
+            Key key = player.getInventory().getKeys();
+            player.addToCombatLog(String.format("%s: opens a door", key.getTileName()));
+        }
+        player.addToCombatLog("");
     }
 
     private void setupPlayer(Player oldPlayer) {
@@ -352,6 +373,7 @@ public class Main extends Application {
     }
 
     private void refreshFixed() {
+        healthLabel.setText("0");
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

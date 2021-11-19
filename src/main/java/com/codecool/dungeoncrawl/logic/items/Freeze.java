@@ -1,15 +1,14 @@
 package com.codecool.dungeoncrawl.logic.items;
 
-
 import com.codecool.dungeoncrawl.logic.Cell;
 
-public class Potion extends Item{
-    public Potion(Cell cell, boolean packable) {
-        super(cell, packable);
+public class Freeze extends Item{
+    public Freeze(Cell cell) {
+        super(cell, true);
     }
 
     @Override
     public String getTileName() {
-        return "Potion";
+        return "Freeze spell";
     }
 }

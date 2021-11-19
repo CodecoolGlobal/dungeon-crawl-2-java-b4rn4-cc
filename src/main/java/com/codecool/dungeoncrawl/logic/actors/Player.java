@@ -2,6 +2,8 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.actors.monster.Boss;
+import com.codecool.dungeoncrawl.logic.actors.monster.ImmortalSkeleton;
 import com.codecool.dungeoncrawl.logic.inventory.Inventory;
 import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.Direction;
@@ -37,7 +39,7 @@ public class Player extends Actor {
     }
 
     public Player(Cell cell) {
-        super(cell, 10, 3, 7, 10);
+        super(cell, 20, 3, 7, 10);
     }
 
 
@@ -59,16 +61,21 @@ public class Player extends Actor {
         this.inventory = inventory;
     }
 
-    public void putItemInInventory(Item item){
+    public void putItemInInventory(Player player, Item item){
         if (item.getTileName().equals("Key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName().equals("Sword") || item.getTileName().equals("Axe")){
+        }else if (item.getTileName().equals("Frostmourne") || item.getTileName().equals("Shadowmourne") || item.getTileName().equals("the blade of Azzinoth")){
             inventory.setWeapons((Weapon) item);
-        }else if(item.getTileName().equals("Shield")){
+            addToCombatLog(String.format("Player picked up %s!", item.getTileName()));
+            return;
+        }else if(item.getTileName().equals("Wooden shield") || item.getTileName().equals("Iron shield")){
             inventory.setShields((Shield) item);
+        }else if(item.getTileName().equals("Freeze spell")){
+            inventory.addConsumable(player, "freeze");
         }else if(item.getTileName().equals("Potion")){
-            inventory.addConsumable("Potion");
+            inventory.addConsumable(player, "potion");
         }
+        addToCombatLog(String.format("Player picked up a %s", item.getTileName()));
     }
 
     public boolean consumeItem(String item){
@@ -87,14 +94,15 @@ public class Player extends Actor {
     }
 
     public void pickUp() {
-        Weapon oldWeapon = null;
+        Item oldItem = null;
         if (getCell().getItem() instanceof Weapon && inventory.getWeapons() != null){
-            oldWeapon = inventory.getWeapons();
+            oldItem = inventory.getWeapons();
         }
-        putItemInInventory(getCell().getItem());
-        putItemInInventory(getCell().getItem());
-        addToCombatLog(String.format("Player picked up a %s", getCell().getItem().getTileName()));
-        getCell().setItem(oldWeapon);
+        if (getCell().getItem() instanceof Shield && inventory.getShields() != null){
+            oldItem = inventory.getShields();
+        }
+        putItemInInventory(this, getCell().getItem());
+        getCell().setItem(oldItem);
     }
 
     @Override
@@ -107,7 +115,7 @@ public class Player extends Actor {
             result += String.format("%s\n", inventory.getWeapons().getTileName());
         }
         if (inventory.getShields() != null){
-            result += "Shield\n";
+            result += String.format("%s\n", inventory.getShields().getTileName());
         }
         result += String.format("potions: %s\n", inventory.getConsumable("potion"));
         result += String.format("freeze: %s\n", inventory.getConsumable("freeze"));
@@ -139,6 +147,8 @@ public class Player extends Actor {
         String name = actor.getTileName();
         if (actor instanceof ImmortalSkeleton){
             name = "Immortal";
+        } else if (actor instanceof Boss){
+            name = "Witch";
         }
         return name;
     }
@@ -238,7 +248,7 @@ public class Player extends Actor {
         map.mortalizeBoss();
         map.getPlayer().setOnFireCount(0);
         map.getPlayer().setFreeze(2);
-        map.getPlayer().addToCombatLog(String.format("Player Cast Freeze for %s turns", map.getPlayer().inventory.getFreezeValue()));
+        map.getPlayer().addToCombatLog(String.format("Player froze enemies for %s turns", map.getPlayer().inventory.getFreezeValue()));
         for (Cell cell : map.getMonsterCells()){
             if (cell.getActor() instanceof Boss){
                 map.getPlayer().addToCombatLog("Boss : Your pity snow spell has no\neffect on me MUHAHAHA! ");

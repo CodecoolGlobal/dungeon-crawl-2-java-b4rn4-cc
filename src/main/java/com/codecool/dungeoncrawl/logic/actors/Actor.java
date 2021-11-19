@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.*;
+import com.codecool.dungeoncrawl.logic.actors.monster.Monster;
 
 import java.util.Random;
 
@@ -11,7 +12,7 @@ public abstract class Actor implements Drawable {
     private int health;
     protected final int MAX_DAMAGE;
     protected final int MIN_DAMAGE;
-    protected final int critChance;
+    protected int critChance;
 
     public void setOnFireCount(int onFireCount) {
         this.onFireCount = onFireCount;
@@ -52,14 +53,16 @@ public abstract class Actor implements Drawable {
     }
 
     public void getHit(Actor actor, int damage, String cause, Player player){
-        health -= getActualDamage(damage);
+        damage = getActualDamage(damage);
+        health -= damage;
         String name = player.getNameForCombat(actor);
         player.addToCombatLog(String.format("%s suffered %s damage from %s", name, damage, cause));
     }
 
 
     public void getHit(Player player, Actor hitting, Actor gettingHit, int damage, boolean isCrit){
-        health -= getActualDamage(damage);
+        damage = getActualDamage(damage);
+        health -= damage;
         addToCombatLog(player, hitting, gettingHit, damage, isCrit);
     }
 
@@ -180,7 +183,7 @@ public abstract class Actor implements Drawable {
             onFireCount = 3;
         }
         if (onFireCount > 0){
-            getHit(this,5, "Fire", player);
+            getHit(this,6, "Fire", player);
             onFireCount--;
         }
     }
