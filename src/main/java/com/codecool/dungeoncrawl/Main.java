@@ -6,6 +6,9 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.actors.monster.Boss;
+import com.codecool.dungeoncrawl.logic.actors.monster.ImmortalSkeleton;
+import com.codecool.dungeoncrawl.logic.actors.monster.LootSkeleton;
 import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
@@ -137,7 +140,7 @@ public class Main extends Application {
                 }
                 if (player.getInventory().getShields() != null){
                     Shield shield = player.getInventory().getShields();
-                    player.addToCombatLog(String.format("%s: Provides %s flat damage reduction",shield.getTileName(), shield.getFlatDefense()));
+                    player.addToCombatLog(String.format("%s: Provides %s damage reduction",shield.getTileName(), shield.getFlatDefense()));
                 }
                 if (player.getInventory().getKeys() != null){
                     Key key = player.getInventory().getKeys();
@@ -237,28 +240,37 @@ public class Main extends Application {
     }
 
     private void MonstersMove() {
-        if (map.getPlayer().getFreeze() > 0) {
-            map.getPlayer().setFreeze(-1);
-            proceedMonsterCounters();
-            return;
-        }
         for (int index = 0; index < map.getMonsterCells().size(); index++) {
             Cell cell = map.getMonsterCells().get(index);
             if (isMonsterDead(cell)) {
                 if (cell.getActor() instanceof Boss){
                     hasWon = true;
                 }
+                if (cell.getActor() instanceof LootSkeleton){
+                    ((LootSkeleton) cell.getActor()).getLoot(map, cell);
+                }
                 cell.setActor(null);
                 map.removeMonsterCells(cell);
                 continue;
             }
-            cell.getActor().act(map, index);
+            if (!isMapFrozen()){
+                cell.getActor().act(map, index);
+            }
         }
 
         if (hasPlayerBeatWaves()){
             map.removeFire();
             ((Boss) map.getMonsterCells().get(0).getActor()).mortalize();
         }
+
+        if (isMapFrozen()) {
+            map.getPlayer().setFreeze(-1);
+            proceedMonsterCounters();
+        }
+    }
+
+    private boolean isMapFrozen(){
+        return map.getPlayer().getFreeze() > 0;
     }
 
     private boolean hasPlayerBeatWaves(){
@@ -357,7 +369,7 @@ public class Main extends Application {
     }
 
     private void refreshFixed() {
-        healthLabel.setText("" + map.getPlayer().getHealth());
+        healthLabel.setText("0");
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

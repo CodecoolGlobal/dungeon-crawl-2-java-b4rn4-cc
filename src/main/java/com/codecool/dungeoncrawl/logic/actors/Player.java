@@ -2,6 +2,8 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.actors.monster.Boss;
+import com.codecool.dungeoncrawl.logic.actors.monster.ImmortalSkeleton;
 import com.codecool.dungeoncrawl.logic.inventory.Inventory;
 import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.Direction;
@@ -37,7 +39,7 @@ public class Player extends Actor {
     }
 
     public Player(Cell cell) {
-        super(cell, 10, 3, 7, 10);
+        super(cell, 20, 3, 7, 10);
     }
 
 
@@ -59,16 +61,19 @@ public class Player extends Actor {
         this.inventory = inventory;
     }
 
-    public void putItemInInventory(Item item){
+    public void putItemInInventory(Player player, Item item){
         if (item.getTileName().equals("Key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName().equals("Sword") || item.getTileName().equals("Axe")){
+        }else if (item.getTileName().equals("Sword") || item.getTileName().equals("Axe") || item.getTileName().equals("Dagger")){
             inventory.setWeapons((Weapon) item);
-        }else if(item.getTileName().equals("Shield")){
+        }else if(item.getTileName().equals("Wooden shield") || item.getTileName().equals("Iron shield")){
             inventory.setShields((Shield) item);
+        }else if(item.getTileName().equals("Freeze spell")){
+            inventory.addConsumable(player, "freeze");
         }else if(item.getTileName().equals("Potion")){
-            inventory.addConsumable("Potion");
+            inventory.addConsumable(player, "potion");
         }
+        addToCombatLog(String.format("Player picked up a %s", item.getTileName()));
     }
 
     public boolean consumeItem(String item){
@@ -87,14 +92,15 @@ public class Player extends Actor {
     }
 
     public void pickUp() {
-        Weapon oldWeapon = null;
+        Item oldItem = null;
         if (getCell().getItem() instanceof Weapon && inventory.getWeapons() != null){
-            oldWeapon = inventory.getWeapons();
+            oldItem = inventory.getWeapons();
         }
-        putItemInInventory(getCell().getItem());
-        putItemInInventory(getCell().getItem());
-        addToCombatLog(String.format("Player picked up a %s", getCell().getItem().getTileName()));
-        getCell().setItem(oldWeapon);
+        if (getCell().getItem() instanceof Shield && inventory.getShields() != null){
+            oldItem = inventory.getShields();
+        }
+        putItemInInventory(this, getCell().getItem());
+        getCell().setItem(oldItem);
     }
 
     @Override

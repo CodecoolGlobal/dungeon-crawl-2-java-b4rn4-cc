@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.actors.monster.*;
 import com.codecool.dungeoncrawl.logic.items.*;
 
 import java.io.InputStream;
@@ -54,12 +55,36 @@ public class MapLoader {
                             break;
                         case 'f':
                             cell.setType(CellType.FLOOR);
-                            new FastSkeleton(cell);
+                            new FastSkeleton(cell, 6);
+                            map.addMonsterCell(cell);
+                            break;
+                        case 'F':
+                            cell.setType(CellType.FLOOR);
+                            new Freeze(cell);
+                            break;
+                        case 'G':
+                            cell.setType(CellType.FLOOR);
+                            new FastSkeleton(cell, 3);
                             map.addMonsterCell(cell);
                             break;
                         case 'i':
                             cell.setType(CellType.FLOOR);
-                            new ImmortalSkeleton(cell);
+                            new ImmortalSkeleton(cell, 2);
+                            map.addMonsterCell(cell);
+                            break;
+                        case 'T':
+                            cell.setType(CellType.FLOOR);
+                            new ImmortalSkeleton(cell, 3);
+                            map.addMonsterCell(cell);
+                            break;
+                        case 'I':
+                            cell.setType(CellType.FLOOR);
+                            new LootSkeleton(cell, "Dagger", 3, 5);
+                            map.addMonsterCell(cell);
+                            break;
+                        case 'J':
+                            cell.setType(CellType.FLOOR);
+                            new LootSkeleton(cell, "freeze");
                             map.addMonsterCell(cell);
                             break;
                         case 'b':
@@ -72,6 +97,10 @@ public class MapLoader {
                             new BossAdd(cell);
                             map.addMonsterCell(cell);
                             break;
+                        case 'p':
+                            cell.setType(CellType.FLOOR);
+                            new Potion(cell, true);
+                            break;
                         case 'w':
                             cell.setType(CellType.FLOOR);
                             new Weapon(cell, "Sword", 10, 10);
@@ -82,15 +111,15 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);
-                            new Shield(cell);
+                            new Shield(cell, "Wooden shield",  2);
+                            break;
+                        case 'S':
+                            cell.setType(CellType.FLOOR);
+                            new Shield(cell, "Iron shield", 4);
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
                             new Key(cell);
-                            break;
-                        case 'p':
-                            cell.setType(CellType.FLOOR);
-                            new Potion(cell);
                             break;
                         case 'c':
                             cell.setType(CellType.WALL);
