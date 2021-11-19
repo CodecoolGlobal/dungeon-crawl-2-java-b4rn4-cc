@@ -48,7 +48,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane ui = new GridPane();
-        ui.setPrefWidth(300);
+        ui.setPrefWidth(310);
         ui.setPadding(new Insets(10));
 
         ui.add(new Label("Health: "), 0, 0);
@@ -181,6 +181,7 @@ public class Main extends Application {
 
     private void playRound() {
         map.getPlayer().act();
+        printStats();
         if (map.getPlayer().isInvalidMove()) {
             return;
         }
@@ -241,6 +242,7 @@ public class Main extends Application {
                 cell.getActor().act(map, index);
             }
         }
+        printStats();
 
         if (hasPlayerBeatWaves()){
             map.removeFire();
@@ -299,6 +301,7 @@ public class Main extends Application {
     private void addInventoryLog(){
         Player player = map.getPlayer();
         player.addToCombatLog("");
+        player.addToCombatLog("----------------------------------------------");
         player.addToCombatLog(String.format("Potion: Heals for %s", player.getInventory().getPotionValue()));
         player.addToCombatLog(String.format("Freeze: Stuns monsters for %s steps", player.getInventory().getFreezeValue()));
         if (player.getInventory().getWeapons() != null){
@@ -313,7 +316,7 @@ public class Main extends Application {
             Key key = player.getInventory().getKeys();
             player.addToCombatLog(String.format("%s: opens a door", key.getTileName()));
         }
-        player.addToCombatLog("");
+        player.addToCombatLog("----------------------------------------------");
     }
 
     private void setupPlayer(Player oldPlayer) {
@@ -373,7 +376,6 @@ public class Main extends Application {
     }
 
     private void refreshFixed() {
-        healthLabel.setText("0");
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

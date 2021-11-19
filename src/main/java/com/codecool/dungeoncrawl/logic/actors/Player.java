@@ -64,7 +64,7 @@ public class Player extends Actor {
     public void putItemInInventory(Player player, Item item){
         if (item.getTileName().equals("Key")){
             inventory.setKeys((Key) item);
-        }else if (item.getTileName().equals("Frostmourne") || item.getTileName().equals("Shadowmourne") || item.getTileName().equals("the blade of Azzinoth")){
+        }else if (item.getTileName().equals("Frostmourne") || item.getTileName().equals("Shadowmourne") || item.getTileName().equals("Kingslayer")){
             inventory.setWeapons((Weapon) item);
             addToCombatLog(String.format("Player picked up %s!", item.getTileName()));
             return;
@@ -251,7 +251,7 @@ public class Player extends Actor {
         map.getPlayer().addToCombatLog(String.format("Player froze enemies for %s turns", map.getPlayer().inventory.getFreezeValue()));
         for (Cell cell : map.getMonsterCells()){
             if (cell.getActor() instanceof Boss){
-                map.getPlayer().addToCombatLog("Boss : Your pity snow spell has no\neffect on me MUHAHAHA! ");
+                map.getPlayer().addToCombatLog("Witch : \"Your pity snow spell has no\neffect on me MUHAHAHA!\" ");
             }
         }
     }
