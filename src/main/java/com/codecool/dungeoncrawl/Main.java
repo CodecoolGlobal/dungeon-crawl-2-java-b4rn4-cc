@@ -23,7 +23,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -32,14 +31,11 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 public class Main extends Application {
     String route = "/map.txt";
@@ -88,31 +84,33 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
+        Stage saveDialogStage = new Stage();
+        saveDialogStage.initModality(Modality.APPLICATION_MODAL);
         scene.setOnKeyPressed(this::onKeyPressed);
-        scene.setOnKeyReleased(this::onKeyReleased);
+        scene.setOnKeyReleased(keyEvent -> onKeyReleased(keyEvent, saveDialogStage));
 
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
-        showModal(stage);
     }
 
     private void showModal(Stage stage) {
+        Stage confirmSaveStage = new Stage();
+        confirmSaveStage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle("Save Game");
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        Label saveGameName = new Label("Name:");
-        TextField name = new TextField();
+        Label saveGameName = new Label("Save Game:");
+        TextField textField = new TextField();
         GridPane gridPane = new GridPane();
         Button cancelButton = new Button("Cancel");
         Button saveButton = new Button("Save");
         cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> cancelSave(stage));
+        saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> saveGame(stage, textField, confirmSaveStage));
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(30);
         gridPane.setVgap(30);
         gridPane.add(saveGameName, 0, 0);
-        gridPane.add(name, 1, 0);
+        gridPane.add(textField, 1, 0);
         gridPane.add(cancelButton, 4, 4);
         gridPane.add(saveButton, 0, 4);
         Scene scene = new Scene(gridPane);
@@ -124,17 +122,60 @@ public class Main extends Application {
         stage.showAndWait();
     }
 
+    private void confirmOverwriteSaveModal(Stage ownDialog, Stage saveDialogStage, String providedName) {
+        ownDialog.setTitle("Are you sure to Over Write this save?");
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        GridPane gridPane = new GridPane();
+        Label msg = new Label("Are you sure to Over Write this save?");
+        Button confirmButton = new Button("Yes");
+        Button cancelButton = new Button("No");
+        confirmButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> overWriteSavedGame(providedName, ownDialog, saveDialogStage));
+        cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> cancelSave(ownDialog));
+        gridPane.add(msg, 2, 0);
+        gridPane.add(confirmButton, 0, 1);
+        gridPane.add(cancelButton, 3, 1);
+        gridPane.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(gridPane);
+        ownDialog.setWidth(350);
+        ownDialog.setHeight(100);
+        ownDialog.setX((primaryScreenBounds.getWidth() - primaryScreenBounds.getWidth() / 2) - ownDialog.getWidth() / 2);
+        ownDialog.setY((primaryScreenBounds.getHeight() - primaryScreenBounds.getHeight() / 2) - ownDialog.getHeight() / 2);
+        ownDialog.setScene(scene);
+        ownDialog.showAndWait();
+    }
+
+    private void overWriteSavedGame(String providedName, Stage ownDialog, Stage saveDialog) {
+        // TODO: 2021. 11. 30. upDate the save where the providedName matches in the database
+        ownDialog.close();
+        saveDialog.close();
+    }
+
+    private void saveGame(Stage modal, TextField textField, Stage confirmSaveStage) {
+        Player player = map.getPlayer();
+        String providedName = textField.getText();
+        if (providedName.equals("asd")) {
+            confirmOverwriteSaveModal(confirmSaveStage, modal, providedName);
+        } else {
+            // TODO: 2021. 11. 30. save game
+            modal.close();
+        }
+    }
+
     private void cancelSave(Stage modal) {
         modal.close();
     }
 
-    private void onKeyReleased(KeyEvent keyEvent) {
+    private void onKeyReleased(KeyEvent keyEvent, Stage saveDialogStage) {
         KeyCombination exitCombinationMac = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
         KeyCombination exitCombinationWin = new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN);
+        KeyCombination saveCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
         if (exitCombinationMac.match(keyEvent)
                 || exitCombinationWin.match(keyEvent)
                 || keyEvent.getCode() == KeyCode.ESCAPE) {
             exit();
+        }
+        if (saveCombination.match(keyEvent)) {
+            showModal(saveDialogStage);
         }
     }
     /* case S:
