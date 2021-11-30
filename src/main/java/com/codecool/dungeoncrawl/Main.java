@@ -16,11 +16,15 @@ import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.KeyCode;
@@ -28,7 +32,11 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
@@ -82,8 +90,36 @@ public class Main extends Application {
         scene.setOnKeyPressed(this::onKeyPressed);
         scene.setOnKeyReleased(this::onKeyReleased);
 
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+        showModal(stage);
+    }
+
+    private void showModal(Stage stage) {
+        stage.setTitle("Save Game");
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        Label saveGameName = new Label("Name:");
+        TextField name = new TextField();
+        GridPane gridPane = new GridPane();
+        Button cancelButton = new Button("Cancel");
+        Button saveButton = new Button("Save");
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setHgap(30);
+        gridPane.setVgap(30);
+        gridPane.add(saveGameName, 0, 0);
+        gridPane.add(name, 1, 0);
+        gridPane.add(cancelButton, 4, 4);
+        gridPane.add(saveButton, 0, 4);
+        Scene scene = new Scene(gridPane);
+        stage.setWidth(600);
+        stage.setHeight(300);
+        stage.setX((primaryScreenBounds.getWidth() - primaryScreenBounds.getWidth() / 2) - stage.getWidth() / 2);
+        stage.setY((primaryScreenBounds.getHeight() - primaryScreenBounds.getHeight() / 2) - stage.getHeight() / 2);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 
     private void onKeyReleased(KeyEvent keyEvent) {
