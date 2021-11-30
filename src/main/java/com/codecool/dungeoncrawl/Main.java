@@ -39,6 +39,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 public class Main extends Application {
     String route = "/map.txt";
@@ -106,6 +107,7 @@ public class Main extends Application {
         GridPane gridPane = new GridPane();
         Button cancelButton = new Button("Cancel");
         Button saveButton = new Button("Save");
+        cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> cancelSave(stage));
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(30);
         gridPane.setVgap(30);
@@ -120,6 +122,10 @@ public class Main extends Application {
         stage.setY((primaryScreenBounds.getHeight() - primaryScreenBounds.getHeight() / 2) - stage.getHeight() / 2);
         stage.setScene(scene);
         stage.showAndWait();
+    }
+
+    private void cancelSave(Stage modal) {
+        modal.close();
     }
 
     private void onKeyReleased(KeyEvent keyEvent) {
