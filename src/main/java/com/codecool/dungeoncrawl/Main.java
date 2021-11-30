@@ -98,7 +98,6 @@ public class Main extends Application {
         Stage confirmSaveStage = new Stage();
         confirmSaveStage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle("Save Game");
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         Label saveGameName = new Label("Save Game:");
         TextField textField = new TextField();
         GridPane gridPane = new GridPane();
@@ -106,25 +105,19 @@ public class Main extends Application {
         Button saveButton = new Button("Save");
         cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> cancelSave(stage));
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> saveGame(stage, textField, confirmSaveStage));
-        gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(30);
         gridPane.setVgap(30);
         gridPane.add(saveGameName, 0, 0);
         gridPane.add(textField, 1, 0);
         gridPane.add(cancelButton, 4, 4);
         gridPane.add(saveButton, 0, 4);
-        Scene scene = new Scene(gridPane);
         stage.setWidth(600);
         stage.setHeight(300);
-        stage.setX((primaryScreenBounds.getWidth() - primaryScreenBounds.getWidth() / 2) - stage.getWidth() / 2);
-        stage.setY((primaryScreenBounds.getHeight() - primaryScreenBounds.getHeight() / 2) - stage.getHeight() / 2);
-        stage.setScene(scene);
-        stage.showAndWait();
+        setupStage(stage, gridPane);
     }
 
     private void confirmOverwriteSaveModal(Stage ownDialog, Stage saveDialogStage, String providedName) {
         ownDialog.setTitle("Are you sure to Over Write this save?");
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         GridPane gridPane = new GridPane();
         Label msg = new Label("Are you sure to Over Write this save?");
         Button confirmButton = new Button("Yes");
@@ -135,13 +128,19 @@ public class Main extends Application {
         gridPane.add(confirmButton, 0, 1);
         gridPane.add(cancelButton, 3, 1);
         gridPane.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(gridPane);
         ownDialog.setWidth(350);
         ownDialog.setHeight(100);
-        ownDialog.setX((primaryScreenBounds.getWidth() - primaryScreenBounds.getWidth() / 2) - ownDialog.getWidth() / 2);
-        ownDialog.setY((primaryScreenBounds.getHeight() - primaryScreenBounds.getHeight() / 2) - ownDialog.getHeight() / 2);
-        ownDialog.setScene(scene);
-        ownDialog.showAndWait();
+        setupStage(ownDialog, gridPane);
+    }
+
+    private void setupStage(Stage stage, GridPane gridPane) {
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        Scene scene = new Scene(gridPane);
+        gridPane.setAlignment(Pos.CENTER);
+        stage.setX((primaryScreenBounds.getWidth() - primaryScreenBounds.getWidth() / 2) - stage.getWidth() / 2);
+        stage.setY((primaryScreenBounds.getHeight() - primaryScreenBounds.getHeight() / 2) - stage.getHeight() / 2);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 
     private void overWriteSavedGame(String providedName, Stage ownDialog, Stage saveDialog) {
