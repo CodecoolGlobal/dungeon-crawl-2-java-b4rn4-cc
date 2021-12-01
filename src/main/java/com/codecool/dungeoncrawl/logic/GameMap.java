@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.monster.Boss;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
@@ -97,4 +98,21 @@ public class GameMap {
             }
         }
     }
+
+    public String createCurrentMap(){
+        String currentMap = String.format("%s %s", width, height);
+        for (int row = 0; row < height; row++){
+            currentMap += "\n";
+            for (int col = 0; col < width; col++){
+                Cell cell = getCell(col, row);
+                if (cell.getActor() != null){
+                    currentMap += cell.getActor().getTileCharacter();
+                    continue;
+                }
+                currentMap += cell.getTileCharacter();
+            }
+        }
+        return currentMap;
+    }
+
 }

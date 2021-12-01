@@ -243,6 +243,7 @@ public class Main extends Application {
         } else {
             refresh();
         }
+        System.out.println(map.createCurrentMap());
 
     }
 

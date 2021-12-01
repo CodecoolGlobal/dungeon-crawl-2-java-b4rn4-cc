@@ -11,4 +11,8 @@ public class Freeze extends Item{
     public String getTileName() {
         return "Freeze spell";
     }
+
+    @Override
+    public char getTileCharacter() { return 'F'; }
+
 }
