@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl.dao;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
+import com.codecool.dungeoncrawl.model.ShieldModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -16,14 +17,14 @@ public class ShieldDaoJdbc implements ShieldDao {
     }
 
     @Override
-    public void add(Shield shield) {
+    public void add(ShieldModel shield) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "INSERT INTO weapon (id, x, y, defens, name, map_id) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setInt(2, shield.getCell().getX());
-            st.setInt(3, shield.getCell().getY());
-            st.setInt(4, shield.getFlatDefense());
-            st.setString(5, shield.getTileName());
+            st.setInt(2, shield.getX());
+            st.setInt(3, shield.getY());
+            st.setInt(4, shield.getDefense());
+            st.setString(5, shield.getName());
             st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             rs.next();
@@ -33,12 +34,12 @@ public class ShieldDaoJdbc implements ShieldDao {
     }
 
     @Override
-    public void update(Shield shield) {
+    public void update(ShieldModel shield) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "UPDATE shield SET x = ?, y = ? WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
-            st.setInt(1, shield.getCell().getX());
-            st.setInt(2, shield.getCell().getY());
+            st.setInt(1, shield.getX());
+            st.setInt(2, shield.getY());
             st.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -46,7 +47,7 @@ public class ShieldDaoJdbc implements ShieldDao {
     }
 
     @Override
-    public Shield get(int id) {
+    public ShieldModel get(int id) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "SELECT x, y, name, defense FROM shield WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
@@ -55,7 +56,7 @@ public class ShieldDaoJdbc implements ShieldDao {
             if(!rs.next()){
                 return null;
             }
-            Shield shield = new Shield(new Cell(rs.getInt(1), rs.getInt(2)), rs.getString(3), rs.getInt(4));
+            ShieldModel shield = new ShieldModel(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getInt(4));
             return shield;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -63,7 +64,7 @@ public class ShieldDaoJdbc implements ShieldDao {
     }
 
     @Override
-    public List<Weapon> getAll() {
+    public List<ShieldModel> getAll() {
         return null;
     }
 }
