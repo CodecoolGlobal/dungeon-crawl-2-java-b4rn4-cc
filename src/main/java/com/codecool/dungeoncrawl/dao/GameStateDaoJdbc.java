@@ -1,7 +1,6 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.model.GameState;
-import com.codecool.dungeoncrawl.model.PlayerModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -59,7 +58,7 @@ public class GameStateDaoJdbc implements GameStateDao {
             if (!resultSet.next()) {
                 return null;
             }
-            GameState gameState = new GameState(resultSet.getString(1), resultSet.getDate(2), resultSet.getInt(3));
+            GameState gameState = new GameState(resultSet.getString(1), resultSet.getDate(3), resultSet.getInt(2));
             gameState.setId(id);
             return gameState;
         } catch (SQLException e) {
@@ -69,6 +68,18 @@ public class GameStateDaoJdbc implements GameStateDao {
 
     @Override
     public List<GameState> getAll() {
-        return null;
+        try (Connection connection = dataSource.getConnection()) {
+            String sqlQuery = "SELECT id, game_state_name, current_map_number, saved_at FROM game_state";
+            ResultSet resultSet = connection.prepareStatement(sqlQuery).executeQuery();
+            List<GameState> result = new ArrayList<>();
+            while (resultSet.next()) {
+                GameState gameState = new GameState(resultSet.getString(2), resultSet.getDate(4), resultSet.getInt(3));
+                gameState.setId(resultSet.getInt(1));
+                result.add(gameState);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
