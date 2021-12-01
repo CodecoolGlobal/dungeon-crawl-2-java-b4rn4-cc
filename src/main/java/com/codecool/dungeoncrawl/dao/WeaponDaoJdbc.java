@@ -1,6 +1,5 @@
 package com.codecool.dungeoncrawl.dao;
 
-import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 import com.codecool.dungeoncrawl.model.WeaponModel;
 
@@ -20,8 +19,8 @@ public class WeaponDaoJdbc implements WeaponDao{
         try (Connection conn = dataSource.getConnection()){
             String sql = "INSERT INTO weapon (x, y, damage, crit, name, map_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setInt(2, weapon.getCell().getX());
-            st.setInt(3, weapon.getCell().getY());
+            st.setInt(2, weapon.getX());
+            st.setInt(3, weapon.getY());
             st.setInt(4, weapon.getDamage());
             st.setInt(5, weapon.getCrit());
             st.setString(6, weapon.getName());
@@ -39,8 +38,8 @@ public class WeaponDaoJdbc implements WeaponDao{
         try (Connection conn = dataSource.getConnection()) {
             String sql = "UPDATE weapon SET x = ?, y = ? WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
-            st.setInt(1, weapon.getCell().getX());
-            st.setInt(2, weapon.getCell().getY());
+            st.setInt(1, weapon.getX());
+            st.setInt(2, weapon.getY());
             st.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -65,7 +64,7 @@ public class WeaponDaoJdbc implements WeaponDao{
     }
 
     @Override
-    public List<Weapon> getAll() {
+    public List<WeaponModel> getAll() {
         return null;
     }
 }
