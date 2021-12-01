@@ -191,13 +191,14 @@ public class Main extends Application {
     }
 
     private void saveGame(Stage modal, TextField textField, Stage confirmSaveStage) {
-        Player player = map.getPlayer();
         String providedName = textField.getText();
         // TODO: 2021. 11. 30. Condition create query where we get the save games Where <column> LIKE providedName
         if (providedName.equals("asd")) {
             confirmOverwriteSaveModal(confirmSaveStage, modal, providedName);
         } else {
             // TODO: 2021. 11. 30. save game
+            dbManager.saveGame(map, providedName, MapLoader.getCurrentLevel());
+
             modal.close();
         }
     }

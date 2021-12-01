@@ -9,8 +9,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDaoJdbc implements GameStateDao {
+    private DataSource dataSource;
+
+    public GameStateDaoJdbc(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Override
     public void add(GameState state) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sqlQuery = "INSERT INTO game_state (game_state_name, current_map_number, saved_at) VALUES (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, state.getGameStateName());
+            statement.setInt(2, state.getCurrentMapNumber());
+            statement.setDate(3, state.getSavedAt());
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+            state.setId(resultSet.getInt(1));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
