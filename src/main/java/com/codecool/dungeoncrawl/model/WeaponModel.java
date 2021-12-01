@@ -6,13 +6,18 @@ public class WeaponModel extends BaseModel {
     private int damage;
     private int crit;
     private String name;
+    private int inventoryId;
+    private int mapId;
 
-    public WeaponModel(int x, int y, String name, int damage, int crit) {
+
+    public WeaponModel(int x, int y, String name, int damage, int crit, int inventoryId, int mapId) {
         this.x = x;
         this.y = y;
         this.damage = damage;
         this.crit = crit;
         this.name = name;
+        this.inventoryId = inventoryId;
+        this.mapId = mapId;
     }
 
     public int getX() {
@@ -53,5 +58,21 @@ public class WeaponModel extends BaseModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getInventoryId() {
+        return inventoryId;
+    }
+
+    public void setInventoryId(int inventoryId) {
+        this.inventoryId = inventoryId;
+    }
+
+    public int getMapId() {
+        return mapId;
+    }
+
+    public void setMapId(int mapId) {
+        this.mapId = mapId;
     }
 }
