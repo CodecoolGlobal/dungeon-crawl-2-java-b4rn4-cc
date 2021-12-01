@@ -8,9 +8,15 @@ public class InventoryModel extends BaseModel{
     private int potion;
 
     public InventoryModel(Inventory inventory) {
-        this.key = inventory.getKeys() != null;
+        this.key = (inventory.getKeys() != null);
         this.freeze = inventory.getFreezeValue();
         this.potion = inventory.getPotionValue();
+    }
+
+    public InventoryModel(boolean key, int freeze, int potion) {
+        this.key = key;
+        this.freeze = freeze;
+        this.potion = potion;
     }
 
     public void setKey(boolean key) {

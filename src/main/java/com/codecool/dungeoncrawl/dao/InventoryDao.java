@@ -1,10 +1,10 @@
 package com.codecool.dungeoncrawl.dao;
 
-import com.codecool.dungeoncrawl.logic.inventory.Inventory;
+import com.codecool.dungeoncrawl.model.InventoryModel;
 
 public interface InventoryDao {
-    void add(Inventory inventory);
-    void update(Inventory inventory);
-    void get(int InventoryId);
+    void add(InventoryModel inventory, int weapon_id, int shield_id, int player_id);
+    void update(InventoryModel inventory, int weapon_id, int shield_id, int player_id);
+    InventoryModel get(int inventoryId);
     void delete(int inventoryId);
 }
