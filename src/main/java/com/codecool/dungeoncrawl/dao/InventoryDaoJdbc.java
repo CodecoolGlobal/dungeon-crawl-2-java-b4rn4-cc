@@ -49,17 +49,17 @@ public class InventoryDaoJdbc implements InventoryDao{
     }
 
     @Override
-    public InventoryModel get(int inventoryId) {
+    public InventoryModel get(int playerId) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT key, health_potion, freeze_potion, player_id FROM inventory WHERE id = ?";
+            String sql = "SELECT id, key, health_potion, freeze_potion FROM inventory WHERE player_id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, inventoryId);
+            statement.setInt(1, playerId);
             ResultSet resultSet = statement.executeQuery();
             if (!resultSet.next()) {
                 return null;
             } else {
-                InventoryModel inventory = new InventoryModel(resultSet.getBoolean(1), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4));
-                inventory.setId(inventoryId);
+                InventoryModel inventory = new InventoryModel(resultSet.getBoolean(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5));
+                inventory.setId(resultSet.getInt(1));
                 return inventory;
             }
         } catch (SQLException e) {
