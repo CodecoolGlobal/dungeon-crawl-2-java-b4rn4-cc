@@ -15,16 +15,14 @@ public class InventoryDaoJdbc implements InventoryDao{
     }
 
     @Override
-    public void add(InventoryModel inventory, int weapon_id, int shield_id, int player_id) {
+    public void add(InventoryModel inventory) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO inventory (key, health_potion, freeze_potion, weapon_id, shield_id, player_id) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO inventory (key, health_potion, freeze_potion, player_id) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setBoolean(1, inventory.isKey());
             statement.setInt(2, inventory.getPotion());
             statement.setInt(3, inventory.getFreeze());
-            statement.setInt(4, weapon_id);
-            statement.setInt(5, shield_id);
-            statement.setInt(6, player_id);
+            statement.setInt(4, inventory.getPlayerId());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
@@ -35,17 +33,15 @@ public class InventoryDaoJdbc implements InventoryDao{
     }
 
     @Override
-    public void update(InventoryModel inventory, int weapon_id, int shield_id, int player_id) {
+    public void update(InventoryModel inventory) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "UPDATE inventory SET key = ?, health_potion = ?, freeze_potion = ?, weapon_id = ?, shield_id = ?, player_id = ? WHERE id = ?";
+            String sql = "UPDATE inventory SET key = ?, health_potion = ?, freeze_potion = ?, player_id = ? WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setBoolean(1, inventory.isKey());
             statement.setInt(2, inventory.getPotion());
             statement.setInt(3, inventory.getFreeze());
-            statement.setInt(4, weapon_id);
-            statement.setInt(5, shield_id);
-            statement.setInt(6, player_id);
-            statement.setInt(7, inventory.getId());
+            statement.setInt(4, inventory.getPlayerId());
+            statement.setInt(5, inventory.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -55,14 +51,14 @@ public class InventoryDaoJdbc implements InventoryDao{
     @Override
     public InventoryModel get(int inventoryId) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT key, health_potion, freeze_potion FROM inventory WHERE id = ?";
+            String sql = "SELECT key, health_potion, freeze_potion, player_id FROM inventory WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, inventoryId);
             ResultSet resultSet = statement.executeQuery();
             if (!resultSet.next()) {
                 return null;
             } else {
-                InventoryModel inventory = new InventoryModel(resultSet.getBoolean(1), resultSet.getInt(2), resultSet.getInt(3));
+                InventoryModel inventory = new InventoryModel(resultSet.getBoolean(1), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4));
                 inventory.setId(inventoryId);
                 return inventory;
             }
