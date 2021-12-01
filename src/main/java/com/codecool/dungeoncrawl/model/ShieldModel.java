@@ -6,7 +6,7 @@ public class ShieldModel {
     private int defense;
     private String name;
 
-    public ShieldModel(int x, int y, int defense, String name) {
+    public ShieldModel(int x, int y, String name, int defense) {
         this.x = x;
         this.y = y;
         this.defense = defense;
