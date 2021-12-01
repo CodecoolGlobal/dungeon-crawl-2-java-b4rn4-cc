@@ -17,7 +17,6 @@ CREATE TABLE public.game_state (
 
 CREATE TABLE public.player (
    id serial NOT NULL PRIMARY KEY,
-   player_name text NOT NULL,
    hp integer NOT NULL,
    x integer NOT NULL,
    y integer NOT NULL,
@@ -26,12 +25,10 @@ CREATE TABLE public.player (
 );
 
 CREATE TABLE public.inventory (
-   id serial NOT NULL PRIMARY KEY,
-   key boolean NOT NULL,
-   health_potion integer,
-   freeze_potion integer,
-   weapon_id integer, -- FK
-   shield_id integer, -- FK
+    id serial NOT NULL PRIMARY KEY,
+    key boolean NOT NULL,
+    health_potion integer,
+    freeze_potion integer,
     player_id integer NOT NULL -- FK
 );
 
@@ -57,6 +54,7 @@ CREATE TABLE public.weapon (
     damage integer NOT NULL,
     crit integer,
     name VARCHAR NOT NULL,
+    inventory_id integer,
     map_id integer -- FK
 );
 
@@ -66,6 +64,7 @@ CREATE TABLE public.shield (
    y integer,
    defense integer NOT NULL,
    name VARCHAR NOT NULL,
+   inventory_id integer,
    map_id integer -- FK
 );
 
@@ -85,8 +84,8 @@ ALTER TABLE ONLY public.player
     ADD CONSTRAINT fk_game_state_id FOREIGN KEY (game_state_id) REFERENCES public.game_state(id);
 
 ALTER TABLE ONLY public.inventory
-    ADD CONSTRAINT fk_weapon_id FOREIGN KEY (weapon_id) REFERENCES public.weapon(id),
-    ADD CONSTRAINT fk_shield_id FOREIGN KEY (shield_id) REFERENCES public.shield(id),
+    -- ADD CONSTRAINT fk_weapon_id FOREIGN KEY (weapon_id) REFERENCES public.weapon(id),
+    -- ADD CONSTRAINT fk_shield_id FOREIGN KEY (shield_id) REFERENCES public.shield(id),
     ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id);
 
 ALTER TABLE ONLY public.maps
@@ -96,9 +95,11 @@ ALTER TABLE ONLY public.consumable
     ADD CONSTRAINT fk_map_id FOREIGN KEY (map_id) REFERENCES public.maps(id);
 
 ALTER TABLE ONLY public.weapon
+    ADD CONSTRAINT fk_inventory_id FOREIGN KEY (inventory_id) REFERENCES public.inventory(id),
     ADD CONSTRAINT fk_map_id FOREIGN KEY (map_id) REFERENCES public.maps(id);
 
 ALTER TABLE ONLY public.shield
+    ADD CONSTRAINT fk_inventory_id FOREIGN KEY (inventory_id) REFERENCES public.inventory(id),
     ADD CONSTRAINT fk_map_id FOREIGN KEY (map_id) REFERENCES public.maps(id);
 
 ALTER TABLE ONLY public.door
