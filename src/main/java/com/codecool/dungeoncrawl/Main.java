@@ -14,7 +14,9 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -23,6 +25,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -73,8 +76,14 @@ public class Main extends Application {
         pickUpButton.setVisible(false);
         pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
 
-        ui.add(new Label("CombatLog: "), 0, 14);
+        Stage loadStage = new Stage();
+        loadStage.initModality(Modality.APPLICATION_MODAL);
+        Button loadButton = new Button("Load Game");
+        loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> showLoadModal(loadStage));
+
+        ui.add(new Label("CombatLog: "), 0, 15);
         ui.add(combatLog, 1, 17);
+        ui.add(loadButton, 1, 14);
 
         BorderPane borderPane = new BorderPane();
 
@@ -92,6 +101,38 @@ public class Main extends Application {
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+    }
+
+    private void showLoadModal(Stage loadStage) {
+        loadStage.setTitle("Load Game");
+        // TODO: 2021. 12. 01. PlayerDaoJdbc.getAll() return list needed to add to choose which game to load
+        // dummy saves
+        PlayerModel save1 = new PlayerModel("save1", 1, 1);
+        PlayerModel save2 = new PlayerModel("save2", 1, 1);
+        PlayerModel save3 = new PlayerModel("save3", 1, 1);
+        //--------------------------------
+        ListView<PlayerModel> savedGames = new ListView<>();
+        savedGames.getItems().add(save1);
+        savedGames.getItems().add(save2);
+        savedGames.getItems().add(save3);
+
+        Button loadButton = new Button("Load");
+
+        loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+            ObservableList<PlayerModel> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
+            // TODO: 2021. 12. 01. Init gameLoading with saved
+            for (PlayerModel save : selectedSaves) {
+                System.out.println(save.getPlayerName());
+            }
+            loadStage.close();
+        });
+
+        GridPane gridPane = new GridPane();
+        gridPane.add(savedGames, 0, 1);
+        gridPane.add(loadButton, 1,1);
+        loadStage.setWidth(600);
+        loadStage.setHeight(300);
+        setupStage(loadStage, gridPane);
     }
 
     private void showModal(Stage stage) {
@@ -178,10 +219,6 @@ public class Main extends Application {
             showModal(saveDialogStage);
         }
     }
-    /* case S:
-                Player player = map.getPlayer();
-                dbManager.savePlayer(player);
-                break; */
 
     private void onKeyPressed(KeyEvent keyEvent) {
         if (hasWon || isGameOver){
