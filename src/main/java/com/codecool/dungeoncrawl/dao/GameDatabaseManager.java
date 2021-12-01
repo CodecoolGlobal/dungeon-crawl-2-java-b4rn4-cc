@@ -9,6 +9,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.util.List;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
@@ -31,6 +32,10 @@ public class GameDatabaseManager {
         gameStateDao.add(state);
         Integer gameStateId = state.getId();
         // TODO: 2021. 12. 01. Continue the other jdbc classes
+    }
+
+    public List<GameState> getAllSaves() {
+        return gameStateDao.getAll();
     }
 
     private DataSource connect() throws SQLException {
