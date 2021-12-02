@@ -54,7 +54,7 @@ public class ConsumableDaoJdbc implements ConsumableDao{
     @Override
     public ConsumableModel get(int id) {
         try (Connection connection = dataSource.getConnection()) {
-            String sqlQuery = "SELECT x, y, type, map_id FROM consumable WHERE id = ?";
+            String sqlQuery = "SELECT x, y, type, map_id FROM consumable WHERE map_id = ?";
             PreparedStatement statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();

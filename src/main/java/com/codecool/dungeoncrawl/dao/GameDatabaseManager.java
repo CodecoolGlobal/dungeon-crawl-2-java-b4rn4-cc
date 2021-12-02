@@ -1,11 +1,11 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
-import com.codecool.dungeoncrawl.logic.items.Freeze;
-import com.codecool.dungeoncrawl.logic.items.Potion;
-import com.codecool.dungeoncrawl.logic.items.Shield;
-import com.codecool.dungeoncrawl.logic.items.Weapon;
+import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.inventory.Inventory;
+import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.model.*;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -106,6 +106,38 @@ public class GameDatabaseManager {
 
     public GameState getMatchingName(String name) {
         return gameStateDao.getMatch(name);
+    }
+
+    public PlayerModel getPlayerFromSave(GameState gameState) {
+        return playerDao.get(gameState.getId());
+    }
+
+    public InventoryModel getRawInventoryFromSave(int playerId) {
+        return inventoryDao.get(playerId);
+    }
+
+    public WeaponModel getWeaponForInventory(int inventoryId) {
+        return weaponDao.get(inventoryId);
+    }
+
+    public ShieldModel getShieldForInventory(int inventoryId) {
+        return shieldDao.get(inventoryId);
+    }
+
+    public MapModel getMapFromSave(GameState gameState) {
+        return mapDao.get(gameState.getId());
+    }
+
+    public List<WeaponModel> getWeaponsOnMapFromSave(int mapId) {
+        return weaponDao.getAll(mapId);
+    }
+
+    public List<ShieldModel> getShieldOnMapFromSave(int mapId) {
+        return shieldDao.getAll(mapId);
+    }
+
+    public List<ConsumableModel> getConsumableOnMapFromSave(int mapId) {
+        return consumableDao.getAll(mapId);
     }
 
     private DataSource connect() throws SQLException {
