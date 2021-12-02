@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Potion;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +19,21 @@ public class InventoryTest {
     }
 
     @Test
-    public void testPutMultipleSameTypeItemInInventory() {
+    public void testPutMultipleSameTypeItemInInventoryOnlyTheLastOneIsThere() {
         Weapon weapon1 = new Weapon(gameMap.getCell(1, 1), "Frostmourne", 10, 1);
         Weapon weapon2 = new Weapon(gameMap.getCell(1, 1), "Kingslayer", 5, 2);
         player.putItemInInventory(player, weapon1);
         player.putItemInInventory(player, weapon2);
         assertEquals("Kingslayer", player.getInventory().getWeapons().getName());
         assertEquals(5, player.getInventory().getWeapons().getDamage());
+    }
+
+    @Test
+    public void testConsumingItemFromInventoryItemCountShouldDecrease() {
+        Potion potion = new Potion(gameMap.getCell(1, 1), true);
+        player.putItemInInventory(player, potion);
+        player.putItemInInventory(player, potion);
+        player.consumeItem("potion");
+        assertEquals(2, player.getInventory().getPotionAmount());
     }
 }
