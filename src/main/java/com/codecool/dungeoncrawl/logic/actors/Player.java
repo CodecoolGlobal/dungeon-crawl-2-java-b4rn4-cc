@@ -150,10 +150,13 @@ public class Player extends Actor {
     }
 
 
+    @Override
     public String getTileName() {
         return "Player";
     }
 
+    @Override
+    public char getTileCharacter() { return '@'; }
 
     public void act(GameMap map, int index) { }
 

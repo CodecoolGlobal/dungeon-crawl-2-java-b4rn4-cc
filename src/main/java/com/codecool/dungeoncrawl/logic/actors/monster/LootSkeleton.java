@@ -10,14 +10,14 @@ import com.codecool.dungeoncrawl.logic.items.Weapon;
 
 public class LootSkeleton extends ImmortalSkeleton{
     private int freeze = 0;
-    private String name = null;
+    private String itemName = null;
     private int damage;
     private int crit;
     private boolean patrol = false;
 
-    public LootSkeleton(Cell cell, String name, int damage, int crit) {
+    public LootSkeleton(Cell cell, String itemName, int damage, int crit) {
         super(cell, 3);
-        this.name = name;
+        this.itemName = itemName;
         this.damage = damage;
         this.crit = crit;
     }
@@ -25,6 +25,15 @@ public class LootSkeleton extends ImmortalSkeleton{
     public LootSkeleton(Cell cell, String item) {
         super(cell, 2);
         freeze++;
+    }
+
+    @Override
+    public char getTileCharacter() {
+        if (itemName == null){
+            return 'J';
+        } else {
+            return 'I';
+        }
     }
 
     @Override
@@ -41,8 +50,8 @@ public class LootSkeleton extends ImmortalSkeleton{
         if (freeze == 1){
             cell.setItem(new Freeze(new Cell(map, 0, 0, CellType.FLOOR)));
         }
-        if (name != null){
-            cell.setItem(new Weapon(new Cell(map, 0, 0, CellType.FLOOR), name, damage, crit));
+        if (itemName != null){
+            cell.setItem(new Weapon(new Cell(map, 0, 0, CellType.FLOOR), itemName, damage, crit));
         }
     }
 }

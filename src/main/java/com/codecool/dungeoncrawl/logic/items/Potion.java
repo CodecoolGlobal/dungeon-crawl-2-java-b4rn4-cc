@@ -12,4 +12,8 @@ public class Potion extends Item{
     public String getTileName() {
         return "Potion";
     }
+
+    @Override
+    public char getTileCharacter() { return 'p'; }
+
 }

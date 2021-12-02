@@ -19,6 +19,9 @@ public class Skeleton extends Monster {
         return "Skeleton";
     }
 
+    @Override
+    public char getTileCharacter() { return 'm'; }
+
     public void act(GameMap map, int index){
         monsterAct(map, index);
     }
