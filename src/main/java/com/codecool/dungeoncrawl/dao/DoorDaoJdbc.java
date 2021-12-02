@@ -17,12 +17,13 @@ public class DoorDaoJdbc implements DoorDao {
     @Override
     public void add(DoorModel door) {
         try(Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO door (x, y, is_open, map_id) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO door (x, y, is_open, map_id, map_to) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, door.getX());
             st.setInt(2, door.getY());
             st.setBoolean(3, door.isOpen());
             st.setInt(4, door.getMapId());
+            st.setString(5, door.getMapTo());
             st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             rs.next();
@@ -52,14 +53,14 @@ public class DoorDaoJdbc implements DoorDao {
     @Override
     public DoorModel get(int id) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT x, y, is_open, map_id FROM door WHERE map_id = ?";
+            String sql = "SELECT x, y, map_to, is_open, map_id FROM door WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             if (!rs.next()) {
                 return null;
             } else {
-                DoorModel map = new DoorModel(rs.getInt(1), (rs.getInt(2)), (rs.getBoolean(3)), rs.getInt(4));
+                DoorModel map = new DoorModel(rs.getInt(1), (rs.getInt(2)), (rs.getBoolean(4)), rs.getInt(5), rs.getString(3));
                 map.setId(id);
                 return map;
             }
