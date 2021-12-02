@@ -108,8 +108,8 @@ public class GameDatabaseManager {
         return gameStateDao.getMatch(name);
     }
 
-    public PlayerModel getPlayerFromSave(GameState gameState) {
-        return playerDao.get(gameState.getId());
+    public PlayerModel getPlayerFromSave(int gamestateId) {
+        return playerDao.get(gamestateId);
     }
 
     public InventoryModel getRawInventoryFromSave(int playerId) {
