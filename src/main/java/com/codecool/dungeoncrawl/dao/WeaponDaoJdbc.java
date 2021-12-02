@@ -24,8 +24,19 @@ public class WeaponDaoJdbc implements WeaponDao{
             st.setInt(3, weapon.getDamage());
             st.setInt(4, weapon.getCrit());
             st.setString(5, weapon.getName());
-            st.setInt(6, weapon.getInventoryId());
-            st.setInt(7, weapon.getMapId());
+
+            if (weapon.getInventoryId() == -1){
+                st.setNull(6, Types.NULL);
+            } else {
+                st.setInt(6, weapon.getInventoryId());
+            }
+
+            if (weapon.getMapId() == -1){
+                st.setNull(7, Types.NULL);
+            } else {
+                st.setInt(7, weapon.getMapId());
+            }
+
             st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             rs.next();

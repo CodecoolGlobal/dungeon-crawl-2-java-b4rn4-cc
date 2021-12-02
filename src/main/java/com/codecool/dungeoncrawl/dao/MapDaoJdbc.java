@@ -57,7 +57,7 @@ public class MapDaoJdbc implements MapDao {
             if (!rs.next()) {
                 return null;
             } else {
-                MapModel map = new MapModel(rs.getInt(0), (rs.getInt(1)), (rs.getString(2)));
+                MapModel map = new MapModel(rs.getInt(1), (rs.getInt(2)), (rs.getString(3)));
                 map.setId(id);
                 return map;
             }

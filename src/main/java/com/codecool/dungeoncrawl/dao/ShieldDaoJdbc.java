@@ -22,8 +22,19 @@ public class ShieldDaoJdbc implements ShieldDao {
             st.setInt(2, shield.getY());
             st.setInt(3, shield.getDefense());
             st.setString(4, shield.getName());
-            st.setInt(5, shield.getInventoryId());
-            st.setInt(6, shield.getMapId());
+
+            if (shield.getInventoryId() == -1){
+                st.setNull(5, Types.NULL);
+            } else {
+                st.setInt(5, shield.getInventoryId());
+            }
+
+            if (shield.getMapId() == -1){
+                st.setNull(6, Types.NULL);
+            } else {
+                st.setInt(6, shield.getMapId());
+            }
+
             st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             rs.next();

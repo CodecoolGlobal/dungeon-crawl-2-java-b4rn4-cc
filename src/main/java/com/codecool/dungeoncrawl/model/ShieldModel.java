@@ -28,7 +28,7 @@ public class ShieldModel extends BaseModel{
             this.y = -1;
         }
         this.defense = shield.getFlatDefense();
-        this.name = getName();
+        this.name = shield.getTileName();
         this.inventoryId = inventoryId;
         this.mapId = mapId;
     }

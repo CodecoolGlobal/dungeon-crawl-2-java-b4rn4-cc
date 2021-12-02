@@ -32,7 +32,7 @@ public class WeaponModel extends BaseModel {
         }
         this.damage = weapon.getDamage();
         this.crit = weapon.getCrit();
-        this.name = getName();
+        this.name = weapon.getTileName();
         this.inventoryId = inventoryId;
         this.mapId = mapId;
     }

@@ -10,6 +10,15 @@ public class Inventory {
     private Key keys = null;
     private Weapon weapons = null;
     private Shield shields = null;
+
+    public int getFreezeAmount() {
+        return freeze;
+    }
+
+    public int getPotionAmount() {
+        return potion;
+    }
+
     private int freeze = 0;
     private int potion = 1;
 
