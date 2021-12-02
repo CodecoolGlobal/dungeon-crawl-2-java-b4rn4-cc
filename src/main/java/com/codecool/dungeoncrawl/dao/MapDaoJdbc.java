@@ -68,12 +68,12 @@ public class MapDaoJdbc implements MapDao {
 
 
     @Override
-    public List<MapModel> getAll() {
+    public List<MapModel> getAll(int gameStateId) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "SELECT id, map_number, game_state_id, map FROM maps WHERE game_state_id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
-            st.setInt(1, 1);    //                                  TODO: replace 1 with dynamic game_state_id
-            ResultSet rs = conn.createStatement().executeQuery(sql);
+            st.setInt(1, gameStateId);
+            ResultSet rs = st.executeQuery();
             List<MapModel> result = new ArrayList<>();
             while (rs.next()) { // while result set pointer is positioned before or on last row read authors
                 MapModel map = new MapModel(rs.getInt(2), rs.getInt(3), rs.getString(4));

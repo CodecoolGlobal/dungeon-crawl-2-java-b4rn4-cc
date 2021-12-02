@@ -153,8 +153,8 @@ public class GameDatabaseManager {
         return shieldDao.get(inventoryId);
     }
 
-    public MapModel getMapFromSave(GameState gameState) {
-        return mapDao.get(gameState.getId());
+    public List<MapModel> getMapFromSave(GameState gameState) {
+        return mapDao.getAll(gameState.getId());
     }
 
     public List<WeaponModel> getWeaponsOnMapFromSave(int mapId) {
@@ -184,5 +184,9 @@ public class GameDatabaseManager {
         System.out.println("Connection ok.");
 
         return dataSource;
+    }
+
+    public List<DoorModel> getDoorDao(int mapId) {
+        return doorDao.getAll(2);
     }
 }

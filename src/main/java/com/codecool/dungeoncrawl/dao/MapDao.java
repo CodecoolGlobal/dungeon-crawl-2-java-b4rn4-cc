@@ -8,6 +8,6 @@ public interface MapDao {
     void add(MapModel map);
     void update(MapModel map);
     MapModel get(int id);
-    List<MapModel> getAll();
+    List<MapModel> getAll(int gameStateId);
 }
 
