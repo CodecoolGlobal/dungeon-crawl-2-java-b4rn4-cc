@@ -34,6 +34,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Main extends Application {
@@ -111,13 +112,15 @@ public class Main extends Application {
         loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
             ObservableList<GameState> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
             // TODO: 2021. 12. 01. Init gameLoading with saved
-            MapModel loaded = null;
+            LinkedList<MapModel> loaded = null;
             int gameStateId = 0;
+            int currentMapNumber = 0;
             for (GameState save : selectedSaves) {
                 loaded = dbManager.getMapFromSave(save);
                 gameStateId = save.getId();
+                currentMapNumber = save.getCurrentMapNumber() -1;
             }
-            loadMap(loaded, gameStateId);
+            loadMap(loaded, gameStateId, currentMapNumber);
             loadStage.close();
         });
 
@@ -129,12 +132,16 @@ public class Main extends Application {
         setupStage(loadStage, gridPane);
     }
 
-    private void loadMap(MapModel loaded, int gameStateId) {
-        TxtCreator.textCreator(loaded);
+    private void loadMap(LinkedList<MapModel> loaded, int gameStateId, int currentMapNumber) {
+        System.out.println(loaded);
+        System.out.println(currentMapNumber + "currentmapNum");
+        MapModel mapModel = loaded.get(currentMapNumber);
+        TxtCreator.textCreator(mapModel);
         GameMap gameMap = MapLoader.loadMap("/loadedMap.txt");
 
         PlayerModel playerModel = dbManager.getPlayerFromSave(gameStateId);
         InventoryModel inventoryModel = dbManager.getRawInventoryFromSave(playerModel.getId());
+        List<DoorModel> doorModelList = dbManager.getDoorDao(mapModel.getId());
         WeaponModel inventoryWeaponModel = dbManager.getWeaponForInventory(inventoryModel.getId());
         ShieldModel inventoryShieldModel = dbManager.getShieldForInventory(inventoryModel.getId());
         if(inventoryWeaponModel != null) {
@@ -151,26 +158,40 @@ public class Main extends Application {
         gameMap.getPlayer().setFreeze(inventoryModel.getFreeze());
         gameMap.getPlayer().setHealth(playerModel.getHp());
 
+//        doorModelList.stream().forEach(doorModel -> {
+//            gameMap.getCell(doorModel.getX(), doorModel.getY()).setItem(new Door(new Cell(gameMap, doorModel.getX(), doorModel.getY(), CellType.FLOOR), doorModel.isOpen(), doorModel.getMapTo()));
+//            if (loaded.size() == 2 ){
+//                MapModel mapModel1 = loaded.get(0);
+//                TxtCreator.textCreator(mapModel1);
+//                gameMap.getPlayer().setFirstLevel(MapLoader.loadMap("/loadedMap.txt"));
+//            }
+//        });
 
-        List<ConsumableModel> consumableModels = dbManager.getConsumableOnMapFromSave(loaded.getId());
-        List<WeaponModel> weaponModels = dbManager.getWeaponsOnMapFromSave(loaded.getId());
-        List<ShieldModel> shieldModels = dbManager.getShieldOnMapFromSave(loaded.getId());
+        System.out.println(mapModel.getId());
+        List<ConsumableModel> consumableModels = dbManager.getConsumableOnMapFromSave(mapModel.getId());
+        List<WeaponModel> weaponModels = dbManager.getWeaponsOnMapFromSave(mapModel.getId());
+        List<ShieldModel> shieldModels = dbManager.getShieldOnMapFromSave(mapModel.getId());
 
         consumableModels.forEach(consumableModel -> {
+            Cell cell;
             if(consumableModel.getConsumableType().equals("potion")) {
-                gameMap.getCell(consumableModel.getX(), consumableModel.getY()).setItem(new Potion(new Cell(gameMap, consumableModel.getX(), consumableModel.getY(), CellType.FLOOR), true));
+                cell = gameMap.getCell(consumableModel.getX(), consumableModel.getY());
+                cell.setItem(new Potion(cell, true));
             }
             if(consumableModel.getConsumableType().equals("freeze")) {
-                gameMap.getCell(consumableModel.getX(), consumableModel.getY()).setItem(new Freeze(new Cell(gameMap, consumableModel.getX(), consumableModel.getY(), CellType.FLOOR)));
+                cell = gameMap.getCell(consumableModel.getX(), consumableModel.getY());
+                cell.setItem(new Freeze(cell));
             }
         });
 
         weaponModels.forEach(weaponModel -> {
-            gameMap.getCell(weaponModel.getX(), weaponModel.getY()).setItem(new Weapon(new Cell(gameMap, weaponModel.getX(), weaponModel.getY(), CellType.FLOOR), weaponModel.getName(), weaponModel.getDamage(), weaponModel.getCrit()));
+            Cell cell = gameMap.getCell(weaponModel.getX(), weaponModel.getY());
+            cell.setItem(new Weapon(cell, weaponModel.getName(), weaponModel.getDamage(), weaponModel.getCrit()));
         });
 
         shieldModels.forEach(shieldModel -> {
-            gameMap.getCell(shieldModel.getX(), shieldModel.getY()).setItem(new Shield(new Cell(gameMap, shieldModel.getX(), shieldModel.getY(), CellType.FLOOR), shieldModel.getName(), shieldModel.getDefense()));
+            Cell cell = gameMap.getCell(shieldModel.getX(), shieldModel.getY());
+            cell.setItem(new Shield(cell, shieldModel.getName(), shieldModel.getDefense()));
         });
         map = gameMap;
         refresh();
@@ -410,7 +431,6 @@ public class Main extends Application {
         } else {
             refresh();
         }
-        System.out.println(map.createCurrentMap());
 
     }
 

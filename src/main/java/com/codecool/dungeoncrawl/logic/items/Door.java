@@ -15,6 +15,9 @@ public class Door extends Item{
 
     public Door (Cell cell, boolean opened, String mapTo) {
         super(cell, false);
+        if (opened){
+            cell.setType(CellType.FLOOR);
+        }
         this.opened = opened;
         this.mapTo = mapTo;
     }

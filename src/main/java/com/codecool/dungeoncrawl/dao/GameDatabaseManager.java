@@ -6,6 +6,11 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.inventory.Inventory;
 import com.codecool.dungeoncrawl.logic.items.*;
+import com.codecool.dungeoncrawl.logic.inventory.Inventory;
+import com.codecool.dungeoncrawl.logic.items.Freeze;
+import com.codecool.dungeoncrawl.logic.items.Potion;
+import com.codecool.dungeoncrawl.logic.items.Shield;
+import com.codecool.dungeoncrawl.logic.items.Weapon;
 import com.codecool.dungeoncrawl.model.*;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -13,6 +18,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GameDatabaseManager {
@@ -58,10 +64,32 @@ public class GameDatabaseManager {
             shieldDao.add(inventoryShield);
         }
 
-        MapModel mapModel = new MapModel(currentMap, gameStateId, map.createCurrentMap());
-        mapDao.add(mapModel);
-        saveItemFromMap(map, mapModel.getId());
-        doorSave(map, inventory.hasKey(), mapModel);
+        if (map.getPlayer().getSecondLevel() != null){
+            saveMap(1, gameStateId, map.getPlayer().getFirstLevel(), true);
+            saveMap(2, gameStateId, map.getPlayer().getSecondLevel(), true);
+            if (map.getPlayer().getThirdLevel() != null){
+                saveMap(3, gameStateId, map.getPlayer().getThirdLevel(), false);
+            } else {
+
+                saveMap(3, gameStateId, map, false);
+            }
+        } else if (map.getPlayer().getFirstLevel() != null){
+            saveMap(1, gameStateId, map.getPlayer().getFirstLevel(), true);
+            if (map.getPlayer().getSecondLevel() != null){
+                saveMap(2, gameStateId, map.getPlayer().getSecondLevel(), inventory.hasKey());
+            } else {
+                saveMap(2, gameStateId, map, inventory.hasKey());
+            }
+        } else {
+            saveMap(1, gameStateId, map, inventory.hasKey());
+        }
+    }
+
+    private void saveMap(int map_number, int gameStateId, GameMap map, boolean isDoorOpen){
+            MapModel mapModel = new MapModel(map_number, gameStateId, map.createCurrentMap());
+            mapDao.add(mapModel);
+            saveItemFromMap(map, mapModel.getId());
+            doorSave(map, isDoorOpen, mapModel);
     }
 
     private void doorSave(GameMap map, boolean hasKey, MapModel mapModel) {
@@ -69,8 +97,10 @@ public class GameDatabaseManager {
             DoorModel prevDoor = new DoorModel(map.getPrevDoor(), true, mapModel.getId());
             doorDao.add(prevDoor);
         }
-        DoorModel nextDoor = new DoorModel(map.getNextDoor(), hasKey, mapModel.getId());
-        doorDao.add(nextDoor);
+        if (map.getNextDoor() != null){
+            DoorModel nextDoor = new DoorModel(map.getNextDoor(), hasKey, mapModel.getId());
+            doorDao.add(nextDoor);
+        }
     }
 
     private void saveItemFromMap(GameMap map, int mapId) {
@@ -124,8 +154,8 @@ public class GameDatabaseManager {
         return shieldDao.get(inventoryId);
     }
 
-    public MapModel getMapFromSave(GameState gameState) {
-        return mapDao.get(gameState.getId());
+    public LinkedList<MapModel> getMapFromSave(GameState gameState) {
+        return mapDao.getAll(gameState.getId());
     }
 
     public List<WeaponModel> getWeaponsOnMapFromSave(int mapId) {
@@ -155,5 +185,9 @@ public class GameDatabaseManager {
         System.out.println("Connection ok.");
 
         return dataSource;
+    }
+
+    public List<DoorModel> getDoorDao(int mapId) {
+        return doorDao.getAll(2);
     }
 }
