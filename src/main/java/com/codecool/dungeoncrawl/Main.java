@@ -112,7 +112,7 @@ public class Main extends Application {
         loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
             ObservableList<GameState> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
             // TODO: 2021. 12. 01. Init gameLoading with saved
-            List<MapModel> loaded = null;
+            LinkedList<MapModel> loaded = null;
             int gameStateId = 0;
             int currentMapNumber = 0;
             for (GameState save : selectedSaves) {
@@ -132,7 +132,9 @@ public class Main extends Application {
         setupStage(loadStage, gridPane);
     }
 
-    private void loadMap(List<MapModel> loaded, int gameStateId, int currentMapNumber) {
+    private void loadMap(LinkedList<MapModel> loaded, int gameStateId, int currentMapNumber) {
+        System.out.println(loaded);
+        System.out.println(currentMapNumber + "currentmapNum");
         MapModel mapModel = loaded.get(currentMapNumber);
         TxtCreator.textCreator(mapModel);
         GameMap gameMap = MapLoader.loadMap("/loadedMap.txt");

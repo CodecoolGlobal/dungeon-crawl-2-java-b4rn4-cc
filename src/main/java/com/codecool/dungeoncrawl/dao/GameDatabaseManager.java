@@ -18,6 +18,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GameDatabaseManager {
@@ -153,7 +154,7 @@ public class GameDatabaseManager {
         return shieldDao.get(inventoryId);
     }
 
-    public List<MapModel> getMapFromSave(GameState gameState) {
+    public LinkedList<MapModel> getMapFromSave(GameState gameState) {
         return mapDao.getAll(gameState.getId());
     }
 
