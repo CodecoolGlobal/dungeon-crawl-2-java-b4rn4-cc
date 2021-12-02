@@ -14,6 +14,7 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
+import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -40,6 +41,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.List;
+
 public class Main extends Application {
     String route = "/map.txt";
     GameMap map = MapLoader.loadMap(route);
@@ -105,24 +108,18 @@ public class Main extends Application {
 
     private void showLoadModal(Stage loadStage) {
         loadStage.setTitle("Load Game");
-        // TODO: 2021. 12. 01. PlayerDaoJdbc.getAll() return list needed to add to choose which game to load
-        // dummy saves
-        PlayerModel save1 = new PlayerModel(1, 1);
-        PlayerModel save2 = new PlayerModel(1, 1);
-        PlayerModel save3 = new PlayerModel(1, 1);
-        //--------------------------------
-        ListView<PlayerModel> savedGames = new ListView<>();
-        savedGames.getItems().add(save1);
-        savedGames.getItems().add(save2);
-        savedGames.getItems().add(save3);
-
+        List<GameState> saves = dbManager.getAllSaves();
+        ListView<GameState> savedGames = new ListView<>();
+        for (GameState save : saves) {
+            savedGames.getItems().add(save);
+        }
         Button loadButton = new Button("Load");
 
         loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-            ObservableList<PlayerModel> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
+            ObservableList<GameState> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
             // TODO: 2021. 12. 01. Init gameLoading with saved
-            for (PlayerModel save : selectedSaves) {
-                System.out.println(save.getPlayerName());
+            for (GameState save : selectedSaves) {
+                System.out.println(save.getGameStateName());
             }
             loadStage.close();
         });
@@ -185,19 +182,20 @@ public class Main extends Application {
     }
 
     private void overWriteSavedGame(String providedName, Stage ownDialog, Stage saveDialog) {
-        // TODO: 2021. 11. 30. upDate the save where the providedName matches in the database
+        GameState overWriteSave = dbManager.getMatchingName(providedName);
+        dbManager.updateSave(overWriteSave);
         ownDialog.close();
         saveDialog.close();
     }
 
     private void saveGame(Stage modal, TextField textField, Stage confirmSaveStage) {
-        Player player = map.getPlayer();
         String providedName = textField.getText();
-        // TODO: 2021. 11. 30. Condition create query where we get the save games Where <column> LIKE providedName
-        if (providedName.equals("asd")) {
+        String nameSavedInDatabase = dbManager.getMatchingName(providedName).getGameStateName();
+        if (providedName.equals(nameSavedInDatabase)) {
             confirmOverwriteSaveModal(confirmSaveStage, modal, providedName);
         } else {
-            // TODO: 2021. 11. 30. save game
+            dbManager.saveGame(map, providedName, MapLoader.getCurrentLevel());
+
             modal.close();
         }
     }
