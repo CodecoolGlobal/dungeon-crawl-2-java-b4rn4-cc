@@ -108,21 +108,36 @@ public class GameDatabaseManager {
         return gameStateDao.getMatch(name);
     }
 
-    public Player getPlayerFromSave(GameState gameState, GameMap gameMap) {
-        PlayerModel playerModel = playerDao.get(gameState.getId());
-        InventoryModel inventoryModel = inventoryDao.get(playerModel.getId());
-        WeaponModel inventoryWeaponModel = weaponDao.get(inventoryModel.getId());
-        ShieldModel inventoryShieldModel = shieldDao.get(inventoryModel.getId());
-        Weapon weapon = new Weapon(new Cell(gameMap, inventoryWeaponModel.getX(), inventoryWeaponModel.getY(), CellType.FLOOR), inventoryWeaponModel.getName(), inventoryWeaponModel.getDamage(), inventoryWeaponModel.getCrit());
-        Shield shield = new Shield(new Cell(gameMap, inventoryShieldModel.getX(), inventoryShieldModel.getY(), CellType.FLOOR), inventoryShieldModel.getName(), inventoryShieldModel.getDefense());
-        Inventory inventory = new Inventory(inventoryModel.hasKey(), weapon, shield, inventoryModel.getFreeze(), inventoryModel.getPotion(), new Key(new Cell(gameMap, -1, -1, CellType.FLOOR)));
-        Player player = new Player(new Cell(gameMap, playerModel.getX(), playerModel.getY(), CellType.FLOOR));
-        player.setInventory(inventory);
-        return player;
+    public PlayerModel getPlayerFromSave(GameState gameState) {
+        return playerDao.get(gameState.getId());
+    }
+
+    public InventoryModel getRawInventoryFromSave(int playerId) {
+        return inventoryDao.get(playerId);
+    }
+
+    public WeaponModel getWeaponForInventory(int inventoryId) {
+        return weaponDao.get(inventoryId);
+    }
+
+    public ShieldModel getShieldForInventory(int inventoryId) {
+        return shieldDao.get(inventoryId);
     }
 
     public MapModel getMapFromSave(GameState gameState) {
         return mapDao.get(gameState.getId());
+    }
+
+    public List<WeaponModel> getWeaponsOnMapFromSave(int mapId) {
+        return weaponDao.getAll(mapId);
+    }
+
+    public List<ShieldModel> getShieldOnMapFromSave(int mapId) {
+        return shieldDao.getAll(mapId);
+    }
+
+    public List<ConsumableModel> getConsumableOnMapFromSave(int mapId) {
+        return consumableDao.getAll(mapId);
     }
 
     private DataSource connect() throws SQLException {

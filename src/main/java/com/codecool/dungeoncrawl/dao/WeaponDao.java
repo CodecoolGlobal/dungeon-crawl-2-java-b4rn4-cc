@@ -11,5 +11,5 @@ public interface WeaponDao {
 
     public WeaponModel get(int id);
 
-    public List<WeaponModel> getAll();
+    public List<WeaponModel> getAll(int mapId);
 }
