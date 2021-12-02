@@ -22,7 +22,7 @@ public class DoorDaoJdbc implements DoorDao {
             st.setInt(1, door.getX());
             st.setInt(2, door.getY());
             st.setBoolean(3, door.isOpen());
-            st.setInt(3, door.getMapId());
+            st.setInt(4, door.getMapId());
             st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             rs.next();
@@ -41,8 +41,8 @@ public class DoorDaoJdbc implements DoorDao {
             st.setInt(1, door.getX());
             st.setInt(2, door.getY());
             st.setBoolean(3, door.isOpen());
-            st.setInt(3, door.getMapId());
-            st.setInt(4, door.getId());
+            st.setInt(4, door.getMapId());
+            st.setInt(5, door.getId());
             st.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public class DoorDaoJdbc implements DoorDao {
             if (!rs.next()) {
                 return null;
             } else {
-                DoorModel map = new DoorModel(rs.getInt(0), (rs.getInt(1)), (rs.getBoolean(2)), rs.getInt(3));
+                DoorModel map = new DoorModel(rs.getInt(1), (rs.getInt(2)), (rs.getBoolean(3)), rs.getInt(4));
                 map.setId(id);
                 return map;
             }

@@ -10,8 +10,8 @@ public class InventoryModel extends BaseModel{
 
     public InventoryModel(Inventory inventory, int playerId) {
         this.key = (inventory.getKeys() != null);
-        this.freeze = inventory.getFreezeValue();
-        this.potion = inventory.getPotionValue();
+        this.freeze = inventory.getFreezeAmount();
+        this.potion = inventory.getPotionAmount();
         this.playerId = playerId;
     }
 
@@ -42,7 +42,7 @@ public class InventoryModel extends BaseModel{
         this.potion = potion;
     }
 
-    public boolean isKey() {
+    public boolean hasKey() {
         return key;
     }
 

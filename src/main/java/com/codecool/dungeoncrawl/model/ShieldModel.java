@@ -1,20 +1,36 @@
 package com.codecool.dungeoncrawl.model;
 
-public class ShieldModel {
+import com.codecool.dungeoncrawl.logic.items.Shield;
+
+public class ShieldModel extends BaseModel{
     private int x;
     private int y;
     private int defense;
     private String name;
-    private int inventory_id;
-    private int map_id;
+    private int inventoryId;
+    private int mapId;
 
-    public ShieldModel(int x, int y, String name, int defense, int inventory_id, int map_id) {
+    public ShieldModel(int x, int y, String name, int defense, int inventoryId, int mapId) {
         this.x = x;
         this.y = y;
         this.defense = defense;
         this.name = name;
-        this.inventory_id = inventory_id;
-        this.map_id = map_id;
+        this.inventoryId = inventoryId;
+        this.mapId = mapId;
+    }
+
+    public ShieldModel(Shield shield, int inventoryId, int mapId) {
+        if(shield.getCell() != null) {
+            this.x = shield.getCell().getX();
+            this.y = shield.getCell().getY();
+        } else {
+            this.x = -1;
+            this.y = -1;
+        }
+        this.defense = shield.getFlatDefense();
+        this.name = shield.getTileName();
+        this.inventoryId = inventoryId;
+        this.mapId = mapId;
     }
 
     public int getX() {
@@ -49,19 +65,19 @@ public class ShieldModel {
         this.name = name;
     }
 
-    public int getInventory_id() {
-        return inventory_id;
+    public int getInventoryId() {
+        return inventoryId;
     }
 
-    public void setInventory_id(int inventory_id) {
-        this.inventory_id = inventory_id;
+    public void setInventoryId(int inventoryId) {
+        this.inventoryId = inventoryId;
     }
 
-    public int getMap_id() {
-        return map_id;
+    public int getMapId() {
+        return mapId;
     }
 
-    public void setMap_id(int map_id) {
-        this.map_id = map_id;
+    public void setMapId(int mapId) {
+        this.mapId = mapId;
     }
 }

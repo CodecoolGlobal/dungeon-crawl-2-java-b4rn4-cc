@@ -1,5 +1,7 @@
 package com.codecool.dungeoncrawl.model;
 
+import com.codecool.dungeoncrawl.logic.items.Weapon;
+
 public class WeaponModel extends BaseModel {
     private int x;
     private int y;
@@ -16,6 +18,21 @@ public class WeaponModel extends BaseModel {
         this.damage = damage;
         this.crit = crit;
         this.name = name;
+        this.inventoryId = inventoryId;
+        this.mapId = mapId;
+    }
+
+    public WeaponModel(Weapon weapon, int inventoryId, int mapId) {
+        if(weapon.getCell() != null) {
+            this.x = weapon.getCell().getX();
+            this.y = weapon.getCell().getY();
+        } else {
+            this.x = -1;
+            this.y = -1;
+        }
+        this.damage = weapon.getDamage();
+        this.crit = weapon.getCrit();
+        this.name = weapon.getTileName();
         this.inventoryId = inventoryId;
         this.mapId = mapId;
     }
