@@ -33,6 +33,18 @@ public class ConsumableDaoJdbc implements ConsumableDao{
 
     @Override
     public void update(ConsumableModel model) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sqlQuery = "UPDATE consumable SET x = ?, y = ?, type = ?, map_id = ? WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, model.getX());
+            statement.setInt(2, model.getY());
+            statement.setString(3, model.getConsumableType());
+            statement.setInt(4, model.getMapId());
+            statement.setInt(5, model.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
