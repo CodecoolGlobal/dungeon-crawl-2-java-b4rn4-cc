@@ -19,11 +19,20 @@ public class Weapon extends Item{
         return name;
     }
 
+    @Override
+    public char getTileCharacter() { return 'w'; } // return 'X'
+
+
     public int getDamage() {
         return damage;
     }
 
     public int getCrit() {
         return crit;
+    }
+
+
+    public String getName(){
+        return name;
     }
 }

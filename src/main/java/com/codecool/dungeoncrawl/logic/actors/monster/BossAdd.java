@@ -19,5 +19,7 @@ public class BossAdd extends Monster{
         return "Spider";
     }
 
+    @Override
+    public char getTileCharacter() { return 'l'; }
 
 }

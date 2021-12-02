@@ -20,4 +20,8 @@ public class Shield extends Item{
     public String getTileName() {
         return name;
     }
+
+    @Override
+    public char getTileCharacter() { return 's'; } // return 'S'
+
 }

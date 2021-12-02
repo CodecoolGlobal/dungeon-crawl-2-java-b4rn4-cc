@@ -14,13 +14,20 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
+import com.codecool.dungeoncrawl.model.GameState;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.KeyCode;
@@ -29,9 +36,13 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.List;
+
 public class Main extends Application {
     String route = "/map.txt";
     GameMap map = MapLoader.loadMap(route);
@@ -68,8 +79,14 @@ public class Main extends Application {
         pickUpButton.setVisible(false);
         pickUpButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> pickUp());
 
-        ui.add(new Label("CombatLog: "), 0, 14);
+        Stage loadStage = new Stage();
+        loadStage.initModality(Modality.APPLICATION_MODAL);
+        Button loadButton = new Button("Load Game");
+        loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> showLoadModal(loadStage));
+
+        ui.add(new Label("CombatLog: "), 0, 15);
         ui.add(combatLog, 1, 17);
+        ui.add(loadButton, 1, 14);
 
         BorderPane borderPane = new BorderPane();
 
@@ -79,26 +96,131 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
+        Stage saveDialogStage = new Stage();
+        saveDialogStage.initModality(Modality.APPLICATION_MODAL);
         scene.setOnKeyPressed(this::onKeyPressed);
-        scene.setOnKeyReleased(this::onKeyReleased);
+        scene.setOnKeyReleased(keyEvent -> onKeyReleased(keyEvent, saveDialogStage));
+
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
     }
 
-    private void onKeyReleased(KeyEvent keyEvent) {
+    private void showLoadModal(Stage loadStage) {
+        loadStage.setTitle("Load Game");
+        List<GameState> saves = dbManager.getAllSaves();
+        ListView<GameState> savedGames = new ListView<>();
+        for (GameState save : saves) {
+            savedGames.getItems().add(save);
+        }
+        Button loadButton = new Button("Load");
+
+        loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+            ObservableList<GameState> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
+            // TODO: 2021. 12. 01. Init gameLoading with saved
+            for (GameState save : selectedSaves) {
+                System.out.println(save.getGameStateName());
+            }
+            loadStage.close();
+        });
+
+        GridPane gridPane = new GridPane();
+        gridPane.add(savedGames, 0, 1);
+        gridPane.add(loadButton, 1,1);
+        loadStage.setWidth(600);
+        loadStage.setHeight(300);
+        setupStage(loadStage, gridPane);
+    }
+
+    private void showModal(Stage stage) {
+        Stage confirmSaveStage = new Stage();
+        confirmSaveStage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Save Game");
+        Label saveGameName = new Label("Save Game:");
+        TextField textField = new TextField();
+        GridPane gridPane = new GridPane();
+        Button cancelButton = new Button("Cancel");
+        Button saveButton = new Button("Save");
+        cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> cancelSave(stage));
+        saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> saveGame(stage, textField, confirmSaveStage));
+        gridPane.setHgap(30);
+        gridPane.setVgap(30);
+        gridPane.add(saveGameName, 0, 0);
+        gridPane.add(textField, 1, 0);
+        gridPane.add(cancelButton, 4, 4);
+        gridPane.add(saveButton, 0, 4);
+        stage.setWidth(600);
+        stage.setHeight(300);
+        setupStage(stage, gridPane);
+    }
+
+    private void confirmOverwriteSaveModal(Stage ownDialog, Stage saveDialogStage, String providedName) {
+        ownDialog.setTitle("Are you sure to Over Write this save?");
+        GridPane gridPane = new GridPane();
+        Label msg = new Label("Are you sure to Over Write this save?");
+        Button confirmButton = new Button("Yes");
+        Button cancelButton = new Button("No");
+        confirmButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> overWriteSavedGame(providedName, ownDialog, saveDialogStage));
+        cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> cancelSave(ownDialog));
+        gridPane.add(msg, 2, 0);
+        gridPane.add(confirmButton, 0, 1);
+        gridPane.add(cancelButton, 3, 1);
+        gridPane.setAlignment(Pos.CENTER);
+        ownDialog.setWidth(350);
+        ownDialog.setHeight(100);
+        setupStage(ownDialog, gridPane);
+    }
+
+    private void setupStage(Stage stage, GridPane gridPane) {
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        Scene scene = new Scene(gridPane);
+        gridPane.setAlignment(Pos.CENTER);
+        stage.setX((primaryScreenBounds.getWidth() - primaryScreenBounds.getWidth() / 2) - stage.getWidth() / 2);
+        stage.setY((primaryScreenBounds.getHeight() - primaryScreenBounds.getHeight() / 2) - stage.getHeight() / 2);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+
+    private void overWriteSavedGame(String providedName, Stage ownDialog, Stage saveDialog) {
+        GameState overWriteSave = dbManager.getMatchingName(providedName);
+        dbManager.updateSave(overWriteSave);
+        ownDialog.close();
+        saveDialog.close();
+    }
+
+    private void saveGame(Stage modal, TextField textField, Stage confirmSaveStage) {
+        String providedName = textField.getText();
+        GameState gameState = dbManager.getMatchingName(providedName);
+        String nameSavedInDatabase = "";
+        if (gameState != null) {
+            nameSavedInDatabase = gameState.getGameStateName();
+        }
+        if (providedName.equals(nameSavedInDatabase)) {
+            confirmOverwriteSaveModal(confirmSaveStage, modal, providedName);
+        } else {
+            dbManager.saveGame(map, providedName, MapLoader.getCurrentLevel());
+
+            modal.close();
+        }
+    }
+
+    private void cancelSave(Stage modal) {
+        modal.close();
+    }
+
+    private void onKeyReleased(KeyEvent keyEvent, Stage saveDialogStage) {
         KeyCombination exitCombinationMac = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
         KeyCombination exitCombinationWin = new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN);
+        KeyCombination saveCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
         if (exitCombinationMac.match(keyEvent)
                 || exitCombinationWin.match(keyEvent)
                 || keyEvent.getCode() == KeyCode.ESCAPE) {
             exit();
         }
+        if (saveCombination.match(keyEvent)) {
+            showModal(saveDialogStage);
+        }
     }
-    /* case S:
-                Player player = map.getPlayer();
-                dbManager.savePlayer(player);
-                break; */
 
     private void onKeyPressed(KeyEvent keyEvent) {
         if (hasWon || isGameOver){
@@ -243,6 +365,7 @@ public class Main extends Application {
         } else {
             refresh();
         }
+        System.out.println(map.createCurrentMap());
 
     }
 

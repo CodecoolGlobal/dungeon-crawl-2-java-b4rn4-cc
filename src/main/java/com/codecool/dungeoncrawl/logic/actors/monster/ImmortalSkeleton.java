@@ -20,6 +20,15 @@ public class ImmortalSkeleton extends Monster{
 
     }
 
+    @Override
+    public char getTileCharacter() {
+        if (aggroRange == 2){
+            return 'i';
+        } else {
+            return 'T';
+        }
+    }
+
     public boolean isImmortal() {
         return counter % 3 == 0;
     }

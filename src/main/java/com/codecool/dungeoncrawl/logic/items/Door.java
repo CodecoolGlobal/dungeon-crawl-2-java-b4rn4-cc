@@ -21,6 +21,10 @@ public class Door extends Item{
         return "closedDoor";
     }
 
+    @Override
+    public char getTileCharacter() { return 'c'; } // return 'o'
+
+
     public String getMapTo() {
         return mapTo;
     }

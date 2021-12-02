@@ -24,6 +24,10 @@ public class Boss extends Monster{
         return "Witch";
     }
 
+
+    @Override
+    public char getTileCharacter() { return 'b'; }
+
     @Override
     public void setDirection(Player player) {
 

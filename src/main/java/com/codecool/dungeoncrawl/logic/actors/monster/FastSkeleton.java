@@ -16,6 +16,14 @@ public class FastSkeleton extends Monster{
         return "Fast Boi";
     }
 
+    @Override
+    public char getTileCharacter() {
+        if (aggroRange == 6){
+            return 'f';
+        } else {
+            return 'G';
+        }
+    }
 
     public void act(GameMap map, int index){
         if (isPlayerInRange(map.getPlayer(), getX(), getY())){
