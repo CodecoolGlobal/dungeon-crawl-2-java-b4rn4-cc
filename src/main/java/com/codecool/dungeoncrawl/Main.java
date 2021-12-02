@@ -1,21 +1,14 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
-import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.Direction;
-import com.codecool.dungeoncrawl.logic.CellType;
-import com.codecool.dungeoncrawl.logic.GameMap;
-import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.actors.monster.Boss;
 import com.codecool.dungeoncrawl.logic.actors.monster.ImmortalSkeleton;
 import com.codecool.dungeoncrawl.logic.actors.monster.LootSkeleton;
-import com.codecool.dungeoncrawl.logic.items.Door;
-import com.codecool.dungeoncrawl.logic.items.Key;
-import com.codecool.dungeoncrawl.logic.items.Shield;
-import com.codecool.dungeoncrawl.logic.items.Weapon;
-import com.codecool.dungeoncrawl.model.GameState;
-import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.logic.inventory.Inventory;
+import com.codecool.dungeoncrawl.logic.items.*;
+import com.codecool.dungeoncrawl.model.*;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -118,9 +111,13 @@ public class Main extends Application {
         loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
             ObservableList<GameState> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
             // TODO: 2021. 12. 01. Init gameLoading with saved
+            MapModel loaded = null;
+            int gameStateId = 0;
             for (GameState save : selectedSaves) {
-                System.out.println(save.getGameStateName());
+                loaded = dbManager.getMapFromSave(save);
+                gameStateId = save.getId();
             }
+            loadMap(loaded, gameStateId);
             loadStage.close();
         });
 
@@ -131,6 +128,54 @@ public class Main extends Application {
         loadStage.setHeight(300);
         setupStage(loadStage, gridPane);
     }
+
+    private void loadMap(MapModel loaded, int gameStateId) {
+        TxtCreator.textCreator(loaded);
+        GameMap gameMap = MapLoader.loadMap("/loadedMap.txt");
+
+        PlayerModel playerModel = dbManager.getPlayerFromSave(gameStateId);
+        InventoryModel inventoryModel = dbManager.getRawInventoryFromSave(playerModel.getId());
+        WeaponModel inventoryWeaponModel = dbManager.getWeaponForInventory(inventoryModel.getId());
+        ShieldModel inventoryShieldModel = dbManager.getShieldForInventory(inventoryModel.getId());
+        if(inventoryWeaponModel != null) {
+            gameMap.getPlayer().putItemInInventory(gameMap.getPlayer(), new Weapon(new Cell(gameMap, inventoryWeaponModel.getX(), inventoryWeaponModel.getY(), CellType.FLOOR), inventoryWeaponModel.getName(), inventoryWeaponModel.getDamage(), inventoryWeaponModel.getCrit()));
+        }
+        if(inventoryShieldModel != null) {
+            gameMap.getPlayer().putItemInInventory(gameMap.getPlayer(), new Shield(new Cell(gameMap, inventoryShieldModel.getX(), inventoryShieldModel.getY(), CellType.FLOOR), inventoryShieldModel.getName(), inventoryShieldModel.getDefense()));
+        }
+        if(inventoryModel.hasKey()) {
+            gameMap.getPlayer().putItemInInventory(gameMap.getPlayer(), new Key(new Cell(gameMap, -1, -1, CellType.FLOOR)));
+        }
+        gameMap.getPlayer().getInventory().setPotion(inventoryModel.getPotion());
+        gameMap.getPlayer().getInventory().setFreeze(inventoryModel.getFreeze());
+        gameMap.getPlayer().setFreeze(inventoryModel.getFreeze());
+        gameMap.getPlayer().setHealth(playerModel.getHp());
+
+
+        List<ConsumableModel> consumableModels = dbManager.getConsumableOnMapFromSave(loaded.getId());
+        List<WeaponModel> weaponModels = dbManager.getWeaponsOnMapFromSave(loaded.getId());
+        List<ShieldModel> shieldModels = dbManager.getShieldOnMapFromSave(loaded.getId());
+
+        consumableModels.forEach(consumableModel -> {
+            if(consumableModel.getConsumableType().equals("potion")) {
+                gameMap.getCell(consumableModel.getX(), consumableModel.getY()).setItem(new Potion(new Cell(gameMap, consumableModel.getX(), consumableModel.getY(), CellType.FLOOR), true));
+            }
+            if(consumableModel.getConsumableType().equals("freeze")) {
+                gameMap.getCell(consumableModel.getX(), consumableModel.getY()).setItem(new Freeze(new Cell(gameMap, consumableModel.getX(), consumableModel.getY(), CellType.FLOOR)));
+            }
+        });
+
+        weaponModels.forEach(weaponModel -> {
+            gameMap.getCell(weaponModel.getX(), weaponModel.getY()).setItem(new Weapon(new Cell(gameMap, weaponModel.getX(), weaponModel.getY(), CellType.FLOOR), weaponModel.getName(), weaponModel.getDamage(), weaponModel.getCrit()));
+        });
+
+        shieldModels.forEach(shieldModel -> {
+            gameMap.getCell(shieldModel.getX(), shieldModel.getY()).setItem(new Shield(new Cell(gameMap, shieldModel.getX(), shieldModel.getY(), CellType.FLOOR), shieldModel.getName(), shieldModel.getDefense()));
+        });
+        map = gameMap;
+        refresh();
+    }
+
 
     private void showModal(Stage stage) {
         Stage confirmSaveStage = new Stage();

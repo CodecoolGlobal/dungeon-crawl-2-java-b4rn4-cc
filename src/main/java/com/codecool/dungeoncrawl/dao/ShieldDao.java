@@ -13,5 +13,5 @@ public interface ShieldDao {
 
     public ShieldModel get(int id);
 
-    public List<ShieldModel> getAll();
+    public List<ShieldModel> getAll(int mapId);
 }

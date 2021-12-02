@@ -8,12 +8,14 @@ public class DoorModel extends BaseModel {
     private int y;
     private boolean isOpen;
     private int mapId;
+    private String mapTo;
 
-    public DoorModel(int x, int y, boolean isOpen, int mapId) {
+    public DoorModel(int x, int y, boolean isOpen, int mapId, String mapTo) {
         this.x = x;
         this.y = y;
         this.isOpen = isOpen;
         this.mapId = mapId;
+        this.mapTo = mapTo;
     }
 
     public DoorModel(Door door, boolean isOpen, int mapId) {
@@ -21,6 +23,7 @@ public class DoorModel extends BaseModel {
         this.y = door.getCell().getY();
         this.isOpen = isOpen;
         this.mapId = mapId;
+        this.mapTo = door.getMapTo();
     }
 
     public void setX(int x) {
@@ -53,5 +56,9 @@ public class DoorModel extends BaseModel {
 
     public int getMapId() {
         return mapId;
+    }
+
+    public String getMapTo() {
+        return mapTo;
     }
 }

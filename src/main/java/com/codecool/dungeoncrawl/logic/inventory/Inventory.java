@@ -22,6 +22,18 @@ public class Inventory {
     private int freeze = 0;
     private int potion = 1;
 
+    public Inventory(){}
+
+//    public Inventory(boolean hasKey, Weapon weapons, Shield shields, int freeze, int potion, Key key) {
+//        if (hasKey) {
+//            this.keys = key;
+//        }
+//        this.weapons = weapons;
+//        this.shields = shields;
+//        this.freeze = freeze;
+//        this.potion = potion;
+//    }
+
     public int getConsumable(String item){
         if (item.equals("freeze")){
             return freeze;
@@ -46,6 +58,14 @@ public class Inventory {
         } else if (item.equals("potion")) {
             potion--;
         }
+    }
+
+    public void setFreeze(int freeze) {
+        this.freeze = freeze;
+    }
+
+    public void setPotion(int potion) {
+        this.potion = potion;
     }
 
     public Key getKeys() {
