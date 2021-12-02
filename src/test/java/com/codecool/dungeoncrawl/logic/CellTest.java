@@ -33,7 +33,4 @@ class CellTest {
         player.pickUp();
         assertNull(map.getCell(1, 1).getItem());
     }
-
-    @Test
-    void
 }
