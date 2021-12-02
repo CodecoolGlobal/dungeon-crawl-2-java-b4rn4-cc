@@ -1,11 +1,11 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
-import com.codecool.dungeoncrawl.logic.items.Freeze;
-import com.codecool.dungeoncrawl.logic.items.Potion;
-import com.codecool.dungeoncrawl.logic.items.Shield;
-import com.codecool.dungeoncrawl.logic.items.Weapon;
+import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.inventory.Inventory;
+import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.model.*;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -106,6 +106,23 @@ public class GameDatabaseManager {
 
     public GameState getMatchingName(String name) {
         return gameStateDao.getMatch(name);
+    }
+
+    public Player getPlayerFromSave(GameState gameState, GameMap gameMap) {
+        PlayerModel playerModel = playerDao.get(gameState.getId());
+        InventoryModel inventoryModel = inventoryDao.get(playerModel.getId());
+        WeaponModel inventoryWeaponModel = weaponDao.get(inventoryModel.getId());
+        ShieldModel inventoryShieldModel = shieldDao.get(inventoryModel.getId());
+        Weapon weapon = new Weapon(new Cell(gameMap, inventoryWeaponModel.getX(), inventoryWeaponModel.getY(), CellType.FLOOR), inventoryWeaponModel.getName(), inventoryWeaponModel.getDamage(), inventoryWeaponModel.getCrit());
+        Shield shield = new Shield(new Cell(gameMap, inventoryShieldModel.getX(), inventoryShieldModel.getY(), CellType.FLOOR), inventoryShieldModel.getName(), inventoryShieldModel.getDefense());
+        Inventory inventory = new Inventory(inventoryModel.hasKey(), weapon, shield, inventoryModel.getFreeze(), inventoryModel.getPotion(), new Key(new Cell(gameMap, -1, -1, CellType.FLOOR)));
+        Player player = new Player(new Cell(gameMap, playerModel.getX(), playerModel.getY(), CellType.FLOOR));
+        player.setInventory(inventory);
+        return player;
+    }
+
+    public MapModel getMapFromSave(GameState gameState) {
+        return mapDao.get(gameState.getId());
     }
 
     private DataSource connect() throws SQLException {

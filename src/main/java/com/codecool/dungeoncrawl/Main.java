@@ -15,6 +15,7 @@ import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 import com.codecool.dungeoncrawl.model.GameState;
+import com.codecool.dungeoncrawl.model.MapModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -118,8 +119,9 @@ public class Main extends Application {
         loadButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
             ObservableList<GameState> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
             // TODO: 2021. 12. 01. Init gameLoading with saved
+            MapModel loaded = null;
             for (GameState save : selectedSaves) {
-                System.out.println(save.getGameStateName());
+                loaded = dbManager.getMapFromSave(save);
             }
             loadStage.close();
         });

@@ -52,7 +52,7 @@ public class DoorDaoJdbc implements DoorDao {
     @Override
     public DoorModel get(int id) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT x, y, is_open, map_id FROM door WHERE id = ?";
+            String sql = "SELECT x, y, is_open, map_id FROM door WHERE map_id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();

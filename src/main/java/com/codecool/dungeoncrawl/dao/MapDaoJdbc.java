@@ -50,7 +50,7 @@ public class MapDaoJdbc implements MapDao {
     @Override
     public MapModel get(int id) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT map_number, game_state_id, map FROM maps WHERE id = ?";
+            String sql = "SELECT map_number, game_state_id, map FROM maps WHERE game_state_id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();

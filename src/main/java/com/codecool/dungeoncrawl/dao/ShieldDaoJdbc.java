@@ -1,9 +1,11 @@
 package com.codecool.dungeoncrawl.dao;
 
+import com.codecool.dungeoncrawl.model.ConsumableModel;
 import com.codecool.dungeoncrawl.model.ShieldModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShieldDaoJdbc implements ShieldDao {
@@ -64,9 +66,10 @@ public class ShieldDaoJdbc implements ShieldDao {
     @Override
     public ShieldModel get(int id) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT x, y, name, defense, inventory_id, map_id FROM shield WHERE id = ?";
+            String sql = "SELECT x, y, name, defense, inventory_id, map_id FROM shield WHERE (inventory_id = ? AND x IS NULL) OR (map_id = ? AND x NOTNULL)";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
+            st.setInt(2, id);
             ResultSet rs = st.executeQuery();
             if(!rs.next()){
                 return null;
@@ -81,6 +84,29 @@ public class ShieldDaoJdbc implements ShieldDao {
 
     @Override
     public List<ShieldModel> getAll() {
-        return null;
+        try (Connection connection = dataSource.getConnection()) {
+            String sqlQuery = "SELECT id, x, y, type, map_id FROM consumable WHERE map_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, mapId);
+            ResultSet resultSet = statement.executeQuery();
+
+            List<ConsumableModel> results = new ArrayList<>();
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                int x = resultSet.getInt(2);
+                int y = resultSet.getInt(3);
+                String type = resultSet.getString(4);
+                int consumableMapId = resultSet.getInt(5);
+                // get map by mapId
+                // MapModel map = mapModelDao.get(consumableMapId);
+
+                ConsumableModel consumableModel = new ConsumableModel(type, x, y,consumableMapId);
+                consumableModel.setId(id);
+                results.add(consumableModel);
+            }
+            return results;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
