@@ -1,6 +1,5 @@
 package com.codecool.dungeoncrawl.dao;
 
-import com.codecool.dungeoncrawl.model.BaseModel;
 import com.codecool.dungeoncrawl.model.InventoryModel;
 
 import javax.sql.DataSource;
@@ -19,7 +18,7 @@ public class InventoryDaoJdbc implements InventoryDao{
         try (Connection conn = dataSource.getConnection()) {
             String sql = "INSERT INTO inventory (key, health_potion, freeze_potion, player_id) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setBoolean(1, inventory.isKey());
+            statement.setBoolean(1, inventory.hasKey());
             statement.setInt(2, inventory.getPotion());
             statement.setInt(3, inventory.getFreeze());
             statement.setInt(4, inventory.getPlayerId());
@@ -37,7 +36,7 @@ public class InventoryDaoJdbc implements InventoryDao{
         try (Connection conn = dataSource.getConnection()) {
             String sql = "UPDATE inventory SET key = ?, health_potion = ?, freeze_potion = ?, player_id = ? WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setBoolean(1, inventory.isKey());
+            statement.setBoolean(1, inventory.hasKey());
             statement.setInt(2, inventory.getPotion());
             statement.setInt(3, inventory.getFreeze());
             statement.setInt(4, inventory.getPlayerId());

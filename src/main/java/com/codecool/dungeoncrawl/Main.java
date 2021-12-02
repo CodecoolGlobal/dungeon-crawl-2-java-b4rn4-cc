@@ -190,7 +190,11 @@ public class Main extends Application {
 
     private void saveGame(Stage modal, TextField textField, Stage confirmSaveStage) {
         String providedName = textField.getText();
-        String nameSavedInDatabase = dbManager.getMatchingName(providedName).getGameStateName();
+        GameState gameState = dbManager.getMatchingName(providedName);
+        String nameSavedInDatabase = "";
+        if (gameState != null) {
+            nameSavedInDatabase = gameState.getGameStateName();
+        }
         if (providedName.equals(nameSavedInDatabase)) {
             confirmOverwriteSaveModal(confirmSaveStage, modal, providedName);
         } else {

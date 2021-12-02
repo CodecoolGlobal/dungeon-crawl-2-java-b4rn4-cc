@@ -13,8 +13,8 @@ public class GameMap {
     private int height;
     private Cell[][] cells;
     private final List<Cell> monsterCells = new LinkedList<>();
-    private Door nextDoor;
-    private Door prevDoor;
+    private Door nextDoor = null;
+    private Door prevDoor = null;
 
     private Player player;
 
@@ -89,6 +89,10 @@ public class GameMap {
 
     public Door getPrevDoor() {
         return prevDoor;
+    }
+
+    public Cell[][] getCells() {
+        return cells;
     }
 
     public void mortalizeBoss(){

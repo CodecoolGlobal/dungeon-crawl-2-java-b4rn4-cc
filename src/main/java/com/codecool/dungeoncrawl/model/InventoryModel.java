@@ -42,7 +42,7 @@ public class InventoryModel extends BaseModel{
         this.potion = potion;
     }
 
-    public boolean isKey() {
+    public boolean hasKey() {
         return key;
     }
 

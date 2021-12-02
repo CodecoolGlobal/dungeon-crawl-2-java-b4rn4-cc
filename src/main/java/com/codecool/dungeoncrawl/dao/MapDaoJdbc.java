@@ -17,7 +17,7 @@ public class MapDaoJdbc implements MapDao {
     @Override
     public void add(MapModel map) {
         try(Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO map (map_number, game_state_id, map) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO maps (map_number, game_state_id, map) VALUES (?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, map.getMapNumber());
             st.setInt(2, map.getGameStateId());
@@ -35,7 +35,7 @@ public class MapDaoJdbc implements MapDao {
     @Override
     public void update(MapModel map) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "UPDATE map SET map_number = ?, game_state_id = ?, map = ? WHERE id = ?";
+            String sql = "UPDATE maps SET map_number = ?, game_state_id = ?, map = ? WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, map.getMapNumber());
             st.setInt(2, map.getGameStateId());
@@ -50,7 +50,7 @@ public class MapDaoJdbc implements MapDao {
     @Override
     public MapModel get(int id) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT map_number, game_state_id, map FROM map WHERE id = ?";
+            String sql = "SELECT map_number, game_state_id, map FROM maps WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
@@ -70,7 +70,7 @@ public class MapDaoJdbc implements MapDao {
     @Override
     public List<MapModel> getAll() {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT id, map_number, game_state_id, map FROM map WHERE game_state_id = ?";
+            String sql = "SELECT id, map_number, game_state_id, map FROM maps WHERE game_state_id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, 1);    //                                  TODO: replace 1 with dynamic game_state_id
             ResultSet rs = conn.createStatement().executeQuery(sql);

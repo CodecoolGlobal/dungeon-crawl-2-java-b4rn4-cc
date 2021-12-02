@@ -27,6 +27,7 @@ public class ConsumableDaoJdbc implements ConsumableDao{
             statement.setInt(4, model.getMapId());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
             model.setId(resultSet.getInt(1));
         } catch (SQLException e) {
             throw new RuntimeException(e);

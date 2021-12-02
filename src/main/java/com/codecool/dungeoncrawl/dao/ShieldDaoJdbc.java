@@ -1,8 +1,5 @@
 package com.codecool.dungeoncrawl.dao;
 
-import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.items.Shield;
-import com.codecool.dungeoncrawl.logic.items.Weapon;
 import com.codecool.dungeoncrawl.model.ShieldModel;
 
 import javax.sql.DataSource;
@@ -19,17 +16,18 @@ public class ShieldDaoJdbc implements ShieldDao {
     @Override
     public void add(ShieldModel shield) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO weapon (x, y, defens, name, inventory_id, map_id) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO shield (x, y, defense, name, inventory_id, map_id) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, shield.getX());
             st.setInt(2, shield.getY());
             st.setInt(3, shield.getDefense());
             st.setString(4, shield.getName());
-            st.setInt(5, shield.getInventory_id());
-            st.setInt(6, shield.getMap_id());
+            st.setInt(5, shield.getInventoryId());
+            st.setInt(6, shield.getMapId());
             st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             rs.next();
+            shield.setId(rs.getInt(1));
         } catch (SQLException throwables) {
             throw new RuntimeException("Error while adding new Shield.", throwables);
         }
@@ -38,14 +36,14 @@ public class ShieldDaoJdbc implements ShieldDao {
     @Override
     public void update(ShieldModel shield) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "UPDATE shield SET x = ?, y = ?, defens = ?, name = ?, inventory_id = ?, map_id = ? WHERE id = ?";
+            String sql = "UPDATE shield SET x = ?, y = ?, defense = ?, name = ?, inventory_id = ?, map_id = ? WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, shield.getX());
             st.setInt(2, shield.getY());
             st.setInt(3, shield.getDefense());
             st.setString(4, shield.getName());
-            st.setInt(5, shield.getInventory_id());
-            st.setInt(6, shield.getMap_id());
+            st.setInt(5, shield.getInventoryId());
+            st.setInt(6, shield.getMapId());
             st.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
