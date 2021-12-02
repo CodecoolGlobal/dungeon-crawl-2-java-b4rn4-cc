@@ -22,8 +22,8 @@ public class GameDatabaseManager {
     }
 
     public void savePlayer(Player player) {
-        PlayerModel model = new PlayerModel(player);
-        playerDao.add(model);
+        // PlayerModel model = new PlayerModel(player);
+        // playerDao.add(model);
     }
 
     public void saveGame(GameMap map, String name, int currentMap) {
