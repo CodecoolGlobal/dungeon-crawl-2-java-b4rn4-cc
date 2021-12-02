@@ -30,4 +30,9 @@ public class Weapon extends Item{
     public int getCrit() {
         return crit;
     }
+
+
+    public String getName(){
+        return name;
+    }
 }
