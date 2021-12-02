@@ -82,4 +82,22 @@ public class GameStateDaoJdbc implements GameStateDao {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public GameState getMatch(String name) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sqlQuery = "SELECT game_state_name, saved_at, current_map_number, id FROM game_state WHERE game_state_name LIKE ?";
+            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return null;
+            }
+            GameState gameState = new GameState(resultSet.getString(1), resultSet.getDate(2), resultSet.getInt(3));
+            gameState.setId(resultSet.getInt(4));
+            return gameState;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

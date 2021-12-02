@@ -182,18 +182,18 @@ public class Main extends Application {
     }
 
     private void overWriteSavedGame(String providedName, Stage ownDialog, Stage saveDialog) {
-        // TODO: 2021. 11. 30. upDate the save where the providedName matches in the database
+        GameState overWriteSave = dbManager.getMatchingName(providedName);
+        dbManager.updateSave(overWriteSave);
         ownDialog.close();
         saveDialog.close();
     }
 
     private void saveGame(Stage modal, TextField textField, Stage confirmSaveStage) {
         String providedName = textField.getText();
-        // TODO: 2021. 11. 30. Condition create query where we get the save games Where <column> LIKE providedName
-        if (providedName.equals("asd")) {
+        String nameSavedInDatabase = dbManager.getMatchingName(providedName).getGameStateName();
+        if (providedName.equals(nameSavedInDatabase)) {
             confirmOverwriteSaveModal(confirmSaveStage, modal, providedName);
         } else {
-            // TODO: 2021. 11. 30. save game
             dbManager.saveGame(map, providedName, MapLoader.getCurrentLevel());
 
             modal.close();
