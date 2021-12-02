@@ -16,4 +16,14 @@ public class InventoryTest {
         player.putItemInInventory(player, weapon);
         assertEquals("Frostmourne", player.getInventory().getWeapons().getName());
     }
+
+    @Test
+    public void testPutMultipleSameTypeItemInInventory() {
+        Weapon weapon1 = new Weapon(gameMap.getCell(1, 1), "Frostmourne", 10, 1);
+        Weapon weapon2 = new Weapon(gameMap.getCell(1, 1), "Kingslayer", 5, 2);
+        player.putItemInInventory(player, weapon1);
+        player.putItemInInventory(player, weapon2);
+        assertEquals("Kingslayer", player.getInventory().getWeapons().getName());
+        assertEquals(5, player.getInventory().getWeapons().getDamage());
+    }
 }
