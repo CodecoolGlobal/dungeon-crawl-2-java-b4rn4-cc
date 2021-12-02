@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.model.DoorModel;
+import com.codecool.dungeoncrawl.model.MapModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -66,6 +67,25 @@ public class DoorDaoJdbc implements DoorDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<DoorModel> getAll(int gameStateId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT id, x, y, map_to, is_open, map_id FROM door WHERE map_id = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setInt(1, gameStateId);
+            ResultSet rs = st.executeQuery();
+            List<DoorModel> result = new ArrayList<>();
+            while (rs.next()) { // while result set pointer is positioned before or on last row read authors
+                DoorModel door = new DoorModel(rs.getInt(2), rs.getInt(3), rs.getBoolean(5), rs.getInt(6), rs.getString(4));
+                door.setId(rs.getInt(1));
+                result.add(door);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while reading all door", e);
         }
     }
 
