@@ -50,7 +50,7 @@ public class InventoryDaoJdbc implements InventoryDao{
     @Override
     public InventoryModel get(int playerId) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT id, key, health_potion, freeze_potion FROM inventory WHERE player_id = ?";
+            String sql = "SELECT id, key, health_potion, freeze_potion, player_id FROM inventory WHERE player_id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, playerId);
             ResultSet resultSet = statement.executeQuery();
