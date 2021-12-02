@@ -250,7 +250,7 @@ public class Player extends Actor {
         map.getPlayer().addToCombatLog(String.format("Player froze enemies for %s turns", map.getPlayer().inventory.getFreezeValue()));
         for (Cell cell : map.getMonsterCells()){
             if (cell.getActor() instanceof Boss){
-                map.getPlayer().addToCombatLog("Witch : \"Your pity snow spell has no\neffect on me MUHAHAHA!\" ");
+                map.getPlayer().addToCombatLog("Witch : \"Your little snow spell has no\neffect on me MUHAHAHA!\" ");
             }
         }
     }
