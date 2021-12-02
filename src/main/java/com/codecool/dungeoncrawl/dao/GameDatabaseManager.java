@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.inventory.Inventory;
 import com.codecool.dungeoncrawl.logic.items.Freeze;
 import com.codecool.dungeoncrawl.logic.items.Potion;
 import com.codecool.dungeoncrawl.logic.items.Shield;
@@ -58,10 +59,32 @@ public class GameDatabaseManager {
             shieldDao.add(inventoryShield);
         }
 
-        MapModel mapModel = new MapModel(currentMap, gameStateId, map.createCurrentMap());
-        mapDao.add(mapModel);
-        saveItemFromMap(map, mapModel.getId());
-        doorSave(map, inventory.hasKey(), mapModel);
+        if (map.getPlayer().getSecondLevel() != null){
+            saveMap(1, gameStateId, map.getPlayer().getFirstLevel(), true);
+            saveMap(2, gameStateId, map.getPlayer().getSecondLevel(), true);
+            if (map.getPlayer().getThirdLevel() != null){
+                saveMap(3, gameStateId, map.getPlayer().getThirdLevel(), false);
+            } else {
+
+                saveMap(3, gameStateId, map, false);
+            }
+        } else if (map.getPlayer().getFirstLevel() != null){
+            saveMap(1, gameStateId, map.getPlayer().getFirstLevel(), true);
+            if (map.getPlayer().getSecondLevel() != null){
+                saveMap(2, gameStateId, map.getPlayer().getSecondLevel(), inventory.hasKey());
+            } else {
+                saveMap(2, gameStateId, map, inventory.hasKey());
+            }
+        } else {
+            saveMap(1, gameStateId, map, inventory.hasKey());
+        }
+    }
+
+    private void saveMap(int map_number, int gameStateId, GameMap map, boolean isDoorOpen){
+            MapModel mapModel = new MapModel(map_number, gameStateId, map.createCurrentMap());
+            mapDao.add(mapModel);
+            saveItemFromMap(map, mapModel.getId());
+            doorSave(map, isDoorOpen, mapModel);
     }
 
     private void doorSave(GameMap map, boolean hasKey, MapModel mapModel) {
@@ -69,8 +92,10 @@ public class GameDatabaseManager {
             DoorModel prevDoor = new DoorModel(map.getPrevDoor(), true, mapModel.getId());
             doorDao.add(prevDoor);
         }
-        DoorModel nextDoor = new DoorModel(map.getNextDoor(), hasKey, mapModel.getId());
-        doorDao.add(nextDoor);
+        if (map.getNextDoor() != null){
+            DoorModel nextDoor = new DoorModel(map.getNextDoor(), hasKey, mapModel.getId());
+            doorDao.add(nextDoor);
+        }
     }
 
     private void saveItemFromMap(GameMap map, int mapId) {
