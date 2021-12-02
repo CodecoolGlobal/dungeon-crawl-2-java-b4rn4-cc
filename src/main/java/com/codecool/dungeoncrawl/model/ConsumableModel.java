@@ -8,10 +8,11 @@ public class ConsumableModel extends BaseModel {
     private int y;
     private int mapId;
 
-    public ConsumableModel(String consumableType, int x, int y) {
+    public ConsumableModel(String consumableType, int x, int y, int mapId) {
         this.consumableType = consumableType;
         this.x = x;
         this.y = y;
+        this.mapId = mapId;
     }
 
     public ConsumableModel (Item consumable, int mapId) {
