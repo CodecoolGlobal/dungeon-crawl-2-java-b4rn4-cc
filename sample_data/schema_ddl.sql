@@ -72,6 +72,7 @@ CREATE TABLE public.door (
     id serial NOT NULL PRIMARY KEY,
     x integer,
     y integer,
+    map_to varchar,
     is_open boolean NOT NULL,
     map_id integer -- FK
 );

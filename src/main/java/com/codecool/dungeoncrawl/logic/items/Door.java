@@ -13,6 +13,12 @@ public class Door extends Item{
         this.mapTo = mapTo;
     }
 
+    public Door (Cell cell, boolean opened, String mapTo) {
+        super(cell, false);
+        this.opened = opened;
+        this.mapTo = mapTo;
+    }
+
     @Override
     public String getTileName() {
         if (opened) {
