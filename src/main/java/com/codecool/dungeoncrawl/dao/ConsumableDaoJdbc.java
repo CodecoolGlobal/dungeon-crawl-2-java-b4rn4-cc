@@ -50,6 +50,23 @@ public class ConsumableDaoJdbc implements ConsumableDao{
 
     @Override
     public ConsumableModel get(int id) {
-        return null;
+        try (Connection connection = dataSource.getConnection()) {
+            String sqlQuery = "SELECT x, y, type, map_id FROM consumable WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return null;
+            }
+            int x = resultSet.getInt(1);
+            int y = resultSet.getInt(2);
+            String type = resultSet.getString(3);
+            int mapId = resultSet.getInt(4);
+            ConsumableModel result = new ConsumableModel(type, x, y, mapId);
+            result.setId(id);
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
