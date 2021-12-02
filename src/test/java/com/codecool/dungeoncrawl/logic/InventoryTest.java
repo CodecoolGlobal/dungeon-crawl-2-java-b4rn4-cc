@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class InventoryTest {
     GameMap gameMap = new GameMap(3, 3, CellType.FLOOR);
     Player player = new Player(gameMap.getCell(0, 0));
+    Potion potion = new Potion(gameMap.getCell(1, 1), true);
 
     @Test
     public void testPutItemInInventory() {
@@ -30,10 +31,15 @@ public class InventoryTest {
 
     @Test
     public void testConsumingItemFromInventoryItemCountShouldDecrease() {
-        Potion potion = new Potion(gameMap.getCell(1, 1), true);
         player.putItemInInventory(player, potion);
         player.putItemInInventory(player, potion);
         player.consumeItem("potion");
         assertEquals(2, player.getInventory().getPotionAmount());
+    }
+
+    @Test
+    public void testCantConsumeItemWhenCountIsZero() {
+        player.consumeItem("freeze");
+        assertEquals(0, player.getInventory().getFreezeAmount());
     }
 }
