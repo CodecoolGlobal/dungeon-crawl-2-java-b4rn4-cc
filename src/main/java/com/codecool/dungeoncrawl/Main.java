@@ -107,14 +107,14 @@ public class Main extends Application {
         loadStage.setTitle("Load Game");
         // TODO: 2021. 12. 01. PlayerDaoJdbc.getAll() return list needed to add to choose which game to load
         // dummy saves
-        PlayerModel save1 = new PlayerModel(1, 1);
-        PlayerModel save2 = new PlayerModel(1, 1);
-        PlayerModel save3 = new PlayerModel(1, 1);
+        // PlayerModel save1 = new PlayerModel(1, 1);
+        // PlayerModel save2 = new PlayerModel(1, 1);
+         //PlayerModel save3 = new PlayerModel(1, 1);
         //--------------------------------
         ListView<PlayerModel> savedGames = new ListView<>();
-        savedGames.getItems().add(save1);
-        savedGames.getItems().add(save2);
-        savedGames.getItems().add(save3);
+        // savedGames.getItems().add(save1);
+        // savedGames.getItems().add(save2);
+        // savedGames.getItems().add(save3);
 
         Button loadButton = new Button("Load");
 
@@ -122,7 +122,7 @@ public class Main extends Application {
             ObservableList<PlayerModel> selectedSaves = savedGames.getSelectionModel().getSelectedItems();
             // TODO: 2021. 12. 01. Init gameLoading with saved
             for (PlayerModel save : selectedSaves) {
-                System.out.println(save.getPlayerName());
+              //  System.out.println(save.getPlayerName());
             }
             loadStage.close();
         });

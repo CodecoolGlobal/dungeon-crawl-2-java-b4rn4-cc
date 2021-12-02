@@ -6,17 +6,21 @@ public class PlayerModel extends BaseModel {
     private int hp;
     private int x;
     private int y;
+    private int gameStateId;
 
-    public PlayerModel(int x, int y) {
+    public PlayerModel(int x, int y, int hp, int gameStateId) {
         this.x = x;
         this.y = y;
+        this.hp = hp;
+        this.gameStateId = gameStateId;
     }
 
-    public PlayerModel(Player player) {
+    public PlayerModel(Player player, int gameStateId) {
         this.x = player.getX();
         this.y = player.getY();
 
         this.hp = player.getHealth();
+        this.gameStateId = gameStateId;
     }
 
     public int getHp() {
@@ -41,5 +45,13 @@ public class PlayerModel extends BaseModel {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public void setGameStateId(int gameStateId) {
+        this.gameStateId = gameStateId;
+    }
+
+    public int getGameStateId() {
+        return gameStateId;
     }
 }
